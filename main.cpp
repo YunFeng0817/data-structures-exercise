@@ -1,7 +1,7 @@
 //coding=utf-8
 #include <iostream>
 #include <string.h>
-#include <string>
+#include<fstream>
 using namespace std;
 
 #define M 20
@@ -9,7 +9,9 @@ int college_num=20,item_num=20;
 int man_item_num=20;
 int item_data[M][M];
 int choice;
-char item_name[M][M];  //学院的名称  数组前一个表示学院的编号，后一个是字符串长度
+string item_name[M];
+string college_name[M];
+string file_path=NULL,file_name=NULL;
 typedef struct college_data
 {
     int id;
@@ -31,11 +33,30 @@ void init_menu()
     return;
 }
 
+void if_file_path()
+{
+    if(file_path==NULL)
+    {
+        cout<<"请输入文件存储的位置"<<endl;
+        cin>>file_path;
+    }
+    if(file_name==NULL)
+    {
+        cout<<"请输入文件的名称"<<endl;
+        cin>>file_name;
+    }
+}
+
+void write_file()
+{
+    if_file_path();
+
+}
+
 class university
 {
 public:
     college_data college[M];
-    string college_name[M];
     university()
     {
         for(int i=0;i<college_num;i++)
@@ -288,6 +309,26 @@ int main() {
             cout<<"请输入男生项目的数量：(请勿大于40)"<<endl;
             cin>>man_item_num;
         }while(man_item_num>20||man_item_num<=0);
+        cout<<"开始输入"<<item_num<<"个项目的成绩："<<endl;
+        for(int i=0;i<item_num;i++)
+        {
+            if(i<man_item_num)
+            {
+                cout<<">>>请输入第"<<i+1<<"个项目的前3名学院编号："<<endl;
+                for(int j=0;j<3;j++)
+                {
+                    cin>>item_data[i][j];
+                }
+            }
+            else
+            {
+                cout<<">>>请输入第"<<i+1<<"个项目的前5名学院编号："<<endl;
+                for(int j=0;j<5;j++)
+                {
+                    cin>>item_data[i][j];
+                }
+            }
+        }
 
     }
     university hit;

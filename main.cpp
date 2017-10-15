@@ -1,6 +1,7 @@
 //coding=utf-8
 #include <iostream>
 #include <string.h>
+#include <sstream>
 using namespace std;
 
 #define M 50
@@ -14,7 +15,6 @@ string file_path="",file_name="";
 typedef struct college_data
 {
     int id;
-    string name;
     int score[M];
     int score_sum,item_man_sum,item_woman_sum;
 }college_data;
@@ -36,7 +36,7 @@ void if_file_path()
 {
     if(file_path=="")
     {
-        cout<<"请输入文件存储的位置"<<endl;
+        cout<<"请输入文件存储的位置(以\\结尾)"<<endl;
         cin>>file_path;
     }
     if(file_name=="")
@@ -56,13 +56,13 @@ void write_file()
     file=fopen(temp_path.c_str(),"w");
     while(file==NULL)
     {
-        cout<<"请输出有效的路径"<<endl;
+        cout<<"请输出有效的路径(以\\结尾)"<<endl;
         cin>>file_path;
         temp_path=file_path;
         temp_path+=file_name;
         file=fopen(temp_path.c_str(),"w");
     }
-    fprintf(file,"%d%d%d",college_num,item_num,man_item_num);
+    fprintf(file,"%d\n%d\n%d\n",college_num,item_num,man_item_num);
     for(int i=0;i<item_num;i++)
     {
         int temp;
@@ -72,16 +72,17 @@ void write_file()
             temp=5;
         for(int j=0;j<temp;j++)
         {
-            fprintf(file,"%d",item_data[i][j]);
+            fprintf(file,"%d ",item_data[i][j]);
         }
     }
+    fprintf(file,"\n");
     for(int i=0;i<item_num;i++)
     {
-        fprintf(file,"%s",item_name[i].c_str());
+        fprintf(file,"%s\n",item_name[i].c_str());
     }
     for(int i=0;i<college_num;i++)
     {
-        fprintf(file, "%s", college_name[i].c_str());
+        fprintf(file, "%s\n", college_name[i].c_str());
     }
     fclose(file);
 }
@@ -93,16 +94,16 @@ void read_file()
     if_file_path();
     temp_path=file_path;
     temp_path+=file_name;
-    file=fopen(temp_path.c_str(),"w");
+    file=fopen(temp_path.c_str(),"r");
     while(file==NULL)
     {
-        cout<<"请输出有效的路径"<<endl;
+        cout<<"请输出有效的路径(以\\结尾)"<<endl;
         cin>>file_path;
         temp_path=file_path;
         temp_path+=file_name;
-        file=fopen(temp_path.c_str(),"w");
+        file=fopen(temp_path.c_str(),"r");
     }
-    fscanf(file,"%d%d%d",&college_num,&item_num,&man_item_num);
+    fscanf(file,"%d\n%d\n%d\n",&college_num,&item_num,&man_item_num);
     for(int i=0;i<college_num;i++)
     {
         int temp;
@@ -115,13 +116,19 @@ void read_file()
             fscanf(file,"%d",&item_data[i][j]);
         }
     }
+    //fscanf(file,"\n");
     for(int i=0;i<item_num;i++)
     {
-        fscanf(file,"%s",&item_name[i]);
+        char temp[M];
+        fscanf(file,"%s",temp);
+        item_name[i] = temp;
+        cout<<item_name[i]<<endl;
     }
     for(int i=0;i<college_num;i++)
     {
-        fscanf(file, "%s", &college_name[i]);
+        char temp[M];
+        fscanf(file,"%s",temp);
+        college_name[i] = temp;
     }
     fclose(file);
 }
@@ -151,7 +158,6 @@ public:
         for(int i=0;i<college_num;i++)
         {
             college[i].id=i;
-            college[i].name=college_name[i];
             memset(college[i].score,0, sizeof(college[i].score));
         }
         for(int i=0;i<item_num;i++)
@@ -167,8 +173,10 @@ public:
                             break;
                         case 1:
                             college[item_data[i][j]].score[i]=3;
+                            break;
                         case 2:
                             college[item_data[i][j]].score[i]=2;
+                            break;
                         default:;
                     }
                 }
@@ -184,12 +192,16 @@ public:
                             break;
                         case 1:
                             college[item_data[i][j]].score[i]=5;
+                            break;
                         case 2:
                             college[item_data[i][j]].score[i]=3;
+                            break;
                         case 3:
                             college[item_data[i][j]].score[i]=2;
+                            break;
                         case 4:
                             college[item_data[i][j]].score[i]=1;
+                            break;
                         default:;
                     }
                 }
@@ -282,12 +294,12 @@ public:
         for(int i=0;i<college_num;i++)
         {
             int j=i;
-            int max_num = college[i].id;
+            int min_num = college[i].id;
             for(int k=i+1;k<college_num;k++)
             {
-                if(max_num<college[k].id)
+                if(min_num>college[k].id)
                 {
-                    max_num = college[k].id;
+                    min_num = college[k].id;
                     j=k;
                 }
             }
@@ -304,12 +316,12 @@ public:
         for(int i=0;i<college_num;i++)
         {
             int j=i;
-            string min_name = college[i].name;
+            string min_name = college_name[college[i].id];
             for(int k=i+1;k<college_num;k++)
             {
-                if(min_name>college[k].name)
+                if(min_name>college_name[college[k].id])
                 {
-                    min_name = college[k].name;
+                    min_name = college_name[college[k].id];
                     j=k;
                 }
             }
@@ -331,7 +343,7 @@ public:
         for(int i=0;i<college_num;i++)
         {
             if(college[i].id==search_id)
-                cout<<"您要找的学院是\t"<<college[i].name<<endl<<"您要找的项目是\t"<<item_name[search_item_id]<<endl<<"得分为:\t"<<college[i].score[search_item_id]<<endl;
+                cout<<"您要找的学院是\t"<<college_name[college[i].id]<<endl<<"您要找的项目是\t"<<item_name[search_item_id]<<endl<<"得分为:\t"<<college[i].score[search_item_id]<<endl;
         }
     }
 
@@ -342,37 +354,37 @@ public:
             cout<<"访问的数据超出范围"<<endl;
             return;
         }
-        cout<<"您要找的项目"<<item_name[search_item_id]<<"的排名如下"<<endl;
+        cout<<"您要找的  "<<item_name[search_item_id]<<"  的排名如下"<<endl;
         if(search_item_id<man_item_num)
         {
             for(int i=0;i<3;i++)
             {
-                cout<<"名次"<<i<<"\t"<<college_name[item_data[search_item_id][i]]<<endl;
+                cout<<"名次"<<i+1<<"\t"<<college_name[item_data[search_item_id][i]]<<endl;
             }
         }
         else
         {
             for(int i=0;i<5;i++)
             {
-                cout<<"名次"<<i<<"\t"<<college_name[item_data[search_item_id][i]]<<endl;
+                cout<<"名次"<<i+1<<"\t"<<college_name[item_data[search_item_id][i]]<<endl;
             }
         }
     }
 
-    void print_out()
-    {
-        cout<<"学院编号\t学院名称\t总分\t男生团体总分\t女生团体总分\t排名"<<endl;
-        for(int i=0;i<college_num;i++)
-        {
-            cout<<college[i].id<<"\t"<<college[i].name<<"\t"<<college[i].score_sum<<"\t"<<college[i].item_man_sum<<"\t"<<college[i].item_woman_sum<<"\t"<<i<<endl;
-        }
-    }
 private:
     void swap(int i,int j)
     {
         college_data temp = college[i];
         college[i] = college[j];
         college[j] = temp;
+    }
+    void print_out()
+    {
+        cout<<"学院编号\t学院名称\t总分\t男生团体总分\t女生团体总分\t排名"<<endl;
+        for(int i=0;i<college_num;i++)
+        {
+            cout<<college[i].id<<"\t\t"<<college_name[college[i].id]<<"\t\t"<<college[i].score_sum<<"\t\t"<<college[i].item_man_sum<<"\t\t"<<college[i].item_woman_sum<<"\t"<<i+1<<endl;
+        }
     }
 };
 
@@ -421,13 +433,20 @@ int main() {
         for(int i=0;i<college_num;i++)
         {
             college_name[i] = "学院";
-            college_name[i]+=(char)(i+'0');
+            stringstream stream;
+            stream<<i;
+            stream>>modify_name;
+            college_name[i]+=(char)(i+1+'0');
         }
-        for(int i=0;i<college_num;i++)
+        for(int i=0;i<item_num;i++)
         {
             item_name[i] = "项目";
-            item_name[i] = (char)(i+'0');
+            stringstream stream;
+            stream<<i;
+            stream>>modify_name;
+            item_name[i] += modify_name;
         }
+        write_file();
     }
     else
         read_file();
@@ -488,3 +507,14 @@ int main() {
         }
     }
 }
+
+/*C:\Users\29488\Desktop\
+5
+5
+3
+2 1 3
+4 1 0
+1 3 2
+4 3 2 1 0
+0 1 2 3 4
+*/

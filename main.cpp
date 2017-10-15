@@ -126,6 +126,22 @@ void read_file()
     fclose(file);
 }
 
+void menu()
+{
+    cout<<"##成绩系统菜单##"<<endl;
+    cout<<">>>1.按学院  编号排序输出"<<endl;
+    cout<<">>>2.按学院  名字排序输出"<<endl;
+    cout<<">>>3.按学院  总分排序输出"<<endl;
+    cout<<">>>4.按学院  男生团体总分输出"<<endl;
+    cout<<">>>5.按学院  女生团团体总分输出"<<endl;
+    cout<<">>>6.按学院  编号查询某个项目的情况"<<endl;
+    cout<<">>>7.按项目编号查询有成绩的学院"<<endl;
+    cout<<">>>8.修改学院的名称"<<endl;
+    cout<<">>>9.修改项目的名称"<<endl;
+    cout<<">>>10.退出"<<endl;
+    cin>>choice;
+}
+
 class university
 {
 public:
@@ -344,7 +360,7 @@ public:
             }
         }
     }
-private:
+
     void print_out()
     {
         cout<<"学院编号\t学院名称\t总分\t男生团体总分\t女生团体总分\t排名"<<endl;
@@ -353,7 +369,7 @@ private:
             cout<<college[i].id<<"\t"<<college[i].name<<"\t"<<college[i].score_sum<<"\t"<<college[i].item_man_sum<<"\t"<<college[i].item_woman_sum<<"\t"<<i<<endl;
         }
     }
-
+private:
     void swap(int i,int j)
     {
         college_data temp = college[i];
@@ -404,8 +420,9 @@ int main() {
         }
 
     }
+    else
+        read_file();
+
     university hit;
-    cout<<hit.college[9].name<<endl;
-    cout<<1<<"\t";
     return 0;
 }

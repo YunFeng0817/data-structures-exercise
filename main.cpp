@@ -3,14 +3,14 @@
 #include <string.h>
 using namespace std;
 
-#define M 20
+#define M 50
 int college_num=20,item_num=20;
 int man_item_num=20;
 int item_data[M][M];
 int choice;
 string item_name[M];
 string college_name[M];
-string file_path=NULL,file_name=NULL;
+string file_path="",file_name="";
 typedef struct college_data
 {
     int id;
@@ -34,12 +34,12 @@ void init_menu()
 
 void if_file_path()
 {
-    if(file_path==NULL)
+    if(file_path=="")
     {
         cout<<"请输入文件存储的位置"<<endl;
         cin>>file_path;
     }
-    if(file_name==NULL)
+    if(file_name=="")
     {
         cout<<"请输入文件的名称"<<endl;
         cin>>file_name;
@@ -49,18 +49,18 @@ void if_file_path()
 void write_file()
 {
     FILE *file;
-    string temp_path;
     if_file_path();
+    string temp_path;
     temp_path=file_path;
     temp_path+=file_name;
-    file=fopen(temp_path,'w');
+    file=fopen(temp_path.c_str(),"w");
     while(file==NULL)
     {
         cout<<"请输出有效的路径"<<endl;
         cin>>file_path;
         temp_path=file_path;
         temp_path+=file_name;
-        file=fopen(temp_path,'w');
+        file=fopen(temp_path.c_str(),"w");
     }
     fprintf(file,"%d%d%d",college_num,item_num,man_item_num);
     for(int i=0;i<item_num;i++)
@@ -77,11 +77,11 @@ void write_file()
     }
     for(int i=0;i<item_num;i++)
     {
-        fprintf(file,"%s",item_name[i]);
+        fprintf(file,"%s",item_name[i].c_str());
     }
     for(int i=0;i<college_num;i++)
     {
-        fprintf(file, "%s", college_name[i]);
+        fprintf(file, "%s", college_name[i].c_str());
     }
     fclose(file);
 }
@@ -93,14 +93,14 @@ void read_file()
     if_file_path();
     temp_path=file_path;
     temp_path+=file_name;
-    file=fopen(temp_path,'w');
+    file=fopen(temp_path.c_str(),"w");
     while(file==NULL)
     {
         cout<<"请输出有效的路径"<<endl;
         cin>>file_path;
         temp_path=file_path;
         temp_path+=file_name;
-        file=fopen(temp_path,'w');
+        file=fopen(temp_path.c_str(),"w");
     }
     fscanf(file,"%d%d%d",&college_num,&item_num,&man_item_num);
     for(int i=0;i<college_num;i++)
@@ -151,9 +151,7 @@ public:
         for(int i=0;i<college_num;i++)
         {
             college[i].id=i;
-            college[i].name="学院";
-            college[i].name+=(char)(i+'0');
-            college_name[i]=college[i].name;
+            college[i].name=college_name[i];
             memset(college[i].score,0, sizeof(college[i].score));
         }
         for(int i=0;i<item_num;i++)
@@ -379,6 +377,8 @@ private:
 };
 
 int main() {
+    int search_id,search_item;
+    string modify_name;
     choice = 0;
     init_menu();
     if(choice==1)
@@ -418,11 +418,73 @@ int main() {
                 }
             }
         }
-
+        for(int i=0;i<college_num;i++)
+        {
+            college_name[i] = "学院";
+            college_name[i]+=(char)(i+'0');
+        }
+        for(int i=0;i<college_num;i++)
+        {
+            item_name[i] = "项目";
+            item_name[i] = (char)(i+'0');
+        }
     }
     else
         read_file();
-
+    choice=0;
     university hit;
-    return 0;
+    while(true)
+    {
+        choice=0;
+        menu();
+        switch (choice)
+        {
+            case 1:
+                hit.sort_by_id();
+                break;
+            case 2:
+                hit.sort_by_name();
+                break;
+            case 3:
+                hit.sort_by_sum();
+                break;
+            case 4:
+                hit.sort_by_man_sum();
+                break;
+            case 5:
+                hit.sort_by_woman_sum();
+                break;
+            case 6:
+                cout<<"请输入想要查询的学院编号"<<endl;
+                cin>>search_id;
+                cout<<"请输入想要查询的项目编号"<<endl;
+                cin>>search_item;
+                hit.search_by_id(search_id,search_item);
+                break;
+            case 7:
+                cout<<"请输入想要查询的项目编号"<<endl;
+                cin>>search_item;
+                hit.search_by_item(search_item);
+                break;
+            case 8:
+                cout<<"请输入你想修改的学院编号"<<endl;
+                cin>>search_id;
+                cout<<"请输入你想改成的学院名称"<<endl;
+                cin>>modify_name;
+                college_name[search_id]=modify_name;
+                break;
+            case 9:
+                cout<<"请输入你想修改的项目编号"<<endl;
+                cin>>search_item;
+                cout<<"请输入你想修改成的项目名称"<<endl;
+                cin>>modify_name;
+                item_name[search_item]=modify_name;
+                break;
+            case 10:
+                write_file();
+                exit(0);
+            default:
+                cout<<"输入不在选项范围，请重新输入"<<endl;
+        }
+    }
 }

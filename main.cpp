@@ -1,7 +1,6 @@
 //coding=utf-8
 #include <iostream>
 #include <string.h>
-#include<fstream>
 using namespace std;
 
 #define M 20
@@ -49,8 +48,82 @@ void if_file_path()
 
 void write_file()
 {
+    FILE *file;
+    string temp_path;
     if_file_path();
+    temp_path=file_path;
+    temp_path+=file_name;
+    file=fopen(temp_path,'w');
+    while(file==NULL)
+    {
+        cout<<"请输出有效的路径"<<endl;
+        cin>>file_path;
+        temp_path=file_path;
+        temp_path+=file_name;
+        file=fopen(temp_path,'w');
+    }
+    fprintf(file,"%d%d%d",college_num,item_num,man_item_num);
+    for(int i=0;i<item_num;i++)
+    {
+        int temp;
+        if(i<man_item_num)
+            temp=3;
+        else
+            temp=5;
+        for(int j=0;j<temp;j++)
+        {
+            fprintf(file,"%d",item_data[i][j]);
+        }
+    }
+    for(int i=0;i<item_num;i++)
+    {
+        fprintf(file,"%s",item_name[i]);
+    }
+    for(int i=0;i<college_num;i++)
+    {
+        fprintf(file, "%s", college_name[i]);
+    }
+    fclose(file);
+}
 
+void read_file()
+{
+    FILE *file;
+    string temp_path;
+    if_file_path();
+    temp_path=file_path;
+    temp_path+=file_name;
+    file=fopen(temp_path,'w');
+    while(file==NULL)
+    {
+        cout<<"请输出有效的路径"<<endl;
+        cin>>file_path;
+        temp_path=file_path;
+        temp_path+=file_name;
+        file=fopen(temp_path,'w');
+    }
+    fscanf(file,"%d%d%d",&college_num,&item_num,&man_item_num);
+    for(int i=0;i<college_num;i++)
+    {
+        int temp;
+        if(i<man_item_num)
+            temp=3;
+        else
+            temp=5;
+        for(int j=0;j<temp;j++)
+        {
+            fscanf(file,"%d",&item_data[i][j]);
+        }
+    }
+    for(int i=0;i<item_num;i++)
+    {
+        fscanf(file,"%s",&item_name[i]);
+    }
+    for(int i=0;i<college_num;i++)
+    {
+        fscanf(file, "%s", &college_name[i]);
+    }
+    fclose(file);
 }
 
 class university

@@ -388,125 +388,125 @@ private:
     }
 };
 
-int main() {
-    int search_id,search_item;
-    string modify_name;
-    choice = 0;
-    init_menu();
-    if(choice==1)
-    {
-        do
-        {
-            cout<<"请输入学院的数量：(请勿大于20)"<<endl;
-            cin>>college_num;
-        }while(college_num>20||college_num<=0);
-        do
-        {
-            cout<<"请输入项目的数量：(请勿大于40)"<<endl;
-            cin>>item_num;
-        }while(item_num>40||item_num<=0);
-        do
-        {
-            cout<<"请输入男生项目的数量：(请勿大于40)"<<endl;
-            cin>>man_item_num;
-        }while(man_item_num>20||man_item_num<=0);
-        cout<<"开始输入"<<item_num<<"个项目的成绩："<<endl;
-        for(int i=0;i<item_num;i++)
-        {
-            if(i<man_item_num)
-            {
-                cout<<">>>请输入第"<<i+1<<"个项目的前3名学院编号："<<endl;
-                for(int j=0;j<3;j++)
-                {
-                    cin>>item_data[i][j];
-                }
-            }
-            else
-            {
-                cout<<">>>请输入第"<<i+1<<"个项目的前5名学院编号："<<endl;
-                for(int j=0;j<5;j++)
-                {
-                    cin>>item_data[i][j];
-                }
-            }
-        }
-        for(int i=0;i<college_num;i++)
-        {
-            college_name[i] = "学院";
-            stringstream stream;
-            stream<<i;
-            stream>>modify_name;
-            college_name[i]+=(char)(i+1+'0');
-        }
-        for(int i=0;i<item_num;i++)
-        {
-            item_name[i] = "项目";
-            stringstream stream;
-            stream<<i;
-            stream>>modify_name;
-            item_name[i] += modify_name;
-        }
-        write_file();
-    }
-    else
-        read_file();
-    choice=0;
-    university hit;
-    while(true)
-    {
-        choice=0;
-        menu();
-        switch (choice)
-        {
-            case 1:
-                hit.sort_by_id();
-                break;
-            case 2:
-                hit.sort_by_name();
-                break;
-            case 3:
-                hit.sort_by_sum();
-                break;
-            case 4:
-                hit.sort_by_man_sum();
-                break;
-            case 5:
-                hit.sort_by_woman_sum();
-                break;
-            case 6:
-                cout<<"请输入想要查询的学院编号"<<endl;
-                cin>>search_id;
-                cout<<"请输入想要查询的项目编号"<<endl;
-                cin>>search_item;
-                hit.search_by_id(search_id,search_item);
-                break;
-            case 7:
-                cout<<"请输入想要查询的项目编号"<<endl;
-                cin>>search_item;
-                hit.search_by_item(search_item);
-                break;
-            case 8:
-                cout<<"请输入你想修改的学院编号"<<endl;
-                cin>>search_id;
-                cout<<"请输入你想改成的学院名称"<<endl;
-                cin>>modify_name;
-                college_name[search_id]=modify_name;
-                break;
-            case 9:
-                cout<<"请输入你想修改的项目编号"<<endl;
-                cin>>search_item;
-                cout<<"请输入你想修改成的项目名称"<<endl;
-                cin>>modify_name;
-                item_name[search_item]=modify_name;
-                break;
-            case 10:
-                write_file();
-                exit(0);
-            default:
-                cout<<"输入不在选项范围，请重新输入"<<endl;
-        }
-    }
-}
+//int main() {
+//    int search_id,search_item;
+//    string modify_name;
+//    choice = 0;
+//    init_menu();
+//    if(choice==1)
+//    {
+//        do
+//        {
+//            cout<<"请输入学院的数量：(请勿大于20)"<<endl;
+//            cin>>college_num;
+//        }while(college_num>20||college_num<=0);
+//        do
+//        {
+//            cout<<"请输入项目的数量：(请勿大于40)"<<endl;
+//            cin>>item_num;
+//        }while(item_num>40||item_num<=0);
+//        do
+//        {
+//            cout<<"请输入男生项目的数量：(请勿大于40)"<<endl;
+//            cin>>man_item_num;
+//        }while(man_item_num>20||man_item_num<=0);
+//        cout<<"开始输入"<<item_num<<"个项目的成绩："<<endl;
+//        for(int i=0;i<item_num;i++)
+//        {
+//            if(i<man_item_num)
+//            {
+//                cout<<">>>请输入第"<<i+1<<"个项目的前3名学院编号："<<endl;
+//                for(int j=0;j<3;j++)
+//                {
+//                    cin>>item_data[i][j];
+//                }
+//            }
+//            else
+//            {
+//                cout<<">>>请输入第"<<i+1<<"个项目的前5名学院编号："<<endl;
+//                for(int j=0;j<5;j++)
+//                {
+//                    cin>>item_data[i][j];
+//                }
+//            }
+//        }
+//        for(int i=0;i<college_num;i++)
+//        {
+//            college_name[i] = "学院";
+//            stringstream stream;
+//            stream<<i;
+//            stream>>modify_name;
+//            college_name[i]+=(char)(i+1+'0');
+//        }
+//        for(int i=0;i<item_num;i++)
+//        {
+//            item_name[i] = "项目";
+//            stringstream stream;
+//            stream<<i;
+//            stream>>modify_name;
+//            item_name[i] += modify_name;
+//        }
+//        write_file();
+//    }
+//    else
+//        read_file();
+//    choice=0;
+//    university hit;
+//    while(true)
+//    {
+//        choice=0;
+//        menu();
+//        switch (choice)
+//        {
+//            case 1:
+//                hit.sort_by_id();
+//                break;
+//            case 2:
+//                hit.sort_by_name();
+//                break;
+//            case 3:
+//                hit.sort_by_sum();
+//                break;
+//            case 4:
+//                hit.sort_by_man_sum();
+//                break;
+//            case 5:
+//                hit.sort_by_woman_sum();
+//                break;
+//            case 6:
+//                cout<<"请输入想要查询的学院编号"<<endl;
+//                cin>>search_id;
+//                cout<<"请输入想要查询的项目编号"<<endl;
+//                cin>>search_item;
+//                hit.search_by_id(search_id,search_item);
+//                break;
+//            case 7:
+//                cout<<"请输入想要查询的项目编号"<<endl;
+//                cin>>search_item;
+//                hit.search_by_item(search_item);
+//                break;
+//            case 8:
+//                cout<<"请输入你想修改的学院编号"<<endl;
+//                cin>>search_id;
+//                cout<<"请输入你想改成的学院名称"<<endl;
+//                cin>>modify_name;
+//                college_name[search_id]=modify_name;
+//                break;
+//            case 9:
+//                cout<<"请输入你想修改的项目编号"<<endl;
+//                cin>>search_item;
+//                cout<<"请输入你想修改成的项目名称"<<endl;
+//                cin>>modify_name;
+//                item_name[search_item]=modify_name;
+//                break;
+//            case 10:
+//                write_file();
+//                exit(0);
+//            default:
+//                cout<<"输入不在选项范围，请重新输入"<<endl;
+//        }
+//    }
+//}
 
 /*C:\Users\29488\Desktop\
 5

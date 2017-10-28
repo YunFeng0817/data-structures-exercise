@@ -270,6 +270,7 @@ void solveChoice(int *choice,chain *Shop){
             cout<<"请输入你的想修改的id"<<endl;
             cin>>id;
             cout<<"请输入你修改后的信息："<<endl;
+            cout<<"请在一行内依次输入:  商品ID，名称，品牌，单价，库存量        (waring:如果不按照顺序输入，可能会导致程序崩溃，数据丢失)"<<endl;
             cin>>name>>brand>>price>>amount;
             Shop->modify(id,name,brand,price,amount);
             break;
@@ -317,7 +318,11 @@ int main()
     else{
         Shop.ReadFromFile();
     }
-    int choice;
-    menu(&choice);
-    printf("sa");
+    int choice=1;
+    while(choice!=0){
+        menu(&choice);
+        solveChoice(&choice,&Shop);
+    }
+    cout<<"系统安全关闭，欢迎您再次使用~"<<endl;
+    return 0;
 }

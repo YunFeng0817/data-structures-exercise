@@ -2,7 +2,7 @@
 // Created by Fitz on 2017/10/27.
 //
 #include <iostream>
-#include <stdio.h>
+#include <fstream>
 using namespace std;
 typedef struct cellElement{
     cellElement *next;
@@ -12,8 +12,11 @@ typedef struct cellElement{
 }cellElement;
 
 class chain{
+
+public:
     cellElement *head=NULL;
     cellElement *previous = head;
+    string FilePath="",FIleName="";
     void insert(int id,string n,string b,int price,int a)
     {
         if(head==NULL){
@@ -116,7 +119,7 @@ class chain{
         }
     }
 
-    void modify(int id,int AddAmount){
+    void AddAmount(int id,int AddAmount){
         cellElement *p = this->loate(id);
         if(p==NULL){
             if(AddAmount<0) {
@@ -142,16 +145,28 @@ class chain{
         return;
     }
 
+    void modify(int id,string name,string brand,int price,int amount){
+        this->Delete(id);
+        this->insert(id,name,brand,price,amount);
+        return;
+    }
+
     void empty()
     {
+        InputFile();
+        ofstream DataFile;
+        DataFile.open(FilePath);
         cellElement *p = head;
         cellElement *temp;
         while(p->next!=NULL){
             if(p==head){
+                temp = p->next;
                 p = NULL;
+                p = temp;
                 continue;
             }
             temp = p->next;
+            DataFile<<p->id<<" "<<p->name<<" "<<p->brand<<" "<<p->price<<" "<<p->amount<<endl;
             free(p);
             p = temp;
         }
@@ -159,6 +174,28 @@ class chain{
         return;
     }
 
+    void ReadFromFile(){
+        int price,amount,id;
+        string name,brand;
+        InputFile();
+        ifstream DataFile;
+        DataFile.open(FilePath);
+        while(true){
+            DataFile>>id>>name>>brand>>price>>amount;
+            this->insert(id,name,brand,price,amount);
+            if(DataFile.eof())
+                break;
+        }
+    }
+
+private:
+    void InputFile()
+    {
+        if(FilePath==""){
+            cout<<"请输入文件的路径：（不包括文件的名称）"<<endl;
+            cin>>FilePath;
+        }
+    }
 };
 
 int main()

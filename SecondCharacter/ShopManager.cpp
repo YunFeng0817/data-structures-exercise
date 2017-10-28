@@ -7,7 +7,7 @@ using namespace std;
 typedef struct cellElement{
     cellElement *next;
     string name;
-    string brand;   //è¡¨ç¤ºå“ç‰Œ
+    string brand;   //±íÊ¾Æ·ÅÆ
     int id,price ,amount;
 }cellElement;
 
@@ -22,7 +22,7 @@ public:
         if(head==NULL){
             cellElement *p = (cellElement *)malloc(sizeof(cellElement));
             if(p==NULL){
-                cout<<"ç©ºé—´ä¸è¶³ï¼Œæ— æ³•ç”³è¯·åˆ°ç©ºé—´ï¼"<<endl;
+                cout<<"¿Õ¼ä²»×ã£¬ÎŞ·¨ÉêÇëµ½¿Õ¼ä£¡"<<endl;
                 return;
             }
             head = p;
@@ -33,7 +33,7 @@ public:
             p->price=price;
             p->amount=a;
 
-            //æ­¤å¤„æœªåˆ¤æ–­ä¼ å…¥çš„å‚æ•°æ˜¯å¦ä¸ºç©º
+            //´Ë´¦Î´ÅĞ¶Ï´«ÈëµÄ²ÎÊıÊÇ·ñÎª¿Õ
         }
 
         else{
@@ -45,7 +45,7 @@ public:
                 {
                     cellElement *temp = (cellElement *)malloc(sizeof(cellElement));
                     if(temp==NULL){
-                        cout<<"ç©ºé—´ä¸è¶³ï¼Œæ— æ³•ç”³è¯·åˆ°ç©ºé—´ï¼"<<endl;
+                        cout<<"¿Õ¼ä²»×ã£¬ÎŞ·¨ÉêÇëµ½¿Õ¼ä£¡"<<endl;
                         return;
                     }
                     temp->id=id;
@@ -64,7 +64,7 @@ public:
             {
                 cellElement *temp = (cellElement *)malloc(sizeof(cellElement));
                 if(temp==NULL){
-                    cout<<"ç©ºé—´ä¸è¶³ï¼Œæ— æ³•ç”³è¯·åˆ°ç©ºé—´ï¼"<<endl;
+                    cout<<"¿Õ¼ä²»×ã£¬ÎŞ·¨ÉêÇëµ½¿Õ¼ä£¡"<<endl;
                     return;
                 }
                 temp->id=id;
@@ -81,8 +81,8 @@ public:
 
     cellElement* loate(int id){
         if(head==NULL){
-            //cout<<"æ•°æ®è¿˜æœªå½•å…¥ï¼Œæ— æ³•æŸ¥è¯¢ï¼"<<endl;
-            return NULL;   //æ­¤å¤„æ³¨æ„æ„å¤–æƒ…å†µ
+            //cout<<"Êı¾İ»¹Î´Â¼Èë£¬ÎŞ·¨²éÑ¯£¡"<<endl;
+            return NULL;   //´Ë´¦×¢ÒâÒâÍâÇé¿ö
         }
         else{
             cellElement *p = previous;
@@ -95,7 +95,7 @@ public:
                 p=p->next;
             }
             if(p->next==NULL){
-                //cout<<"æ‰¾ä¸åˆ°æ­¤å•†å“ï¼"<<endl;
+                //cout<<"ÕÒ²»µ½´ËÉÌÆ·£¡"<<endl;
                 return NULL;
             }
         }
@@ -123,25 +123,25 @@ public:
         cellElement *p = this->loate(id);
         if(p==NULL){
             if(AddAmount<0) {
-                cout<<"è¯¥ç‰©å“æ²¡æœ‰åº“å­˜äº†ï¼Œæ— æ³•æè´§ï¼"<<endl;
+                cout<<"¸ÃÎïÆ·Ã»ÓĞ¿â´æÁË£¬ÎŞ·¨Ìá»õ£¡"<<endl;
                 return;
             }
             string a,b;
             int price;
-            cout<<"è¯·è¡¥å……è¯¥å•†å“çš„ä¿¡æ¯"<<endl<<"è¯·è¾“å…¥è¯¥å•†å“çš„åç§°ï¼š"<<endl;
+            cout<<"Êı¾İ¿âÃ»ÓĞ´ËÉÌÆ·£¬Çë²¹³ä¸ÃÉÌÆ·µÄĞÅÏ¢"<<endl<<"ÇëÊäÈë¸ÃÉÌÆ·µÄÃû³Æ£º"<<endl;
             cin>>a;
-            cout<<"è¯·è¾“å…¥è¯¥å•†å“çš„å“ç‰Œï¼š"<<endl;
+            cout<<"ÇëÊäÈë¸ÃÉÌÆ·µÄÆ·ÅÆ£º"<<endl;
             cin>>b;
-            cout<<"è¯·è¾“å…¥è¯¥å•†å“çš„ä»·æ ¼ï¼š"<<endl;
+            cout<<"ÇëÊäÈë¸ÃÉÌÆ·µÄ¼Û¸ñ£º"<<endl;
             cin>>price;
             this->insert(id,a,b,price,AddAmount);
         }
         if(p->amount+AddAmount<0){
-            cout<<"åº“å­˜ä¸è¶³ï¼Œæ— æ³•æå‡ºå¦‚æ­¤å¤šçš„è´§ç‰©ï¼"<<endl;
+            cout<<"¿â´æ²»×ã£¬ÎŞ·¨Ìá³öÈç´Ë¶àµÄ»õÎï£¡"<<endl;
             return;
         }
         p->amount+=AddAmount;
-        cout<<"æ•°æ®æ›´æ–°æˆåŠŸï¼"<<endl;
+        cout<<"Êı¾İ¸üĞÂ³É¹¦£¡"<<endl;
         return;
     }
 
@@ -174,6 +174,18 @@ public:
         return;
     }
 
+    void display(){
+        cellElement *p = head;
+        if(head!=NULL)
+        {
+            cout<<"¸Ã¼ÒµçµÄIDÊÇ\t\t¸Ã¼ÒµçµÄÃû³ÆÊÇ\t\t¸Ã¼ÒµçµÄÆ·ÅÆÊÇ\t\t¸Ã¼ÒµçµÄ¼Û¸ñÊÇ\t\t¸Ã¼ÒµçµÄ¿â´æÊıÁ¿ÊÇ\t\t";
+        }
+        while(p!=NULL){
+            cout<<p->id<<"\t"<<p->name<<"\t"<<p->brand<<"\t"<<p->price<<"\t"<<p->amount<<endl;
+            p=p->next;
+        }
+    }
+
     void ReadFromFile(){
         int price,amount,id;
         string name,brand;
@@ -192,14 +204,120 @@ private:
     void InputFile()
     {
         if(FilePath==""){
-            cout<<"è¯·è¾“å…¥æ–‡ä»¶çš„è·¯å¾„ï¼šï¼ˆä¸åŒ…æ‹¬æ–‡ä»¶çš„åç§°ï¼‰"<<endl;
+            cout<<"ÇëÊäÈëÎÄ¼şµÄÂ·¾¶£º£¨²»°üÀ¨ÎÄ¼şµÄÃû³Æ£©"<<endl;
             cin>>FilePath;
         }
     }
 };
 
+int InitMenu(){
+    int choice=0;
+    while(choice<=0||choice>=2){
+        cout<<"######»¶Ó­À´µ½¼Òµç¹ÜÀíÏµÍ³######"<<endl;
+        cout<<"ÇëÑ¡ÔñÏµÍ³µÄÆô¶¯·½Ê½£º"<<endl;
+        cout<<">>>1.×Ô¼ºÂ¼ÈëÊı¾İ£¬²¢´æµµ"<<endl;
+        cout<<">>>2.´ÓÒÑÓĞµÄÎÄ¼ş¶ÁÈ¡Êı¾İ"<<endl;
+        cout<<"ÇëÊäÈëÄãµÄÑ¡Ôñ£º(1 »ò 2)"<<endl;
+        cin>>choice;
+    }
+    return choice;
+}
+
+void menu(int *choice){
+    cout<<"######²Ëµ¥######"<<endl;
+    cout<<">>>1.½ø»õ"<<endl;
+    cout<<">>>2.È¡»õ"<<endl;
+    cout<<">>>3.²éÑ¯Ä³¸öÉÌÆ·µÄĞÅÏ¢"<<endl;
+    cout<<">>>4.Êä³öËùÓĞÉÌÆ·µÄĞÅÏ¢"<<endl;
+    cout<<">>>5.ĞŞ¸ÄÄ³ÖÖÉÌÆ·µÄĞÅÏ¢"<<endl;
+    cout<<">>>6.Ôö¼ÓÄ³ÖÖÉÌÆ·µÄĞÅÏ¢"<<endl;
+    cout<<">>>7.½áÊøÓªÒµ£¨Êı¾İ½«±£´æµ½Ö¸¶¨ÎÄ¼ş£©"<<endl;
+    cin>>*choice;
+}
+
+void solveChoice(int *choice,chain *Shop){
+    int id,price,amount,Add;
+    string name,brand;
+    switch(*choice){
+        case 1:
+            cout<<"ÇëÊäÈëÄã½ø»õµÄ¼ÒµçID£º"<<endl;
+            cin>>id;
+            cout<<"ÇëÊäÈë½ø»õµÄÊıÁ¿£º"<<endl;
+            cin>>Add;
+            Shop->AddAmount(id,Add);
+            break;
+        case 2:
+            cout<<"ÇëÊäÈëÄãÈ¡»õµÄ¼ÒµçID£º"<<endl;
+            cin>>id;
+            cout<<"ÇëÊäÈëÄãÈ¡»õµÄÊıÁ¿£º"<<endl;
+            cin>>Add;
+            Shop->AddAmount(id,-Add);
+            break;
+        case 3:
+            cout<<"ÇëÊäÈëÄãÏë²éÑ¯µÄ¼ÒµçID£º"<<endl;
+            cin>>id;
+            cellElement *p = Shop->loate(id);
+            if(p==NULL){
+                cout<<"¸ÃIDÃ»ÓĞÉÌÆ·ÓëÖ®¶ÔÓ¦"<<endl;
+                break;
+            }
+            cout<<"¸ÃÉÌÆ·µÄÃû³ÆÊÇ"<<p->name<<"\t¸ÃÉÌÆ·µÄÆ·ÅÆÊÇ"<<p->brand<<"\t¸ÃÉÌÆ·µÄµ¥¼ÛÊÇ"<<p->price<<"\t¸ÃÉÌÆ·µÄÊıÁ¿ÊÇ"<<p->amount<<endl;
+            break;
+        case 4:
+            Shop->display();
+            break;
+        case 5:
+            cout<<"ÇëÊäÈëÄãµÄÏëĞŞ¸ÄµÄid"<<endl;
+            cin>>id;
+            cout<<"ÇëÊäÈëÄãĞŞ¸ÄºóµÄĞÅÏ¢£º"<<endl;
+            cin>>name>>brand>>price>>amount;
+            Shop->modify(id,name,brand,price,amount);
+            break;
+        case 6:
+            cout<<"ÇëÔÚÒ»ĞĞÄÚÒÀ´ÎÊäÈë:  ÉÌÆ·ID£¬Ãû³Æ£¬Æ·ÅÆ£¬µ¥¼Û£¬¿â´æÁ¿        (waring:Èç¹û²»°´ÕÕË³ĞòÊäÈë£¬¿ÉÄÜ»áµ¼ÖÂ³ÌĞò±ÀÀ££¬Êı¾İ¶ªÊ§)"<<endl;
+            cin>>id>>name>>brand>>price>>amount;
+            cellElement *temp = Shop->loate(id);
+            while(temp!=NULL){
+                cout<<"¸ÃIDÒÑ¾­´æÔÚÁË£¬ÇëÖØĞÂÊäÈëÒ»¸öIDÖµ";
+                cin>>id;
+                temp = Shop->loate(id);
+            }
+            Shop->insert(id,name,brand,price,amount);
+            cout<<"Ìí¼Ó³É¹¦!"<<endl;
+            break;
+        case 7:
+            Shop->empty();
+            break;
+        default:
+            *choice=1;
+    }
+    return;
+}
+
 int main()
 {
-    string a;
+    chain Shop;
+    int InitChoice;
+    char flag;
+    InitChoice = InitMenu();
+    if(InitChoice==1)
+    {
+        string name,brand;
+        int price,amount,id=0;
+        flag='y';
+        while(flag=='y'||flag=='Y'){
+            cout<<"ÇëÔÚÒ»ĞĞÄÚÒÀ´ÎÊäÈë:  ÉÌÆ·Ãû³Æ£¬Æ·ÅÆ£¬µ¥¼Û£¬¿â´æÁ¿        (waring:Èç¹û²»°´ÕÕË³ĞòÊäÈë£¬¿ÉÄÜ»áµ¼ÖÂ³ÌĞò±ÀÀ££¬Êı¾İ¶ªÊ§)"<<endl;
+            cin>>name>>brand>>price>>amount;
+            Shop.insert(id,name,brand,price,amount);
+            id++;
+            cout<<"ÄúÊÇ·ñ»¹Ïë¼ÌĞøÊäÈë£¿ÊäÈëy(Y)»òn(N)"<<endl;
+            cin>>flag;
+        }
+    }
+    else{
+        Shop.ReadFromFile();
+    }
+    int choice;
+    menu(&choice);
     printf("sa");
 }

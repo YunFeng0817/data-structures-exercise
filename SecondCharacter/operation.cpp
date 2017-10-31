@@ -18,14 +18,15 @@ typedef struct cellElement{
     charOrInt data;
 }cellElement;
 
+//这个类是基本的由指针构成的栈结构
 class stack
 {
 public:
-    cellElement *head=NULL;
-    int length;
+    cellElement *head=new cellElement;
+    int length=0;
 
     stack(){
-        int length=0;
+        length=0;
         head->next=NULL;
     }
 
@@ -46,14 +47,12 @@ public:
         return;
     }
 
-    charOrInt * pop()
+    charOrInt pop() //在调用pop()前要判断是否为空
     {
-        charOrInt *x;
-        if(Empty())
-            return NULL;
+        charOrInt x;
         cellElement *temp = head->next;
         head->next = temp->next;
-        *x = temp->data;
+        x = temp->data;
         delete(temp);
         length--;
         return x;
@@ -77,6 +76,7 @@ public:
 
 };
 
+//这个类是用于将中缀表达式转化为后缀表达式
 class mid2tail:stack
 {
     stack max;
@@ -94,20 +94,20 @@ class mid2tail:stack
         else;
     }
 
-    char * pop()
+    char pop()
     {
-        char *x;
-
-    }
-
-    bool empty()
-    {
-
+        char x;
+        charOrInt temp;
+        temp=OpChar.pop();
+        x=temp.op;
+        if(operation.find((*max.top()).op)==operation.find(temp.op))
+            max.pop();
+        return x;
     }
 };
 
+
 int main()
 {
-    cout<<operation.find('*')<<endl;
     return 0;
 }

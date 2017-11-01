@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <math.h>
 using namespace std;
 
 string operation = "+-*/()";
@@ -16,6 +17,7 @@ typedef union charOrInt{
 typedef struct cellElement{
     cellElement *next;
     charOrInt data;
+    bool ifINT;
 }cellElement;
 
 //这个类是基本的由指针构成的栈结构
@@ -30,7 +32,7 @@ public:
         head->next=NULL;
     }
 
-    void push(charOrInt temp)
+    void push(charOrInt temp,bool ifINT)
     {
         cellElement *cell = new cellElement;
         if(length==0)
@@ -43,6 +45,7 @@ public:
             head->next=cell;
         }
         cell->data = temp;
+        cell->ifINT=ifINT;
         length++;
         return;
     }
@@ -66,12 +69,12 @@ public:
             return false;
     }
 
-    charOrInt * top()
+    cellElement * top()
     {
         if(Empty())
             return NULL;
         else
-            return &(head->next->data);
+            return (head->next);
     }
 
 };
@@ -79,6 +82,7 @@ public:
 //这个类是用于将中缀表达式转化为后缀表达式
 class mid2tail:stack
 {
+public:
     stack max;
     stack OpChar;
 
@@ -86,11 +90,11 @@ class mid2tail:stack
     {
         charOrInt x;
         x.op = temp;
-        OpChar.push(x);
+        OpChar.push(x, false);
         if(max.Empty())
-            max.push(x);
-        else if(operation.find((*max.top()).op)<operation.find(x.op))
-            max.push(x);
+            max.push(x,false);
+        else if(operation.find((*max.top()).data.op)/2<operation.find(x.op)/2)
+            max.push(x,false);
         else;
     }
 
@@ -100,14 +104,84 @@ class mid2tail:stack
         charOrInt temp;
         temp=OpChar.pop();
         x=temp.op;
-        if(operation.find((*max.top()).op)==operation.find(temp.op))
+        if(operation.find((*max.top()).data.op)/2==operation.find(temp.op)/2)
             max.pop();
         return x;
     }
 };
 
 
+
+string Input;
+stack transition;
+charOrInt tran;
+stack tail1,tail2;
+mid2tail str;
+
+//这个函数是用来将中缀表达式转换为后缀表达式
+void mid2post()
+{
+    int sum;
+    for(int i=0;i<=Input.length();i++)
+    {
+        if(Input[i]>='0'&&Input[i]<='9'&&i!=Input.length())
+        {
+            tran.num=int(Input[i]-'0');
+            transition.push(tran,true);
+        }
+        else
+        {
+            if(!transition.Empty())
+            {
+                sum=0;
+                int temp1 = transition.length;
+                for(int j=1;j<=temp1;j++)
+                {
+                    sum+=transition.pop().num* (int)pow(10,j-1);
+                }
+                tran.num=sum;
+                tail1.push(tran,true);
+            }
+            if((str.max.Empty()||(operation.find(Input[i])/2>operation.find(str.max.top()->data.op)/2))&&i!=Input.length())
+            {
+                str.push(Input[i]);
+            }
+            else{
+                if(i==Input.length())
+                {
+                    int temp2=str.OpChar.length;
+                    for(int i=0;i<temp2;i++)
+                    {
+                        tran.op=str.pop();
+                        tail1.push(tran,false);
+                    }
+                    continue;
+                }
+                while(!str.OpChar.Empty()&&operation.find(Input[i])/2<=operation.find(str.max.top()->data.op)/2)
+                {
+                    tran.op=str.pop();
+                    tail1.push(tran,false);
+                }
+                str.push(Input[i]);
+            }
+        }
+    }
+}
+
 int main()
 {
+    cin>>Input;
+    mid2post();
+    int temp = tail1.length;
+    for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
+        tail2.push(tail1.pop(),tail1.top()->ifINT);
+
+    for(int i=0;i<temp;i++)  //just for test
+    {
+        if(tail2.top()->ifINT)
+            cout<<tail2.pop().num<<" ";
+        else
+            cout<<tail2.pop().op<<" ";
+    }
     return 0;
 }

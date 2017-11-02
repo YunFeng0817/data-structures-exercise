@@ -91,10 +91,14 @@ public:
         charOrInt x;
         x.op = temp;
         OpChar.push(x, false);
-        if(max.Empty())
+        if(max.Empty()&&temp!='(')
+        {
             max.push(x,false);
-        else if(operation.find((*max.top()).data.op)/2<operation.find(x.op)/2)
+        }
+        else if(temp!='('&&operation.find((*max.top()).data.op)/2<operation.find(x.op)/2)
+        {
             max.push(x,false);
+        }
         else;
     }
 
@@ -104,7 +108,7 @@ public:
         charOrInt temp;
         temp=OpChar.pop();
         x=temp.op;
-        if(operation.find((*max.top()).data.op)/2==operation.find(temp.op)/2)
+        if(!max.Empty()&&operation.find((*max.top()).data.op)/2==operation.find(temp.op)/2)
             max.pop();
         return x;
     }
@@ -122,6 +126,7 @@ mid2tail str;
 void mid2post()
 {
     int sum;
+    char temp3;
     for(int i=0;i<=Input.length();i++)
     {
         if(Input[i]>='0'&&Input[i]<='9'&&i!=Input.length())
@@ -144,6 +149,19 @@ void mid2post()
             }
             if((str.max.Empty()||(operation.find(Input[i])/2>operation.find(str.max.top()->data.op)/2))&&i!=Input.length())
             {
+                if(Input[i]==')')
+                {
+                    do
+                    {
+                        temp3=str.pop();
+                        if(temp3!='(')
+                        {
+                            tran.op=temp3;
+                            tail1.push(tran, false);
+                        }
+                    }while(temp3!='(');
+                    continue;
+                }
                 str.push(Input[i]);
             }
             else{

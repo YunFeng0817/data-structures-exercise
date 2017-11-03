@@ -213,6 +213,7 @@ void mid2result()
         }
         else
         {
+            TempChar=tail2.pop().op;
             tran=result.pop();
             temp2=tran.num;
             tran=result.pop();
@@ -240,6 +241,8 @@ void mid2result()
                     cout<<"出现非法操作符"<<endl;
                     exit(0);
             }
+            tran.num=r;
+            result.push(tran,true);
         }
     }
 }
@@ -252,12 +255,14 @@ int main()
     for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
         tail2.push(tail1.pop(),tail1.top()->ifINT);
 
-    for(int i=0;i<temp;i++)  //just for test
-    {
-        if(tail2.top()->ifINT)
-            cout<<tail2.pop().num<<" ";
-        else
-            cout<<tail2.pop().op<<" ";
-    }
+//    for(int i=0;i<temp;i++)  //just for test
+//    {
+//        if(tail2.top()->ifINT)
+//            cout<<tail2.pop().num<<" ";
+//        else
+//            cout<<tail2.pop().op<<" ";
+//    }
+    mid2result();
+    cout<<result.pop().num<<endl;
     return 0;
 }

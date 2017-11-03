@@ -129,11 +129,41 @@ public:
 string Input;
 stack transition;
 charOrInt tran;
-stack tail1,tail2,tail3;
+stack tail1,tail2,tail3,result;
 mid2tail str;
-stack result;
 
 //这个函数是用来将中缀表达式转换为后缀表达式
+//这个函数用来检查输入是否符合规范
+void CheckInput(){
+    stack ForCheck;
+    for(int i=0;i<Input.length();i++)
+    {
+        if(Input[i]=='(')
+        {
+            tran.op=Input[i];
+            ForCheck.push(tran,false);
+        }
+        if(Input[i]==')')
+        {
+            if(ForCheck.Empty())
+            {
+                cout<<"warning!!!:您的输入缺少至少一个 ) ，请重新输入"<<endl;
+                exit(0);
+            }
+            else
+            {
+                ForCheck.pop();
+            }
+        }
+    }
+    if(!ForCheck.Empty())
+    {
+        cout<<"warning!!!:您的输入多出了至少一个 ( ,请重新输入"<<endl;
+        exit(0);
+    }
+    return ;
+}
+
 void mid2post()
 {
     int sum;
@@ -276,6 +306,7 @@ void mid2result()
 int main()
 {
     cin>>Input;
+    CheckInput();
     mid2post();
     int temp = tail1.length;
     for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序

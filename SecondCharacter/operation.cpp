@@ -126,7 +126,7 @@ public:
 string Input;
 stack transition;
 charOrInt tran;
-stack tail1,tail2;
+stack tail1,tail2,tail3;
 mid2tail str;
 stack result;
 
@@ -162,6 +162,19 @@ void mid2post()
             }
             if((str.max.Empty()||pority[operation.find(str.max.top()->data.op)][operation.find(Input[i])])&&i!=Input.length())
             {
+                if(Input[i]==')')
+                {
+                    do
+                    {
+                        temp3=str.pop();
+                        if(temp3!='(')
+                        {
+                            tran.op=temp3;
+                            tail1.push(tran, false);
+                        }
+                    }while(temp3!='(');
+                    continue;
+                }
                 str.push(Input[i]);
             }
             else{
@@ -253,15 +266,20 @@ int main()
     mid2post();
     int temp = tail1.length;
     for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
-        tail2.push(tail1.pop(),tail1.top()->ifINT);
-
-//    for(int i=0;i<temp;i++)  //just for test
-//    {
-//        if(tail2.top()->ifINT)
-//            cout<<tail2.pop().num<<" ";
-//        else
-//            cout<<tail2.pop().op<<" ";
-//    }
+    {
+        bool ifINT=tail1.top()->ifINT;
+        tran=tail1.pop();
+        tail2.push(tran,ifINT);
+        tail3.push(tran,ifINT);
+    }
+    for(int i=0;i<temp;i++)  //just for test
+    {
+        if(tail3.top()->ifINT)
+            cout<<tail3.pop().num<<" ";
+        else
+            cout<<tail3.pop().op<<" ";
+    }
+    cout<<endl;
     mid2result();
     cout<<result.pop().num<<endl;
     return 0;

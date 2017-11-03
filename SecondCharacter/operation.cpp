@@ -165,7 +165,17 @@ void mid2post()
             }
             if((str.max.Empty()||pority[operation.find(str.max.top()->data.op)][operation.find(Input[i])])&&i!=Input.length())
             {
-                if(Input[i]==')')
+                if(Input[i]=='-')//用来判断单运算符的情况
+                {
+                    if(!str.OpChar.Empty()&&!str.OpChar.top()->ifINT&&str.OpChar.top()->data.op=='(')
+                    {
+                        tran.num=0;
+                        tail1.push(tran,true);
+                        str.push(Input[i]);
+                        continue;
+                    }
+                }
+                if(Input[i]==')')//用来判断有）的情况
                 {
                     do
                     {
@@ -194,7 +204,7 @@ void mid2post()
                     }while(temp3!='(');
                     continue;
                 }
-                if(i==Input.length())
+                if(i==Input.length()) //在字符串录入结束后，一次性将所有的字符出栈
                 {
                     int temp2=str.OpChar.length;
                     for(int i=0;i<temp2;i++)
@@ -240,7 +250,7 @@ void mid2result()
                     r=temp2+temp3;
                     break;
                 case '-':
-                    r=temp2-temp3;
+                    r=temp3-temp2;
                     break;
                 case '*':
                     r=temp2*temp3;

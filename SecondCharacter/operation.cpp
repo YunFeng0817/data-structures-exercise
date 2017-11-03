@@ -18,16 +18,16 @@ bool pority[7][7]={     /* + */{false,true,true,true,true,false,false},
                         /* ) */{false,false,false,false,false,false,false},
                         /* # */{true,true,true,true,true,true,true}};
 
-typedef union charOrInt{
-    int num;
+typedef union charOrDouble{
+    double num;
     char op;
-}charOrInt;
+}charOrDouble;
 
 
 typedef struct cellElement{
     cellElement *next;
-    charOrInt data;
-    bool ifINT;
+    charOrDouble data;
+    bool ifIDouble;
 }cellElement;
 
 //这个类是基本的由指针构成的栈结构
@@ -42,7 +42,7 @@ public:
         head->next=NULL;
     }
 
-    void push(charOrInt temp,bool ifINT)
+    void push(charOrDouble temp,bool ifINT)
     {
         cellElement *cell = new cellElement;
         if(length==0)
@@ -55,14 +55,14 @@ public:
             head->next=cell;
         }
         cell->data = temp;
-        cell->ifINT=ifINT;
+        cell->ifIDouble=ifINT;
         length++;
         return;
     }
 
-    charOrInt pop() //在调用pop()前要判断是否为空
+    charOrDouble pop() //在调用pop()前要判断是否为空
     {
-        charOrInt x;
+        charOrDouble x;
         cellElement *temp = head->next;
         head->next = temp->next;
         x = temp->data;
@@ -98,7 +98,7 @@ public:
 
     void push(char temp)
     {
-        charOrInt x;
+        charOrDouble x;
         x.op = temp;
         OpChar.push(x, false);
         if(max.Empty())
@@ -115,7 +115,7 @@ public:
     char pop()
     {
         char x;
-        charOrInt temp;
+        charOrDouble temp;
         temp=OpChar.pop();
         x=temp.op;
         if(!max.Empty()&&(*max.top()).data.op==temp.op)
@@ -128,7 +128,7 @@ public:
 
 string Input;
 stack transition;
-charOrInt tran;
+charOrDouble tran;
 stack tail1,tail2,tail3,result;
 mid2tail str;
 
@@ -166,7 +166,7 @@ void CheckInput(){
 
 void mid2post()
 {
-    int sum;
+    double sum;
     char temp3;
     for(int i=0;i<=Input.length();i++)
     {
@@ -175,10 +175,15 @@ void mid2post()
             tran.num=0;
             tail1.push(tran, true);
         }
-        if(Input[i]>='0'&&Input[i]<='9'&&i!=Input.length())
+        if((Input[i]>='0'&&Input[i]<='9'&&i!=Input.length()))
         {
             tran.num=int(Input[i]-'0');
             transition.push(tran,true);
+        }
+        else if(Input[i]=='.')  //判断浮点数的情况
+        {
+            tran.op='.';
+            transition.push(tran,false);
         }
         else
         {
@@ -186,10 +191,24 @@ void mid2post()
             {
                 sum=0;
                 int temp1 = transition.length;
+                int temp2=-1;
                 for(int j=1;j<=temp1;j++)
                 {
-                    sum+=transition.pop().num* (int)pow(10,j-1);
+                    if(transition.top()->ifIDouble)
+                    {
+                        if(temp2!=-1)
+                            sum+=transition.pop().num*(int)pow(10,j-2);
+                        else
+                            sum+=transition.pop().num*(int)pow(10,j-1);
+                    }
+                    else
+                    {
+                        temp2=j-1;
+                        transition.pop();
+                    }
                 }
+                if(temp2!=-1)
+                    sum=sum/(int)pow(10,temp1-temp2);
                 tran.num=sum;
                 tail1.push(tran,true);
             }
@@ -197,7 +216,7 @@ void mid2post()
             {
                 if(Input[i]=='-')//用来判断单运算符的情况
                 {
-                    if(!str.OpChar.Empty()&&!str.OpChar.top()->ifINT&&str.OpChar.top()->data.op=='(')
+                    if(!str.OpChar.Empty()&&!str.OpChar.top()->ifIDouble&&str.OpChar.top()->data.op=='(')
                     {
                         tran.num=0;
                         tail1.push(tran,true);
@@ -257,12 +276,12 @@ void mid2post()
 
 void mid2result()
 {
-    int temp1,temp2,temp3,r;
+    double temp1,temp2,temp3,r;
     char TempChar;
     temp1 = tail2.length;
     for(int i=0;i<temp1;i++)
     {
-        if(tail2.top()->ifINT)
+        if(tail2.top()->ifIDouble)
         {
             tran = tail2.pop();
             result.push(tran,true);
@@ -311,14 +330,14 @@ int main()
     int temp = tail1.length;
     for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
     {
-        bool ifINT=tail1.top()->ifINT;
+        bool ifDouble=tail1.top()->ifIDouble;
         tran=tail1.pop();
-        tail2.push(tran,ifINT);
-        tail3.push(tran,ifINT);
+        tail2.push(tran,ifDouble);
+        tail3.push(tran,ifDouble);
     }
     for(int i=0;i<temp;i++)  //just for test
     {
-        if(tail3.top()->ifINT)
+        if(tail3.top()->ifIDouble)
             cout<<tail3.pop().num<<" ";
         else
             cout<<tail3.pop().op<<" ";

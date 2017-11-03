@@ -7,6 +7,13 @@
 using namespace std;
 
 string operation = "+-*/()";
+bool pority[7][7]={{false,false,true,true,true,false,false},
+                   {false,false,true,true,true,false,false},
+                   {false,false,false,false,true,true,true,},
+                   {false,false,false,false,true,false,false},
+                   {true,true,true,true,true,true,true},
+                   {false,false,false,false,false,false,false},
+                   {true,true,true,true,true,true,true}};
 
 typedef union charOrInt{
     int num;
@@ -91,11 +98,11 @@ public:
         charOrInt x;
         x.op = temp;
         OpChar.push(x, false);
-        if(max.Empty()&&temp!='(')
+        if(max.Empty())
         {
             max.push(x,false);
         }
-        else if(temp!='('&&operation.find((*max.top()).data.op)/2<operation.find(x.op)/2)
+        else if(pority[operation.find((*max.top()).data.op)][operation.find(x.op)])
         {
             max.push(x,false);
         }
@@ -108,7 +115,7 @@ public:
         charOrInt temp;
         temp=OpChar.pop();
         x=temp.op;
-        if(!max.Empty()&&operation.find((*max.top()).data.op)/2==operation.find(temp.op)/2)
+        if(!max.Empty()&&(*max.top()).data.op==temp.op)
             max.pop();
         return x;
     }
@@ -129,6 +136,11 @@ void mid2post()
     char temp3;
     for(int i=0;i<=Input.length();i++)
     {
+        if(Input[0]=='-'&&i==0)
+        {
+            tran.num=0;
+            tail1.push(tran, true);
+        }
         if(Input[i]>='0'&&Input[i]<='9'&&i!=Input.length())
         {
             tran.num=int(Input[i]-'0');
@@ -147,8 +159,11 @@ void mid2post()
                 tran.num=sum;
                 tail1.push(tran,true);
             }
-            if((str.max.Empty()||(operation.find(Input[i])/2>operation.find(str.max.top()->data.op)/2))&&i!=Input.length())
+            if((str.max.Empty()||pority[operation.find(str.max.top()->data.op)][operation.find(Input[i])])&&i!=Input.length())
             {
+                str.push(Input[i]);
+            }
+            else{
                 if(Input[i]==')')
                 {
                     do
@@ -162,9 +177,6 @@ void mid2post()
                     }while(temp3!='(');
                     continue;
                 }
-                str.push(Input[i]);
-            }
-            else{
                 if(i==Input.length())
                 {
                     int temp2=str.OpChar.length;
@@ -175,7 +187,7 @@ void mid2post()
                     }
                     continue;
                 }
-                while(!str.OpChar.Empty()&&operation.find(Input[i])/2<=operation.find(str.max.top()->data.op)/2)
+                while(!str.OpChar.Empty()&&pority[operation.find(Input[i])][operation.find(str.max.top()->data.op)])
                 {
                     tran.op=str.pop();
                     tail1.push(tran,false);

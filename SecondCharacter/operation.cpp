@@ -6,12 +6,12 @@
 #include <math.h>
 using namespace std;
 
-string operation = "+-*/()";
+string operation = "+-*/()#";
 
 //这个二维数组用来描述算术的优先级
-                            /*    +       _      *    /    (     )     #    */
-bool pority[7][7]={     /* + */{false,false,true,true,true,false,false},
-                        /* - */{false,false,true,true,true,false,false},
+                            /*    +      -      *    /    (     )     #    */
+bool pority[7][7]={     /* + */{false,true,true,true,true,false,false},
+                        /* - */{false,true,true,true,true,false,false},
                         /* * */{false,false,false,false,true,true,true,},
                         /* / */{false,false,false,false,true,false,false},
                         /* ( */{true,true,true,true,true,true,true},

@@ -128,6 +128,7 @@ stack transition;
 charOrInt tran;
 stack tail1,tail2;
 mid2tail str;
+stack result;
 
 //这个函数是用来将中缀表达式转换为后缀表达式
 void mid2post()
@@ -193,6 +194,51 @@ void mid2post()
                     tail1.push(tran,false);
                 }
                 str.push(Input[i]);
+            }
+        }
+    }
+}
+
+void mid2result()
+{
+    int temp1,temp2,temp3,r;
+    char TempChar;
+    temp1 = tail2.length;
+    for(int i=0;i<temp1;i++)
+    {
+        if(tail2.top()->ifINT)
+        {
+            tran = tail2.pop();
+            result.push(tran,true);
+        }
+        else
+        {
+            tran=result.pop();
+            temp2=tran.num;
+            tran=result.pop();
+            temp3=tran.num;
+            switch(TempChar)
+            {
+                case '+':
+                    r=temp2+temp3;
+                    break;
+                case '-':
+                    r=temp2-temp3;
+                    break;
+                case '*':
+                    r=temp2*temp3;
+                    break;
+                case '/':
+                    if(temp3==0)
+                    {
+                        cout<<"除数不能为0"<<endl;
+                        exit(0);
+                    }
+                    r=temp2/temp3;
+                    break;
+                default:
+                    cout<<"出现非法操作符"<<endl;
+                    exit(0);
             }
         }
     }

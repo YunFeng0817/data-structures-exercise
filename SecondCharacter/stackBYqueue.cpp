@@ -25,6 +25,7 @@ public:
 
     void InQueue(double temp)
     {
+        length++;
         rear->next=new cellElement;
         rear=rear->next;
         rear->next=NULL;
@@ -40,6 +41,7 @@ public:
             cout<<"╤сапря©у"<<endl;
             exit(0);
         }
+        length--;
         cellElement *temp=front->next;
         front->next=temp->next;
         tempD=temp->data;

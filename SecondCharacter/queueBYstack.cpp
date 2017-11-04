@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-//杩欎釜绫绘槸鍩烘湰鐨勭敱鎸囬拡鏋勬垚鐨勬爤缁撴瀯
+//这个类是基本的由指针构成的栈结构
 
 typedef struct cellElement{
     cellElement *next;
@@ -22,7 +22,7 @@ public:
         head->next=NULL;
     }
 
-    void push(double temp,bool ifINT)
+    void push(double temp)
     {
         cellElement *cell = new cellElement;
         if(length==0)
@@ -39,8 +39,13 @@ public:
         return;
     }
 
-    double pop() //鍦ㄨ皟鐢╬op()鍓嶈鍒ゆ柇鏄惁涓虹┖
+    double pop() //在调用pop()前要判断是否为空
     {
+        if(Empty())
+        {
+            cout<<"栈已经为空"<<endl;
+            exit(0);
+        }
         double x;
         cellElement *temp = head->next;
         head->next = temp->next;
@@ -58,24 +63,98 @@ public:
             return false;
     }
 
-    cellElement * top()
+    double top()
     {
-        if(Empty())
-            return NULL;
-        else
-            return (head->next);
+        return head->next->data;
     }
 
 };
 
 class queue
 {
+public:
     stack stack1, stack2;
+    int length;
 
+    queue()
+    {
+        length=0;
+    }
+
+    bool Empty()
+    {
+        if(!stack1.Empty())
+        {
+            int temp=stack1.length;
+            for (int i = 0; i < temp; i++)
+            {
+                stack2.push(stack1.pop());
+            }
+        }
+        if(stack2.Empty())
+            return true;
+        return false;
+    }
+
+    void InQueue(double temp)
+    {
+        stack1.push(temp);
+        length++;
+    }
+
+    double OutQueue()
+    {
+        if(Empty())
+        {
+            cout<<"队列已空"<<endl;
+            exit(0);
+        }
+        else
+        {
+            if(stack2.Empty()&&!stack1.Empty())
+            {
+                int temp=stack1.length;
+                for (int i = 0; i < temp; i++)
+                {
+                    stack2.push(stack1.pop());
+                }
+            }
+            length--;
+            return stack2.pop();
+        }
+    }
+
+    double first()
+    {
+        if(!stack2.Empty())
+        {
+            return stack2.top();
+        }
+        if(!stack1.Empty())
+        {
+            int temp=stack1.length;
+            for (int i = 0; i < temp; i++)
+            {
+                stack2.push(stack1.pop());
+            }
+        }
+        else
+        {
+            cout<<"队列已空"<<endl;
+            exit(0);
+        }
+    }
 };
 
 int main()
 {
-
+    queue a;
+    a.InQueue(3.12334);
+    a.InQueue(43554);
+    a.InQueue(1);
+    int temp=a.length;
+    for(int i=0;i<temp;i++)
+        cout<<a.first()<<endl;
+    return 0;
 }
 

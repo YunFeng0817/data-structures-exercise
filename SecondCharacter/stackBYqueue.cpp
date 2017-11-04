@@ -36,21 +36,24 @@ public:
     double OutQueue()
     {
         double tempD;
+        cellElement *temp,*temp1=NULL;
         if(Empty())
         {
-            cout<<"队列已空"<<endl;
+            cout<<"栈已经为空"<<endl;
             exit(0);
         }
-        length--;
-        cellElement *temp=front->next;
-        front->next=temp->next;
-        tempD=temp->data;
-        cout<<temp->data<<endl;
-        //cout<<"Out"<<endl;
-        delete(temp);
-        if(front->next==NULL)
-            front=rear;
-        return tempD;
+        else
+        {
+            length--;
+            temp=front->next;
+            front->next=temp->next;
+            tempD=temp->data;
+            if(front->next==NULL)
+                front=rear;
+            if(temp==NULL)
+                delete temp;
+            return tempD;
+        }
     }
 
     bool Empty()
@@ -101,7 +104,6 @@ public:
     {
         if(!queue1.Empty())
         {
-            //cout<<"pop1"<<endl;
             int temp1=queue1.length;
             for(int i=0;i<temp1-1;i++)
             {
@@ -118,7 +120,6 @@ public:
                 queue1.InQueue(queue2.OutQueue());
             }
             length--;
-            //cout<<"pop2"<<endl;
             return queue2.OutQueue();
         }
         cout<<"栈已经为空"<<endl;
@@ -161,15 +162,11 @@ int main()
     double x=3.145;
     stack stack1;
     stack1.push(x);
+    stack1.top();
     stack1.push(x-1);
     stack1.push(x-2);
-    stack1.top();
-    stack1.top();
-    stack1.top();
-//    cout<<stack1.top()<<endl;
-//    cout<<stack1.top()<<endl;
-//    cout<<stack1.top()<<endl;
-//    cout<<stack1.top()<<endl;
-//    cout<<stack1.top()<<endl;
+    cout<<stack1.pop()<<endl;
+    cout<<stack1.pop()<<endl;
+    cout<<stack1.pop()<<endl;
     return 0;
 }

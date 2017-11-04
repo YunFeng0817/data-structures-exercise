@@ -10,8 +10,8 @@ string operation = "+-*/()#";
 
 //这个二维数组用来描述算术的优先级
                             /*    +      -      *    /    (     )     #    */
-bool pority[7][7]={     /* + */{false,true,true,true,true,false,false},
-                        /* - */{false,true,true,true,true,false,false},
+bool pority[7][7]={     /* + */{false,false,true,true,true,false,false},
+                        /* - */{false,false,true,true,true,false,false},
                         /* * */{false,false,false,false,true,true,true,},
                         /* / */{false,false,false,false,true,false,false},
                         /* ( */{true,true,true,true,true,true,true},
@@ -325,7 +325,7 @@ void mid2result()
                         cout<<"除数不能为0"<<endl;
                         exit(0);
                     }
-                    r=temp2/temp3;
+                    r=temp3/temp2;
                     break;
                 default:
                     cout<<"出现非法操作符"<<endl;

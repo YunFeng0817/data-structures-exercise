@@ -158,8 +158,7 @@ void CheckInput(){
     }
     if(!ForCheck.Empty())
     {
-        cout<<"warning!!!:您的输入多出了至少一个 ( ,请重新输入"<<endl;
-        exit(0);
+        cout<<"warning!!!:您的输入多出了至少一个 ( ,计算结果可能有误"<<endl;
     }
     return ;
 }
@@ -203,12 +202,12 @@ void mid2post()
                     }
                     else
                     {
-                        temp2=j-1;
+                        temp2=j;
                         transition.pop();
                     }
                 }
                 if(temp2!=-1)
-                    sum=sum/(int)pow(10,temp1-temp2);
+                    sum=sum/(int)pow(10,temp2-1);
                 tran.num=sum;
                 tail1.push(tran,true);
             }
@@ -259,7 +258,8 @@ void mid2post()
                     for(int i=0;i<temp2;i++)
                     {
                         tran.op=str.pop();
-                        tail1.push(tran,false);
+                        if(tran.op!='(')
+                            tail1.push(tran,false);
                     }
                     continue;
                 }

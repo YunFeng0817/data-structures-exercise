@@ -294,8 +294,18 @@ void mid2result()
         else
         {
             TempChar=tail2.pop().op;
+            if(result.Empty())
+            {
+                cout<<"error!!!: 输入式子有误，请重新输入"<<endl;
+                exit(0);
+            }
             tran=result.pop();
             temp2=tran.num;
+            if(result.Empty())
+            {
+                cout<<"error!!!: 输入式子有误，请重新输入"<<endl;
+                exit(0);
+            }
             tran=result.pop();
             temp3=tran.num;
             switch(TempChar)

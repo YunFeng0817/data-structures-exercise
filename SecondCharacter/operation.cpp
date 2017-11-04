@@ -138,6 +138,11 @@ void CheckInput(){
     stack ForCheck;
     for(int i=0;i<Input.length();i++)
     {
+        if(i!=0&&Input[i]=='-'&&Input[i-1]!='('&&Input[i-1]!='+'&&Input[i-1]!='-'&&Input[i-1]<'0'&&Input[i-1]>'9')
+        {
+            cout<<"error!!!: 负号的输入不正确，请重新输入"<<endl;
+            exit(0);
+        }
         if(Input[i]=='(')
         {
             tran.op=Input[i];
@@ -147,7 +152,7 @@ void CheckInput(){
         {
             if(ForCheck.Empty())
             {
-                cout<<"warning!!!:您的输入缺少至少一个 ) ，请重新输入"<<endl;
+                cout<<"error!!!:  您的输入缺少至少一个 ) ，请重新输入"<<endl;
                 exit(0);
             }
             else
@@ -215,7 +220,7 @@ void mid2post()
             {
                 if(Input[i]=='-')//用来判断单运算符的情况
                 {
-                    if(!str.OpChar.Empty()&&!str.OpChar.top()->ifIDouble&&str.OpChar.top()->data.op=='(')
+                    if(!str.OpChar.Empty()&&!str.OpChar.top()->ifIDouble&&(str.OpChar.top()->data.op=='('||str.OpChar.top()->data.op=='+'||str.OpChar.top()->data.op=='-'))
                     {
                         tran.num=0;
                         tail1.push(tran,true);

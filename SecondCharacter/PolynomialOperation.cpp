@@ -1,6 +1,12 @@
 //
 // Created by Fitz on 2017/11/5.
+// language : Chinese
 //
+
+//###使用说明
+//本程序只支持两个多项式的相乘，按照提示，先输入第一个多项式的各项，每行只需输入各项的 系数和指数，顺序不能反
+//输完两个多项式后即可得到对应的相乘结果,可以不按指数的大小顺序输入
+
 #include<iostream>
 using namespace std;
 typedef struct cellElement{

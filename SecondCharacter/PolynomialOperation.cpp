@@ -90,12 +90,12 @@ cellElement * mult(cellElement *a,cellElement *b)
     while(p!=NULL)
     {
         q=b;
+        result2=NULL;
+        index=result2;
         while(q!=NULL)
         {
             c=p->coef*q->coef;
             e=p->exp+q->exp;
-            result2=NULL;
-            index=result2;
             if(c)
             {
                 index=attach(c,e,index);
@@ -106,6 +106,13 @@ cellElement * mult(cellElement *a,cellElement *b)
                 result2=index;
             }
         }
+//        del=result2;
+//        while(result2!=NULL)
+//        {
+//            cout<<"result2->coef   result2->exp  "<<result2->coef<<"\t"<<result2->exp<<endl;
+//            result2=result2->link;
+//        }
+//        result2=del;
         if(result1==NULL)
         {
             result1=result2;
@@ -121,18 +128,61 @@ cellElement * mult(cellElement *a,cellElement *b)
     return result1;
 }
 
+void insert(int c,int e,cellElement *head)
+{
+    if(head->link==NULL){
+        cellElement *p = new cellElement;
+        head->link = p;
+        p->coef=c;
+        p->exp=e;
+        p->link=NULL;
+        return;
+        //此处未判断传入的参数是否为空
+    }
+
+    else{
+        cellElement *pr=head;
+        cellElement *p=pr->link;
+        while(p!=NULL)
+        {
+            if(p->exp<e)
+            {
+                cellElement *temp = new cellElement;
+                temp->exp=e;
+                temp->coef=c;
+                temp->link = pr->link;
+                pr->link = temp;
+                return;
+            }
+            else if(p->exp==e)
+            {
+                p->coef+=c;
+                return;
+            }
+            pr=p;
+            p=p->link;
+        }
+        cellElement *temp = new cellElement;
+        temp->exp=e;
+        temp->coef=c;
+        temp->link=NULL;
+        pr->link=temp;
+    }
+}
+
+
 int main()
 {
     int a,b;
-    cellElement *input1=new cellElement,*input2=new cellElement,*index1,*index2,*result;
-    index1=input1;
-    index2=input2;
+    cellElement *input1=new cellElement,*input2=new cellElement,*result;
+    input1->link=NULL;
+    input2->link=NULL;
     cout<<"请输入第一个多项式的值：（输入 0 0 时结束第一个多项式的输入）"<<endl;
     cin>>a;
     cin>>b;
     do
     {
-        index1=attach(a,b,index1);
+        insert(a,b,input1);
         cin>>a;
         cin>>b;
     }while(a!=0&&b!=0);
@@ -146,7 +196,7 @@ int main()
     cin>>a>>b;
     do
     {
-        index2=attach(a,b,index2);
+        insert(a,b,input2);
         cin>>a;
         cin>>b;
     }while(a!=0&&b!=0);
@@ -166,6 +216,7 @@ int main()
 7 1
 0 0
 2 4
+1 1
 1 1
 0 0
  */

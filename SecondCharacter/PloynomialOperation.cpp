@@ -144,7 +144,7 @@ int main()
         cin>>b;
     }while(a!=0&&b!=0);
     input2=input2->link;
-    result=mult(input1,input2);
+    result=padd(input1,input2);
     while(result!=NULL)
     {
         cout<<result->coef<<"\t"<<result->exp<<endl;

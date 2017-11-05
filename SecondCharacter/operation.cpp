@@ -320,7 +320,7 @@ void mid2result()
                     r=temp2*temp3;
                     break;
                 case '/':
-                    if(temp3==0)
+                    if(temp2==0)
                     {
                         cout<<"除数不能为0"<<endl;
                         exit(0);
@@ -339,26 +339,31 @@ void mid2result()
 
 int main()
 {
+    cout<<"请输入计算式：(输入#结束程序运行)"<<endl;
     cin>>Input;
-    CheckInput();
-    mid2post();
-    int temp = tail1.length;
-    for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
-    {
-        bool ifDouble=tail1.top()->ifIDouble;
-        tran=tail1.pop();
-        tail2.push(tran,ifDouble);
-        tail3.push(tran,ifDouble);
-    }
-    for(int i=0;i<temp;i++)  //just for test
-    {
-        if(tail3.top()->ifIDouble)
-            cout<<tail3.pop().num<<" ";
-        else
-            cout<<tail3.pop().op<<" ";
-    }
-    cout<<endl;
-    mid2result();
-    cout<<result.pop().num<<endl;
+    do{
+        CheckInput();
+        mid2post();
+        int temp = tail1.length;
+        for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
+        {
+            bool ifDouble=tail1.top()->ifIDouble;
+            tran=tail1.pop();
+            tail2.push(tran,ifDouble);
+            tail3.push(tran,ifDouble);
+        }
+        for(int i=0;i<temp;i++)  //just for test
+        {
+            if(tail3.top()->ifIDouble)
+                cout<<tail3.pop().num<<" ";
+            else
+                cout<<tail3.pop().op<<" ";
+        }
+        cout<<endl;
+        mid2result();
+        cout<<result.pop().num<<endl;
+        cout<<"请输入计算式："<<endl;
+        cin>>Input;
+    }while(Input!="#");
     return 0;
 }

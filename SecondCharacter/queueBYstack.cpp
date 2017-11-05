@@ -148,13 +148,27 @@ public:
 
 int main()
 {
+//    queue a;
+//    a.InQueue(3.12334);
+//    a.InQueue(43554);
+//    a.InQueue(1);
+//    int temp=a.length;
+//    for(int i=0;i<temp;i++)
+//        cout<<a.first()<<endl;
+//    return 0;
+
+    double x;
     queue a;
-    a.InQueue(3.12334);
-    a.InQueue(43554);
-    a.InQueue(1);
-    int temp=a.length;
-    for(int i=0;i<temp;i++)
-        cout<<a.first()<<endl;
+    while(x!=0)
+    {
+        cin>>x;
+        a.InQueue(x);
+    }
+    while(!a.Empty())
+    {
+        cout<<"first:  "<<a.first()<<endl;
+        cout<<"out:  "<<a.OutQueue()<<endl;
+    }
     return 0;
 }
 

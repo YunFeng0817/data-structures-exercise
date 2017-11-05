@@ -6,25 +6,25 @@
 #include <math.h>
 using namespace std;
 
-string operation = "+-*/()#";
+string operation = "+-*/()%";
 
 //这个二维数组用来描述算术的优先级
-                            /*    +      -      *    /    (     )     #    */
+                            /*    +      -      *    /    (     )     %    */
 bool pority[7][7]={     /* + */{false,false,true,true,true,false,false},
                         /* - */{false,false,true,true,true,false,false},
                         /* * */{false,false,false,false,true,true,true,},
                         /* / */{false,false,false,false,true,false,false},
                         /* ( */{true,true,true,true,true,true,true},
                         /* ) */{false,false,false,false,false,false,false},
-                        /* # */{true,true,true,true,true,true,true}};
+                        /* % */{true,true,true,true,true,true,true}};
 
-typedef union charOrDouble{
+typedef union charOrDouble{      //将浮点数与字符共用内存
     double num;
     char op;
 }charOrDouble;
 
 
-typedef struct cellElement{
+typedef struct cellElement{    //栈里的一个节点单元
     cellElement *next;
     charOrDouble data;
     bool ifIDouble;
@@ -42,7 +42,7 @@ public:
         head->next=NULL;
     }
 
-    void push(charOrDouble temp,bool ifINT)
+    void push(charOrDouble temp,bool ifINT)  //入栈
     {
         cellElement *cell = new cellElement;
         if(length==0)
@@ -71,7 +71,7 @@ public:
         return x;
     }
 
-    bool Empty()
+    bool Empty()   //判断栈是否为空
     {
         if(head->next==NULL)
             return true;
@@ -79,7 +79,7 @@ public:
             return false;
     }
 
-    cellElement * top()
+    cellElement * top()   //返回栈顶的元素
     {
         if(Empty())
             return NULL;
@@ -93,7 +93,7 @@ public:
 class mid2tail:stack
 {
 public:
-    stack max;
+    stack max;  //存优先级最高的运算符
     stack OpChar;
 
     void push(char temp)
@@ -134,14 +134,14 @@ mid2tail str;
 
 //这个函数是用来将中缀表达式转换为后缀表达式
 //这个函数用来检查输入是否符合规范
-void CheckInput(){
+bool CheckInput(){     //做输入的检查
     stack ForCheck;
     for(int i=0;i<Input.length();i++)
     {
         if(i!=0&&Input[i]=='-'&&Input[i-1]!='('&&Input[i-1]!='+'&&Input[i-1]!='-'&&Input[i-1]<'0'&&Input[i-1]>'9')
         {
             cout<<"error!!!: 负号的输入不正确，请重新输入"<<endl;
-            exit(0);
+            return false;
         }
         if(Input[i]=='(')
         {
@@ -153,7 +153,7 @@ void CheckInput(){
             if(ForCheck.Empty())
             {
                 cout<<"error!!!:  您的输入缺少至少一个 ) ，请重新输入"<<endl;
-                exit(0);
+                return false;
             }
             else
             {
@@ -163,12 +163,13 @@ void CheckInput(){
     }
     if(!ForCheck.Empty())
     {
-        cout<<"warning!!!:您的输入多出了至少一个 ( ,计算结果可能有误"<<endl;
+        cout<<"warning!!!:您的输入多出了至少一个 ( ,请重新输入"<<endl;
+        return false;
     }
-    return ;
+    return true;
 }
 
-void mid2post()
+void mid2post()   //将中缀表达式转化为后缀表达式
 {
     double sum;
     char temp3;
@@ -196,7 +197,7 @@ void mid2post()
                 sum=0;
                 int temp1 = transition.length;
                 int temp2=-1;
-                for(int j=1;j<=temp1;j++)
+                for(int j=1;j<=temp1;j++)       //将字符串转化为浮点数
                 {
                     if(transition.top()->ifIDouble)
                     {
@@ -244,7 +245,7 @@ void mid2post()
                 str.push(Input[i]);
             }
             else{
-                if(Input[i]==')')
+                if(Input[i]==')')       //判断遇到)将(之后的运算出栈的情况
                 {
                     do
                     {
@@ -279,7 +280,7 @@ void mid2post()
     }
 }
 
-void mid2result()
+bool mid2result()   //将后缀表达式计算出结果
 {
     double temp1,temp2,temp3,r;
     char TempChar;
@@ -297,72 +298,90 @@ void mid2result()
             if(result.Empty())
             {
                 cout<<"error!!!: 输入式子有误，请重新输入"<<endl;
-                exit(0);
-            }
-            tran=result.pop();
-            temp2=tran.num;
-            if(result.Empty())
-            {
-                cout<<"error!!!: 输入式子有误，请重新输入"<<endl;
-                exit(0);
+                return false;
             }
             tran=result.pop();
             temp3=tran.num;
+            if(result.Empty())
+            {
+                cout<<"error!!!: 输入式子有误，请重新输入"<<endl;
+                return false;
+            }
+            tran=result.pop();
+            temp2=tran.num;
             switch(TempChar)
             {
                 case '+':
                     r=temp2+temp3;
                     break;
                 case '-':
-                    r=temp3-temp2;
+                    r=temp2-temp3;
                     break;
                 case '*':
                     r=temp2*temp3;
                     break;
                 case '/':
-                    if(temp2==0)
+                    if(temp3==0)
                     {
-                        cout<<"除数不能为0"<<endl;
-                        exit(0);
+                        cout<<"error!!!: 除数不能为0"<<endl;
+                        return false;
                     }
-                    r=temp3/temp2;
+                    r=temp2/temp3;
+                    break;
+                case '%':
+                    if(temp3==0)
+                    {
+                        cout<<"error!!!: 求余运算模不能为0"<<endl;
+                        return false;
+                    }
+                    r=(int)temp2%(int)temp3;
                     break;
                 default:
-                    cout<<"出现非法操作符"<<endl;
-                    exit(0);
+                    cout<<"error!!!: 出现非法操作符"<<endl;
+                    return false;
             }
             tran.num=r;
             result.push(tran,true);
         }
     }
+    return true;
+}
+
+void OneTime()  //表示一次运算的封装
+{
+    if(!CheckInput())
+        return ;
+    mid2post();
+    int temp = tail1.length;
+    for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
+    {
+        bool ifDouble=tail1.top()->ifIDouble;
+        tran=tail1.pop();
+        tail2.push(tran,ifDouble);
+        tail3.push(tran,ifDouble);
+    }
+    for(int i=0;i<temp;i++)  //输出转换后的后缀表达式
+    {
+        if(tail3.top()->ifIDouble)
+            cout<<tail3.pop().num<<" ";
+        else
+            cout<<tail3.pop().op<<" ";
+    }
+    cout<<endl;
+    if(!mid2result())
+        return ;
+    cout<<result.pop().num<<endl;
 }
 
 int main()
 {
-    cout<<"请输入计算式：(输入#结束程序运行)"<<endl;
+    cout<<">>>请输入计算式：(输入#结束程序运行)"<<endl;
     cin>>Input;
+    if(Input=="#")
+        return 0;
     do{
-        CheckInput();
-        mid2post();
-        int temp = tail1.length;
-        for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
-        {
-            bool ifDouble=tail1.top()->ifIDouble;
-            tran=tail1.pop();
-            tail2.push(tran,ifDouble);
-            tail3.push(tran,ifDouble);
-        }
-        for(int i=0;i<temp;i++)  //just for test
-        {
-            if(tail3.top()->ifIDouble)
-                cout<<tail3.pop().num<<" ";
-            else
-                cout<<tail3.pop().op<<" ";
-        }
-        cout<<endl;
-        mid2result();
-        cout<<result.pop().num<<endl;
-        cout<<"请输入计算式："<<endl;
+        OneTime(); //表示一次运算
+        cout<<">>>请输入计算式："<<endl;
         cin>>Input;
     }while(Input!="#");
     return 0;

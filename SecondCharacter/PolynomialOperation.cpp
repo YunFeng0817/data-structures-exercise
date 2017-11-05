@@ -8,7 +8,7 @@ typedef struct cellElement{
     int coef,exp;
 }cellElement;
 
-cellElement * attach(int c,int e,cellElement *d)
+cellElement * attach(int c,int e,cellElement *d)  //用于为*d所代表的多项式新建一个节点
 {
     cellElement *p = new cellElement;
     if(d!=NULL)
@@ -19,7 +19,7 @@ cellElement * attach(int c,int e,cellElement *d)
     return p;
 }
 
-cellElement * padd(cellElement *a,cellElement *b)
+cellElement * padd(cellElement *a,cellElement *b)  //用于将两个多项式相加
 {
     cellElement *p,*q,*d,*c,*del1,*del2;
     c=new cellElement;
@@ -80,7 +80,7 @@ cellElement * padd(cellElement *a,cellElement *b)
     return c;
 }
 
-cellElement * mult(cellElement *a,cellElement *b)
+cellElement * mult(cellElement *a,cellElement *b)  //用于将两个多项式相乘
 {
     cellElement *p,*q,*result1,*result2,*index,*del;
     int c,e;
@@ -106,13 +106,6 @@ cellElement * mult(cellElement *a,cellElement *b)
                 result2=index;
             }
         }
-//        del=result2;
-//        while(result2!=NULL)
-//        {
-//            cout<<"result2->coef   result2->exp  "<<result2->coef<<"\t"<<result2->exp<<endl;
-//            result2=result2->link;
-//        }
-//        result2=del;
         if(result1==NULL)
         {
             result1=result2;
@@ -128,7 +121,7 @@ cellElement * mult(cellElement *a,cellElement *b)
     return result1;
 }
 
-void insert(int c,int e,cellElement *head)
+void insert(int c,int e,cellElement *head)      //用于在录入多项式新节点时，按exp(指数)从大到小的顺序录入
 {
     if(head->link==NULL){
         cellElement *p = new cellElement;
@@ -180,21 +173,16 @@ int main()
     cout<<"请输入第一个多项式的值：（输入 0 0 时结束第一个多项式的输入）"<<endl;
     cin>>a;
     cin>>b;
-    do
+    do  //录入第一个多项式
     {
         insert(a,b,input1);
         cin>>a;
         cin>>b;
     }while(a!=0&&b!=0);
     input1=input1->link;
-//    while(input1!=NULL)
-//    {
-//        cout<<input1->coef<<"\t"<<input1->exp<<endl;
-//        input1=input1->link;
-//    }
     cout<<"请输入第二个多项式的值：（输入 0 0 时结束第二个多项式的输入）"<<endl;
     cin>>a>>b;
-    do
+    do  //录入第二个多项式
     {
         insert(a,b,input2);
         cin>>a;
@@ -202,7 +190,7 @@ int main()
     }while(a!=0&&b!=0);
     input2=input2->link;
     result=mult(input1,input2);
-    while(result!=NULL)
+    while(result!=NULL)   //输出多项式
     {
         cout<<result->coef<<"\t"<<result->exp<<endl;
         result=result->link;
@@ -210,6 +198,8 @@ int main()
     return 0;
 }
 
+
+//测试用例
 /*
 4 3
 5 2

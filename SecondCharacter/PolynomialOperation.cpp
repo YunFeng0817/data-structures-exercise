@@ -11,7 +11,8 @@ typedef struct cellElement{
 cellElement * attach(int c,int e,cellElement *d)
 {
     cellElement *p = new cellElement;
-    d->link=p;
+    if(d!=NULL)
+        d->link=p;
     p->link=NULL;
     p->coef=c;
     p->exp=e;
@@ -24,9 +25,9 @@ cellElement * padd(cellElement *a,cellElement *b)
     c=new cellElement;
     d=c;
     int temp;
-    p=a->link;
-    q=b->link;
-    while(!(p->link==NULL)&&!(q->link==NULL))
+    p=a;
+    q=b;
+    while(p!=NULL&&q!=NULL)
     {
         if(p->exp==q->exp)
         {
@@ -35,12 +36,13 @@ cellElement * padd(cellElement *a,cellElement *b)
             {
                 d=attach(temp,p->exp,d);
             }
-            del1=p;
-            del2=q;
-            p=p->link;
-            q=q->link;
-            delete(del1);
-            delete(del2);
+            del2=q->link;
+            q->link=NULL;
+            delete(q);
+            q=del2;
+            del2=p->link;
+            delete(p);
+            p=del2;
         }
         else if(p->exp>q->exp)
         {
@@ -60,17 +62,16 @@ cellElement * padd(cellElement *a,cellElement *b)
     while(p!=NULL)
     {
         d=attach(p->coef,p->exp,d);
-        del1=p;
-        p=p->link;
-        delete(del1);
-
+        del1=p->link;
+        delete(p);
+        p=del1;
     }
     while(q!=NULL)
     {
         d=attach(q->coef,q->exp,d);
-        del2=q;
-        q=q->link;
-        delete(del2);
+        del2=q->link;
+        delete(q);
+        q=del2;
     }
     d->link=NULL;
     p=c;
@@ -84,26 +85,27 @@ cellElement * mult(cellElement *a,cellElement *b)
     cellElement *p,*q,*result1,*result2,*index,*del;
     int c,e;
     p=a;
-    q=b;
     result1=NULL;
-    result2=new cellElement;
-    index=result2;
+    result2=NULL;
     while(p!=NULL)
     {
+        q=b;
         while(q!=NULL)
         {
-            cout<<1<<endl;
             c=p->coef*q->coef;
-            e=p->exp*q->exp;
+            e=p->exp+q->exp;
+            result2=NULL;
+            index=result2;
             if(c)
             {
                 index=attach(c,e,index);
-                del=index;
                 q=q->link;
-                delete(del);
+            }
+            if(index!=NULL&&result2==NULL)
+            {
+                result2=index;
             }
         }
-        result2=result2->link;
         if(result1==NULL)
         {
             result1=result2;
@@ -135,6 +137,11 @@ int main()
         cin>>b;
     }while(a!=0&&b!=0);
     input1=input1->link;
+//    while(input1!=NULL)
+//    {
+//        cout<<input1->coef<<"\t"<<input1->exp<<endl;
+//        input1=input1->link;
+//    }
     cout<<"请输入第二个多项式的值：（输入 0 0 时结束第二个多项式的输入）"<<endl;
     cin>>a>>b;
     do
@@ -144,7 +151,7 @@ int main()
         cin>>b;
     }while(a!=0&&b!=0);
     input2=input2->link;
-    result=padd(input1,input2);
+    result=mult(input1,input2);
     while(result!=NULL)
     {
         cout<<result->coef<<"\t"<<result->exp<<endl;
@@ -154,9 +161,11 @@ int main()
 }
 
 /*
-1 2
-1 1
+4 3
+5 2
+7 1
 0 0
+2 4
 1 1
 0 0
  */

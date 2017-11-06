@@ -10,13 +10,13 @@ string operation = "+-*/()%";
 
 //这个二维数组用来描述算术的优先级
                             /*    +      -      *    /    (     )     %    */
-bool pority[7][7]={     /* + */{false,false,true,true,true,false,false},
-                        /* - */{false,false,true,true,true,false,false},
+bool pority[7][7]={     /* + */{false,false,true,true,true,false,true},
+                        /* - */{false,false,true,true,true,false,true},
                         /* * */{false,false,false,false,true,true,true,},
-                        /* / */{false,false,false,false,true,false,false},
+                        /* / */{false,false,false,false,true,false,true},
                         /* ( */{true,true,true,true,true,true,true},
-                        /* ) */{false,false,false,false,false,false,false},
-                        /* % */{true,true,true,true,true,true,true}};
+                        /* ) */{false,false,false,false,false,false,true},
+                        /* % */{false,false,true,false,true,false,true}};
 
 typedef union charOrDouble{      //将浮点数与字符共用内存
     double num;
@@ -360,6 +360,7 @@ void OneTime()  //表示一次运算的封装
         tail2.push(tran,ifDouble);
         tail3.push(tran,ifDouble);
     }
+    cout<<"该式子的后缀表达式如下"<<endl;
     for(int i=0;i<temp;i++)  //输出转换后的后缀表达式
     {
         if(tail3.top()->ifIDouble)
@@ -370,6 +371,7 @@ void OneTime()  //表示一次运算的封装
     cout<<endl;
     if(!mid2result())
         return ;
+    cout<<"该算术表达式的计算结果如下"<<endl;
     cout<<result.pop().num<<endl;
 }
 
@@ -381,7 +383,7 @@ int main()
         return 0;
     do{
         OneTime(); //表示一次运算
-        cout<<">>>请输入计算式："<<endl;
+        cout<<">>>请输入计算式：(输入#结束程序运行)"<<endl;
         cin>>Input;
     }while(Input!="#");
     return 0;

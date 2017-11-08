@@ -1,0 +1,124 @@
+<h1 id="算数表达式求值">算数表达式求值</h1>
+
+
+
+<h3 id="目录">目录</h3>
+
+<blockquote>
+  <p><a href="#使用指导">1.使用指导</a> <br>
+  <a href="#功能概要">2.功能概要</a> <br>
+  <a href="#主要数据类型">3.主要数据类型</a> <br>
+  <a href="#函数功能">4.函数功能</a> <br>
+  <a href="#算法思路">5.算法思路</a></p>
+</blockquote>
+
+<h3 id="使用指导">使用指导：</h3>
+
+<blockquote>
+  <p>将operation.cpp用g++编译后直接运行即可</p>
+</blockquote>
+
+<h3 id="功能概要">功能概要</h3>
+
+<blockquote>
+  <p>这是一个控制台程序，根据提示，可以输入一个不限长度的算术表达式，按回车之后第一行输出一个此算术表达式对应的后缀表达式</p>
+  
+  <p>运行示例：</p>
+  
+  <blockquote>
+    <p>请输入计算式：(输入#结束程序运行) <br>
+    1324+5434*(433+43)/43+43%23 <br>
+    该式子的后缀表达式如下 <br>
+    1324 5434 433 43 + 43 / * 43 23 % + + <br>
+    该算术表达式的计算结果如下 <br>
+    61497.1 <br>
+    请输入计算式：(输入#结束程序运行) <br>
+    …… <br>
+    请输入计算式：(输入#结束程序运行) <br>
+    # <br>
+    Process finished with exit code 0</p>
+  </blockquote>
+</blockquote>
+
+
+
+<h3 id="主要数据类型">主要数据类型</h3>
+
+<p><strong><code>bool pority[7][7]</code></strong></p>
+
+<blockquote>
+  <p>这个二维数组用来描述算术的优先级，第一个[ ]代表先出现的运算符，第二个[ ]代表后出现的运算符，存入的<strong>true</strong>表示<strong>pority[i][j]</strong>中<strong>i</strong>的优先级高于<strong>j</strong></p>
+</blockquote>
+
+<p><strong><code>union charOrDouble</code></strong></p>
+
+<blockquote>
+  <p>由于在处理后缀表达式时栈内有时需要存储浮点数，有时需要存储字符串，定义一个联合体可以使它们共用存储</p>
+</blockquote>
+
+<p><strong><code>struct cellElement</code></strong></p>
+
+<blockquote>
+  <p>由于栈是用指针实现，需要封装一个节点元素，包含了一个<strong>cellElement</strong>类型的指针，指向下一节点，一个<strong>charOrDouble</strong> 用于保存该节点的数据，一个<strong>bool</strong> 的数据，用于标记联合体中存储的是浮点型还是字符，<em>ture</em> 表示是浮点型，<em>false</em> 表示是存的是字符</p>
+</blockquote>
+
+<p><strong><code>class stack</code></strong></p>
+
+<blockquote>
+  <p>这个类包含了数据类型栈的长度，和各种动作 <br>
+   1.入栈操作<strong>void push(charOrDouble ，bool)</strong> <br>
+  2.出栈操作<strong>charOrDouble pop()</strong> 从栈中删除最后一个入栈的元素，并返回该元素存储的数据 <br>
+  3.<strong>charOrDouble top()</strong> 只返回栈顶的元素存储的数据，与<em>pop()</em> 操作的不同在于<em>top()</em> 不删除栈顶的元素 <br>
+   4.<strong>void Empty()</strong> 判断栈是否为空，如果空，返回<em>true</em> 不空返回 <em>false</em> <br>
+   5.<strong>length</strong> 一直指示栈的元素个数</p>
+</blockquote>
+
+<p><strong><code>class mid2tail:stack</code></strong></p>
+
+<blockquote>
+  <p>该栈用于存储后缀表达式中的运算符，与<strong>stack</strong> 不同的是，这个类包含了max的一个stack类型的栈，这个栈的栈顶一直保存着优先级最高的字符串，为中缀表达式转后缀表达式做准备。 </p>
+</blockquote>
+
+<p><strong><code>string Input</code></strong></p>
+
+<blockquote>
+  <p>存储从控制台输入的字符串</p>
+</blockquote>
+
+
+
+<h3 id="函数功能">函数功能</h3>
+
+<p>bool CheckInput()</p>
+
+<blockquote>
+  <p>此函数将输入的字符串遍历一遍，遇到 ’ ( ’ 入栈，遇到 ’ ) ‘出栈，当字符串遍历结束，如果栈内还有 ‘ （ ’ 未出栈，则表明算术表达式输入 不合法，如果字符串还未遍历完，栈已经为空，不能再出栈时，表明字符串输入也不合法。</p>
+</blockquote>
+
+<p>void mid2post()</p>
+
+<blockquote>
+  <p>这个函数将输入的输入的算术表达式转化为中缀表达式</p>
+</blockquote>
+
+<p>bool mid2result()</p>
+
+<blockquote>
+  <p>这个函数将后缀表达式计算出结果，并输出 <br>
+    返回值true 表示计算过程无误，可以输出结果，返回值false表示算术表达式输入不合法或遇到一场情况需要重新输入。</p>
+</blockquote>
+
+<p>void OneTime()</p>
+
+<blockquote>
+  <p>这个函数是对一次输入算术表达式转化求值的封装，使主程序简介</p>
+</blockquote>
+
+<h3 id="算法思路">算法思路</h3>
+
+<p>先将输入的中缀表达式转化为后缀表达式，转化的思路是从头遍历字符串，遇到数字直接输出，遇到操作符，如果它比栈中已有的操作符的优先级都大，就入栈，否则将栈内的操作符依次出栈，直到满足入栈的条件。 <br>
+计算后缀表达式的思路是：遍历后缀表达式，遇到数字入栈，遇到操作符从栈内弹出两个数字，计算出结果后再入栈。最后栈内剩余的数字就是最终的结果。</p>
+
+<h3 id="流程图">流程图</h3>
+
+<div class="flow-chart"><svg height="924.53125" version="1.1" width="683.90625" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative; top: 0.194444px;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.1.2</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><marker id="raphael-marker-endblock33-obj3924" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3925" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3926" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3928" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3930" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3932" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3934" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3935" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3936" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker><marker id="raphael-marker-endblock33-obj3938" markerHeight="3" markerWidth="3" orient="auto" refX="1.5" refY="1.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#raphael-marker-block" transform="rotate(180 1.5 1.5) scale(0.6,0.6)" stroke-width="1.6667" fill="black" stroke="none" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></use></marker></defs><rect x="0" y="0" width="81.875" height="39.546875" rx="20" ry="20" fill="#ffffff" stroke="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" stroke-width="2" class="flowchart" id="st" transform="matrix(1,0,0,1,112.2891,58.8398)"></rect><text x="10" y="19.7734375" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" id="stt" class="flowchartt" font-weight="normal" transform="matrix(1,0,0,1,112.2891,58.8398)"><tspan dy="5.34375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">程序开始</tspan></text><path fill="#ffffff" stroke="#000000" d="M10,19.7734375L0,39.546875L116.859375,39.546875L136.859375,0L20,0L10,19.7734375" stroke-width="2" font-family="sans-serif" font-weight="normal" id="io" class="flowchart" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;" transform="matrix(1,0,0,1,84.7969,207.2266)"></path><text x="30" y="19.7734375" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" id="iot" class="flowchartt" font-weight="normal" transform="matrix(1,0,0,1,84.7969,207.2266)"><tspan dy="5.34375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">输入表达式</tspan></text><path fill="#ffffff" stroke="#000000" d="M74.61328125,37.306640625L0,74.61328125L149.2265625,149.2265625L298.453125,74.61328125L149.2265625,0L0,74.61328125" stroke-width="2" font-family="sans-serif" font-weight="normal" id="cond3" class="flowchart" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;" transform="matrix(1,0,0,1,4,300.7734)"></path><text x="79.61328125" y="74.61328125" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" id="cond3t" class="flowchartt" font-weight="normal" transform="matrix(1,0,0,1,4,300.7734)"><tspan dy="5.33984375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">输入是否是结束标识符 '#' </tspan><tspan dy="18" x="79.61328125" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></tspan></text><rect x="0" y="0" width="46.078125" height="39.546875" rx="20" ry="20" fill="#ffffff" stroke="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" stroke-width="2" class="flowchart" id="e" transform="matrix(1,0,0,1,130.1875,558.8398)"></rect><text x="10" y="19.7734375" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" id="et" class="flowchartt" font-weight="normal" transform="matrix(1,0,0,1,130.1875,558.8398)"><tspan dy="5.34375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">End</tspan></text><path fill="#ffffff" stroke="#000000" d="M59.56640625,29.783203125L0,59.56640625L119.1328125,119.1328125L238.265625,59.56640625L119.1328125,0L0,59.56640625" stroke-width="2" font-family="sans-serif" font-weight="normal" id="cond1" class="flowchart" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;" transform="matrix(1,0,0,1,386.5469,315.8203)"></path><text x="64.56640625" y="59.56640625" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" id="cond1t" class="flowchartt" font-weight="normal" transform="matrix(1,0,0,1,386.5469,315.8203)"><tspan dy="5.33984375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">输入格式是否正确?</tspan></text><rect x="0" y="0" width="185.953125" height="39.546875" rx="0" ry="0" fill="#ffffff" stroke="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" stroke-width="2" class="flowchart" id="op1" transform="matrix(1,0,0,1,412.7031,543.793)"></rect><text x="10" y="19.7734375" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" id="op1t" class="flowchartt" font-weight="normal" transform="matrix(1,0,0,1,412.7031,543.793)"><tspan dy="5.34375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">中缀表达式转后缀表达式</tspan></text><rect x="0" y="0" width="160.96875" height="39.546875" rx="0" ry="0" fill="#ffffff" stroke="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" stroke-width="2" class="flowchart" id="sub1" transform="matrix(1,0,0,1,425.1953,692.1797)"></rect><rect x="10" y="0" width="140.96875" height="39.546875" rx="0" ry="0" fill="#ffffff" stroke="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;" stroke-width="2" id="sub1i" font-family="sans-serif" font-weight="normal" transform="matrix(1,0,0,1,425.1953,692.1797)"></rect><text x="20" y="19.7734375" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" id="sub1t" class="flowchartt" font-weight="normal" transform="matrix(1,0,0,1,425.1953,692.1797)"><tspan dy="5.34375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">由后缀表达式计算</tspan></text><path fill="#ffffff" stroke="#000000" d="M62.19140625,31.095703125L0,62.19140625L124.3828125,124.3828125L248.765625,62.19140625L124.3828125,0L0,62.19140625" stroke-width="2" font-family="sans-serif" font-weight="normal" id="cond2" class="flowchart" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;" transform="matrix(1,0,0,1,381.2969,798.1484)"></path><text x="67.19140625" y="62.19140625" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" id="cond2t" class="flowchartt" font-weight="normal" transform="matrix(1,0,0,1,381.2969,798.1484)"><tspan dy="5.33984375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">计算过程是否出错？</tspan></text><path fill="none" stroke="#000000" d="M153.2265625,98.38671875C153.2265625,98.38671875,153.2265625,186.71926429774612,153.2265625,204.2305013545747" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3924)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><path fill="none" stroke="#000000" d="M153.2265625,246.7734375C153.2265625,246.7734375,153.2265625,286.42753744125366,153.2265625,297.77387658460066" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3925)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><path fill="none" stroke="#000000" d="M153.2265625,450C153.2265625,450,153.2265625,538.3325455477461,153.2265625,555.8437826045747" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3926)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><text x="158.2265625" y="460" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" font-weight="normal"><tspan dy="5.3359375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">yes</tspan></text><path fill="none" stroke="#000000" d="M302.453125,375.38671875C302.453125,375.38671875,368.5735297203064,375.38671875,383.5539339147508,375.38671875" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3928)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><text x="307.453125" y="365.38671875" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" font-weight="normal"><tspan dy="5.34765625" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">no</tspan></text><path fill="none" stroke="#000000" d="M505.6796875,434.953125C505.6796875,434.953125,505.6796875,523.2856705477461,505.6796875,540.7969076045747" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3930)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><text x="510.6796875" y="444.953125" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" font-weight="normal"><tspan dy="5.3359375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">yes</tspan></text><path fill="none" stroke="#000000" d="M624.8125,375.38671875C624.8125,375.38671875,649.8125,375.38671875,649.8125,375.38671875C649.8125,375.38671875,649.8125,182.2265625,649.8125,182.2265625C649.8125,182.2265625,153.2265625,182.2265625,153.2265625,182.2265625C153.2265625,182.2265625,153.2265625,197.60000705718994,153.2265625,204.23581027425826" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3932)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><text x="629.8125" y="365.38671875" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" font-weight="normal"><tspan dy="5.34765625" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">no</tspan></text><path fill="none" stroke="#000000" d="M505.6796875,583.33984375C505.6796875,583.33984375,505.6796875,671.6723892977461,505.6796875,689.1836263545747" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3934)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><path fill="none" stroke="#000000" d="M505.6796875,731.7265625C505.6796875,731.7265625,505.6796875,782.1842877082527,505.6796875,795.1436448662316" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3935)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><path fill="none" stroke="#000000" d="M505.6796875,922.53125C505.6796875,922.53125,505.6796875,182.2265625,505.6796875,182.2265625C505.6796875,182.2265625,153.2265625,182.2265625,153.2265625,182.2265625C153.2265625,182.2265625,153.2265625,197.60000705718994,153.2265625,204.23581027425826" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3936)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><text x="510.6796875" y="932.53125" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" font-weight="normal"><tspan dy="5.3359375" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">yes</tspan></text><path fill="none" stroke="#000000" d="M630.0625,860.33984375C630.0625,860.33984375,655.0625,860.33984375,655.0625,860.33984375C655.0625,860.33984375,655.0625,533.83984375,655.0625,533.83984375C655.0625,533.83984375,509.6796875,533.83984375,509.6796875,533.83984375C509.6796875,533.83984375,505.6796875,525.83984375,501.6796875,533.83984375C501.6796875,533.83984375,509.6796875,533.83984375,509.6796875,533.83984375C509.6796875,533.83984375,505.6796875,525.83984375,501.6796875,533.83984375C501.6796875,533.83984375,153.2265625,533.83984375,153.2265625,533.83984375C153.2265625,533.83984375,153.2265625,549.2132883071899,153.2265625,555.8490915242583" stroke-width="2" marker-end="url(#raphael-marker-endblock33-obj3938)" font-family="sans-serif" font-weight="normal" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); font-family: sans-serif; font-weight: normal;"></path><text x="635.0625" y="850.33984375" text-anchor="start" font-family="sans-serif" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: start; font-family: sans-serif; font-size: 14px; font-weight: normal;" font-weight="normal"><tspan dy="5.34765625" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">no</tspan></text></svg></div>

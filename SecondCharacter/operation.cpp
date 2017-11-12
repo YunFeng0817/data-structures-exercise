@@ -87,6 +87,18 @@ public:
             return (head->next);
     }
 
+    void clear()
+    {
+        if(Empty())
+            return ;
+        else
+        {
+            while(!Empty())
+            {
+                pop();
+            }
+        }
+    }
 };
 
 //这个类是用于将中缀表达式转化为后缀表达式
@@ -169,10 +181,16 @@ bool CheckInput(){     //做输入的检查
     return true;
 }
 
-void mid2post()   //将中缀表达式转化为后缀表达式
+bool mid2post()   //将中缀表达式转化为后缀表达式
 {
     double sum;
     char temp3;
+    transition.clear();
+    tail1.clear();
+    tail2.clear();
+    tail3.clear();
+    result.clear();
+    str.OpChar.clear();
     for(int i=0;i<=Input.length();i++)
     {
         if(Input[0]=='-'&&i==0)
@@ -197,8 +215,14 @@ void mid2post()   //将中缀表达式转化为后缀表达式
                 sum=0;
                 int temp1 = transition.length;
                 int temp2=-1;
+                bool flag=true;
                 for(int j=1;j<=temp1;j++)       //将字符串转化为浮点数
                 {
+                    if(!transition.top()->ifIDouble&&j==temp1)
+                    {
+                        cout<<"error!!!:  输入的浮点数的第一位不能是小数点，请重新输入"<<endl;
+                        return false;
+                    }
                     if(transition.top()->ifIDouble)
                     {
                         if(temp2!=-1)
@@ -208,6 +232,13 @@ void mid2post()   //将中缀表达式转化为后缀表达式
                     }
                     else
                     {
+                        if(flag)
+                            flag=false;
+                        else
+                        {
+                            cout<<"error!!!:  输入的浮点数有多个小数点，不正确，请重新输入"<<endl;
+                            return false;
+                        }
                         temp2=j;
                         transition.pop();
                     }
@@ -278,6 +309,7 @@ void mid2post()   //将中缀表达式转化为后缀表达式
             }
         }
     }
+    return true;
 }
 
 bool mid2result()   //将后缀表达式计算出结果
@@ -351,7 +383,8 @@ void OneTime()  //表示一次运算的封装
 {
     if(!CheckInput())
         return ;
-    mid2post();
+    if(!mid2post())
+        return ;
     int temp = tail1.length;
     for(int i=0;i<temp;i++)  //将tail1的倒序转换为正序
     {

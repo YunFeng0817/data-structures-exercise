@@ -35,8 +35,6 @@ public:
         cellElement *root=new cellElement;
 
         temp=mid.find((char)pre[i]);
-        cout<<"i的值："<<pre[i]<<endl;
-        cout<<"temp的值："<<mid[temp]<<endl;
         root->data=pre[i];
         if(a==b)
         {
@@ -93,5 +91,11 @@ int main()
 /*
 abdhiecfjg
 hdibeafjcg
-hidbeafjcg
+
+abdhiejkcflmgno
+hdibjekalfmcngo
+
+abcdfgehi
+bafdgchei
+
  */

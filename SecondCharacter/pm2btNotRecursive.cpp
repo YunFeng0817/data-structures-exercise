@@ -8,16 +8,16 @@ using namespace std;
 
 struct cellElement{
     char data;
-    cellElement *lchild,*rchild;
+    int lchild,rchild;
 };
 
 class BinaryTree
 {
 public:
     string pre,mid;
-    cellElement *root;
+    int head;
     int length;
-    stack <cellElement *> trace;
+    cellElement tree[100];
     BinaryTree(string a,string b)
     {
         pre=a;
@@ -28,71 +28,55 @@ public:
             exit(0);
         }
         length=a.length();
-        root=create();
-    }
-    cellElement *create()
-    {
-        bool flag=true;
-        char temp;
-        cellElement *root1=new cellElement;
-
         for(int i=0;i<length;i++)
         {
-            root1->data=pre[i];
-            if(mid.find(pre[i])==0||mid.find(pre[i])==length-1)
+            tree[i].data=mid[i];
+            tree[i].lchild=-1;
+            tree[i].rchild=-1;
+        }
+        create();
+    }
+    void create()
+    {
+        int j,temp;
+        stack<int> cell; //用来记录遍历的树的节点
+        for(int i=0;i<length;i++)
+        {
+            j=mid.find(pre[i]);
+            if(cell.empty())
             {
-                root1->lchild=nullptr;
-                root1->rchild= nullptr;
-                root1=trace.top();
-                trace.pop();
-                if(mid.find(pre[i])==length-1)
-                {
-                    root1=trace.top();
-                    trace.pop();
-                }
+                head=j;
+                cell.push(j);
             }
-            if(i!=length-1&&mid.find(pre[i+1])<mid.find(pre[i]))
+            else
             {
-                root1->lchild=new cellElement;
-                trace.push(root1);
-                root1=root1->lchild;
-                flag=true;
-            }
-            if(i!=length-1&&mid.find(pre[i+1])>mid.find(pre[i]))
-            {
-                if(flag)
+                if(j<cell.top())
                 {
-                    flag=!flag;
-                    if(mid.find(pre[i])!=0)
-                        root1->lchild=nullptr;
+                    tree[cell.top()].lchild=j;
+                    cell.push(j);
                 }
                 else
                 {
-                    root1->lchild=nullptr;
-                    root1->rchild=nullptr;
-                    trace.pop();
-                    root1=trace.top();
-                    trace.pop();
+                    while(!cell.empty()&&j>cell.top())
+                    {
+                        temp=cell.top();
+                        cell.pop();
+                    }
+                    tree[temp].rchild=j;
+                    cell.push(j);
                 }
-                root1->rchild=new cellElement;
-                trace.push(root1);
-                root1=root1->rchild;
             }
         }
-        return root1;
     }
 
-    void LayoutBehind(cellElement *root)
+    void LayoutBehind(int index)
     {
-        if(root==nullptr)
+        if(index!=-1)
         {
-            return;
+            LayoutBehind(tree[index].lchild);
+            LayoutBehind(tree[index].rchild);
+            cout<<tree[index].data<<endl;
         }
-        LayoutBehind(root->lchild);
-        LayoutBehind(root->rchild);
-        cout<<root->data<<endl;
-        delete(root);
-        return;
     }
 };
 
@@ -104,7 +88,7 @@ int main()
     cout<<">>>请输入一个中序遍历的二叉树字符串"<<endl;
     cin>>mid;
     BinaryTree bt(pre,mid);
-    bt.LayoutBehind(bt.root);
+    bt.LayoutBehind(bt.head);
     return 0;
 }
 /*

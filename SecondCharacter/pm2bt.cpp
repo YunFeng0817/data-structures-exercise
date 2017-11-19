@@ -25,6 +25,14 @@ public:
             cout<<"输入的字符串不一样长，不合法"<<endl;
             exit(0);
         }
+        for(int i=0;i<length;i++)
+        {
+            if(mid.find(pre[i])==-1||pre.find(mid[i]))
+            {
+                cout<<"error:  输入的数据无法建立二叉树"<<endl;
+                exit(0);
+            }
+        }
         length=a.length();
         root=create(mid[0],mid[length-1]);
     }

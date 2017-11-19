@@ -23,8 +23,16 @@ public:
         mid=b;
         if(a.length()!=b.length())
         {
-            cout<<"输入的字符串不一样长，不合法"<<endl;
+            cout<<"error:  输入的字符串不一样长，不合法"<<endl;
             exit(0);
+        }
+        for(int i=0;i<length;i++)
+        {
+            if(mid.find(pre[i])==-1||pre.find(mid[i]))
+            {
+                cout<<"error:  输入的数据无法建立二叉树"<<endl;
+                exit(0);
+            }
         }
         length=a.length();
         root=create(mid[0],mid[length-1]);
@@ -63,7 +71,7 @@ public:
         }
         return root;
     }
-
+//前序遍历递归
     void PreviousRecursive(cellElement *root)
     {
         if(root!=nullptr)
@@ -73,7 +81,7 @@ public:
             PreviousRecursive(root->rchild);
         }
     }
-
+//前序遍历非递归
     void PreviousNotRecursive(cellElement *root)
     {
         stack<cellElement*> trace;
@@ -93,7 +101,7 @@ public:
             }
         }
     }
-
+//中序遍历递归
     void MidNotRecursive(cellElement *root)
     {
         stack<cellElement *> trace;
@@ -113,7 +121,7 @@ public:
             }
         }
     }
-
+//中序遍历非递归
     void MidRecursive(cellElement *root)
     {
         if(root!=nullptr)
@@ -123,7 +131,7 @@ public:
             MidRecursive(root->rchild);
         }
     }
-
+//后序遍历递归
     void BehindNotRecursive(cellElement *root)
     {
         stack<cellElement*> trace;
@@ -155,7 +163,7 @@ public:
             }
         }while(!trace.empty());
     }
-
+//后序遍历非递归
     void BehindRecursive(cellElement *root)
     {
         if(root!=nullptr)
@@ -165,7 +173,7 @@ public:
             cout<<root->data<<" ";
         }
     }
-
+//层序遍历
     void FloorOrder(cellElement *root)
     {
         queue<cellElement*> floor;

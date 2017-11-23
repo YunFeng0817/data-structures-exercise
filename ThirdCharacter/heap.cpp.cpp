@@ -3,8 +3,9 @@
 //
 #include <iostream>
 #include <fstream>
+#include <queue>
 using namespace std;
-
+int ID[100];
 struct CellElement
 {
     int pority;   //优先级
@@ -55,6 +56,16 @@ public:
         return false;
     }
 
+    int findID(int n)
+    {
+        for(int i=0;i<size;i++)
+        {
+            if(ID[i]==n)
+                return i;
+        }
+        return -1;
+    }
+
     CellElement top()
     {
         return Elements[1];
@@ -74,10 +85,11 @@ public:
                     max=Elements[2*i].pority>Elements[2*i+1].pority?Elements[2*i].pority:Elements[2*i+1].pority;
                 else
                     max=Elements[2*i].pority;
-                if(last.pority<max)
+                if(last.pority<=max)
                 {
-                    if(2*i+1>size||Elements[2*i].pority>Elements[2*i+1].pority)
+                    if(2*i+1>size||Elements[2*i].pority>Elements[2*i+1].pority||(Elements[2*i].pority==Elements[2*i+1].pority&&findID(Elements[2*i].pocessID)>findID(Elements[2*i+1].pocessID)))
                     {
+                        cout<<"Elements[2*i].pority "<<Elements[2*i].pority<<" Elements[2*i+1].pority "<<Elements[2*i+1].pority<<endl;
                         Elements[i].pority=Elements[2*i].pority;
                         Elements[i].pocessID=Elements[2*i].pocessID;
                         i=2*i;
@@ -102,9 +114,9 @@ public:
 
 int main()
 {
-    heap system(10);
+    heap system(100);
     fstream ReadFile;
-    int a=0,b=0;
+    int a=0,b=0,count=0;
     ReadFile.open("C:\\Users\\29488\\Desktop\\task.dat",ios::in);
     if (!ReadFile.is_open())
     {
@@ -114,14 +126,17 @@ int main()
     while(!ReadFile.eof())
     {
         ReadFile>>a>>b;
+        ID[count]=a;
+        count++;
         system.insert(b,a);  //先进程号后优先级
     }
     ReadFile.close();
-    for(int i=1;i<=7;i++)
+    a=system.size;
+    for(int i=1;i<=a;i++)
     {
-        cout<<system.Elements[i].pocessID<<"\t"<<system.Elements[i].pority<<endl;
-        //cout<<system.top().pocessID<<"\t"<<system.top().pority<<endl;
-        //system.DeleteMax();
+//        cout<<system.Elements[i].pocessID<<"\t"<<system.Elements[i].pority<<endl;
+        cout<<system.top().pocessID<<"\t"<<system.top().pority<<endl;
+        system.DeleteMax();
     }
     return 0;
 }

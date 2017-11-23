@@ -6,9 +6,15 @@
 #include <queue>
 using namespace std;
 
-struct cellElement{
+class cellElement{
+public:
     char data;
     cellElement *lchild,*rchild;
+    cellElement()
+    {
+        lchild= nullptr;
+        rchild= nullptr;
+    }
 };
 
 class BinaryTree
@@ -35,9 +41,9 @@ public:
                 exit(0);
             }
         }
-        root=create(mid[0],mid[length-1]);
+        root=create(0,length-1);
     }
-    cellElement * create(char a,char b)
+    cellElement * create(int left,int right)
     {
         static int i=0;
         int temp;
@@ -45,25 +51,25 @@ public:
 
         temp=mid.find((char)pre[i]);
         root->data=pre[i];
-        if(a==b)
+        if(left==right)
         {
             root->rchild=nullptr;
             root->lchild=nullptr;
             return root;
         }
-        if(temp-1>=mid.find(a))
+        if(temp-1>=left)
         {
             i++;
-            root->lchild=create(a,mid[temp-1]);
+            root->lchild=create(left,temp-1);
         }
         else
         {
             root->lchild=nullptr;
         }
-        if(temp+1<=mid.find(b))
+        if(temp+1<=right)
         {
             i++;
-            root->rchild=create(mid[temp+1],b);
+            root->rchild=create(temp+1,right);
         }
         else
         {
@@ -254,4 +260,6 @@ hdibjekalfmcngo
 abcdfgehi
 bafdgchei
 
+abdhiejkcflmgno
+bdhmgnoiejkcfla
  */

@@ -181,6 +181,7 @@ public:
             if(DataFile.eof()!=0)
                 break;
         }
+        DataFile.close();
     }
 
 private:

@@ -2,6 +2,7 @@
 // Created by Fitz on 2017/11/23.
 //
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 struct CellElement
@@ -12,16 +13,15 @@ struct CellElement
 
 class heap
 {
+public:
     int size;
     int Maxlength;
-    CellElement *Ele;
+    CellElement *Elements;
     heap(int length)
     {
         size=0;
-        const MaxLength=length;
         Maxlength=length;
-        static CellElement elements[MaxLength];
-        Ele=elements;
+        Elements=new CellElement[Maxlength];
     }
 
     bool empty()
@@ -33,17 +33,102 @@ class heap
 
     bool full()
     {
-        return (size==Maxlength);
+        return (size==Maxlength-1);
     }
 
-    void insert(int p,int ID)
+    bool insert(int p,int ID)
     {
-
+        int i=size+1;
+        if(!full())
+        {
+            size++;
+            while(i!=1&&p>Elements[i/2].pority)
+            {
+                Elements[i].pority=Elements[i/2].pority;
+                Elements[i].pocessID=Elements[i/2].pocessID;
+                i=i/2;
+            }
+            Elements[i].pocessID=ID;
+            Elements[i].pority=p;
+            return true;
+        }
+        return false;
     }
+
+    CellElement top()
+    {
+        return Elements[1];
+    }
+
+    bool DeleteMax()
+    {
+        int i=1,max;
+        CellElement last;
+        if(!empty())
+        {
+            last=Elements[size];
+            size--;
+            while(2*i<=size)
+            {
+                if(2*i+1<=size)
+                    max=Elements[2*i].pority>Elements[2*i+1].pority?Elements[2*i].pority:Elements[2*i+1].pority;
+                else
+                    max=Elements[2*i].pority;
+                if(last.pority<max)
+                {
+                    if(2*i+1>size||Elements[2*i].pority>Elements[2*i+1].pority)
+                    {
+                        Elements[i].pority=Elements[2*i].pority;
+                        Elements[i].pocessID=Elements[2*i].pocessID;
+                        i=2*i;
+                    }
+                    else
+                    {
+                        Elements[i].pority=Elements[2*i+1].pority;
+                        Elements[i].pocessID=Elements[2*i+1].pocessID;
+                        i=2*i+1;
+                    }
+                }
+                else
+                    break;
+            }
+            Elements[i].pority=last.pority;
+            Elements[i].pocessID=last.pocessID;
+        }
+        return false;
+    }
+
 };
 
 int main()
 {
+    heap system(10);
+    fstream ReadFile;
+    int a=0,b=0;
+    ReadFile.open("C:\\Users\\29488\\Desktop\\task.dat",ios::in);
+    if (!ReadFile.is_open())
+    {
+        cout << "Error opening file"<<endl;
+        exit (1);
+    }
+    while(!ReadFile.eof())
+    {
+        ReadFile>>a>>b;
+        system.insert(b,a);  //先进程号后优先级
+    }
+    ReadFile.close();
+    for(int i=1;i<=7;i++)
+    {
+        cout<<system.Elements[i].pocessID<<"\t"<<system.Elements[i].pority<<endl;
+        //cout<<system.top().pocessID<<"\t"<<system.top().pority<<endl;
+        //system.DeleteMax();
+    }
     return 0;
 }
-
+/*
+10 0
+20 1
+15 2
+14 3
+13 4
+ */

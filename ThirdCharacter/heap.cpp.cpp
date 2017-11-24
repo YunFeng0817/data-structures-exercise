@@ -73,39 +73,24 @@ public:
 
     bool DeleteMax()
     {
-        int i=1,max;
-        CellElement last;
+        int parent=1,child=2;
+        CellElement temp;
         if(!empty())
         {
-            last=Elements[size];
+            temp=Elements[size];
             size--;
-            while(2*i<=size)
+            while(child<=size)
             {
-                if(2*i+1<=size)
-                    max=Elements[2*i].pority>Elements[2*i+1].pority?Elements[2*i].pority:Elements[2*i+1].pority;
-                else
-                    max=Elements[2*i].pority;
-                if(last.pority<=max)
-                {
-                    if(2*i+1>size||Elements[2*i].pority>Elements[2*i+1].pority||(Elements[2*i].pority==Elements[2*i+1].pority&&findID(Elements[2*i].pocessID)>findID(Elements[2*i+1].pocessID)))
-                    {
-                        cout<<"Elements[2*i].pority "<<Elements[2*i].pority<<" Elements[2*i+1].pority "<<Elements[2*i+1].pority<<endl;
-                        Elements[i].pority=Elements[2*i].pority;
-                        Elements[i].pocessID=Elements[2*i].pocessID;
-                        i=2*i;
-                    }
-                    else
-                    {
-                        Elements[i].pority=Elements[2*i+1].pority;
-                        Elements[i].pocessID=Elements[2*i+1].pocessID;
-                        i=2*i+1;
-                    }
-                }
-                else
+                if(child<size&&Elements[child].pority<Elements[child+1].pority)
+                    child++;
+                if(temp.pority>Elements[child].pority)
                     break;
+                Elements[parent]=Elements[child];
+                parent=child;
+                child*=2;
             }
-            Elements[i].pority=last.pority;
-            Elements[i].pocessID=last.pocessID;
+            Elements[parent]=temp;
+            return true;
         }
         return false;
     }

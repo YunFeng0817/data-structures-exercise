@@ -67,6 +67,7 @@ int main()
     cin>>k;
     cout<<"请输入每组有多少个数字"<<endl;
     cin>>count;
+    cout<<"接下来请依次输入顺串的内容"<<endl;
     for(int i=1;i<=k;i++)
     {
         for(int j=0;j<count;j++)

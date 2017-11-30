@@ -241,7 +241,7 @@ void statistics()
 
 huffmanTree hft(character);
 
-void writeCode()
+void writeCode(int flag)
 {
     ofstream outCode;
     outCode.open("data.dat",ios::trunc);
@@ -250,27 +250,10 @@ void writeCode()
         cout<<"输出文件无法打开"<<endl;
         exit(0);
     }
-//    for(int i=0;i<10;i++)
-//        outCode<<char(i);
-//    for(int i=0;i<5;i++)
-//        outCode<<char(1);
-//    for(int i=0;i<2;i++)
-//        outCode<<char(2);
-//    for(int i=0;i<4;i++)
-//        outCode<<char(3);
-    outCode<<hft.encodeResult<<endl;
-    outCode.close();
-}
-void writeCode1()
-{
-    ofstream outCode;
-    outCode.open("data.dat",ios::trunc);
-    if(!outCode.is_open())
-    {
-        cout<<"输出文件无法打开"<<endl;
-        exit(0);
-    }
-    outCode<<hft.decodeResult<<endl;
+    if(flag==1)
+        outCode<<hft.encodeResult<<endl;
+    else if(flag==2)
+        outCode<<hft.decodeResult;
     outCode.close();
 }
 
@@ -285,14 +268,10 @@ int main()
     }
     hft.getCodeRule(2*codeNum-2);
     hft.encode();
-    writeCode();
+    writeCode(1);
     getArticle();
     hft.decode(Article);
-//    for(int i=0;i<hft.decodeResult.size();i++)
-//    {
-//        cout<<int(hft.decodeResult[i])<<endl;
-//    }
-    writeCode1();
+    writeCode(2);
     return 0;
 }
 //C:\Users\29488\Desktop\task.dat

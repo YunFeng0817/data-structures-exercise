@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
 using namespace std;
 #define codeNum 256
 void getArticle();
@@ -121,15 +120,16 @@ public:
     huffmanTree(int *temp)
     {
         frequency=temp;
-        //初始化小根堆
-        for(int i=0;i<codeNum;i++)
-        {
-            sortedNum.insert(frequency[i],i);
-        }
     }
 
     void establishTree()
     {
+        //初始化小根堆
+        for(int i=0;i<codeNum;i++)
+        {
+            HT[i].weight=frequency[i];
+            sortedNum.insert(frequency[i],i);
+        }
         int sum;
         for(int i=codeNum;i<2*codeNum-1;i++)
         {
@@ -157,11 +157,13 @@ public:
             getCodeRule(HT[index].lchild);
             temp+='1';
             getCodeRule(HT[index].rchild);
-            temp.pop_back();
+            cout<<temp<<endl;
+            if(temp.size()!=0)
+                temp.erase(temp.size()-1);
         }
         else
         {
-            temp.pop_back();
+            temp.erase(temp.size()-1);
         }
     }
 
@@ -173,20 +175,34 @@ public:
         }
     }
 
-    void decode(string * input)
+    void decode(string input)
     {
-        int index=sortedNum.top().pocessID;
-        for(int i=0;i<input->size();i++)
+        int index=2*codeNum-2;
+        for(int i=0;i<input.size();i++)
         {
-            if(input[i]=="0")
+//            cout<<index<<endl;
+            if(input[i]=='0')
             {
+//                cout<<"input "<<input[i]<<endl;
                 if(HT[index].lchild!=-1)
+                {
                     index=HT[index].lchild;
-                else
+                }
+                if(HT[index].lchild==-1&&HT[index].rchild==-1)
                 {
                     decodeResult+=char(index);
-                    index=sortedNum.top().pocessID;
+                    index=2*codeNum-2;
                 }
+            }
+            else
+            {
+                if(HT[index].rchild!=-1)
+                    index=HT[index].rchild;
+                    if(HT[index].lchild==-1&&HT[index].rchild==-1)
+                    {
+                        decodeResult+=char(index);
+                        index=2*codeNum-2;
+                    }
             }
         }
     }
@@ -195,20 +211,19 @@ public:
 
 void getArticle()  //这是统计英语文章中字符出现频率的函数
 {
-    for(int i=0;i<256;i++)
-        character[i]=0;
     string filePath;
     cout<<"请输入要压缩处理的英文文章的路径"<<endl;
     cin>>filePath;
-    ifstream englishArticle(filePath,ios::in);
+    ifstream englishArticle(filePath);
     if(!englishArticle.is_open())
     {
         cout<<"打开文件失败,请输入有效路径"<<endl;
         exit(0);
     }
     stringstream article;
-    article>>englishArticle.rdbuf();
-    Article=article.str();
+    article<<englishArticle.rdbuf();  //此处有坑，<<的方向反了
+    string test(article.str());
+    Article=test;
     englishArticle.close();
 }
 
@@ -224,11 +239,60 @@ void statistics()
     }
 }
 
+huffmanTree hft(character);
+
+void writeCode()
+{
+    ofstream outCode;
+    outCode.open("data.dat",ios::trunc);
+    if(!outCode.is_open())
+    {
+        cout<<"输出文件无法打开"<<endl;
+        exit(0);
+    }
+//    for(int i=0;i<10;i++)
+//        outCode<<char(i);
+//    for(int i=0;i<5;i++)
+//        outCode<<char(1);
+//    for(int i=0;i<2;i++)
+//        outCode<<char(2);
+//    for(int i=0;i<4;i++)
+//        outCode<<char(3);
+    outCode<<hft.encodeResult<<endl;
+    outCode.close();
+}
+void writeCode1()
+{
+    ofstream outCode;
+    outCode.open("data.dat",ios::trunc);
+    if(!outCode.is_open())
+    {
+        cout<<"输出文件无法打开"<<endl;
+        exit(0);
+    }
+    outCode<<hft.decodeResult<<endl;
+    outCode.close();
+}
+
 int main()
 {
     getArticle();
     statistics();
-    huffmanTree hft(character);
     hft.establishTree();
+    for(int i=0;i<2*codeNum-1;i++)
+    {
+        cout<<"i: "<<i<<"\t"<<hft.HT[i].weight<<"\t"<<hft.HT[i].lchild<<"\t"<<hft.HT[i].rchild<<endl;
+    }
+    hft.getCodeRule(2*codeNum-2);
+    hft.encode();
+    writeCode();
+    getArticle();
+    hft.decode(Article);
+//    for(int i=0;i<hft.decodeResult.size();i++)
+//    {
+//        cout<<int(hft.decodeResult[i])<<endl;
+//    }
+    writeCode1();
     return 0;
 }
+//C:\Users\29488\Desktop\task.dat

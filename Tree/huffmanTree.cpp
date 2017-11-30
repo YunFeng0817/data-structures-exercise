@@ -61,11 +61,16 @@ public:
         if(!full())
         {
             size++;
-            while(i!=1&&p<Elements[i/2].pority)
+            while(i!=1&&p<=Elements[i/2].pority)
             {
-                Elements[i].pority=Elements[i/2].pority;
-                Elements[i].pocessID=Elements[i/2].pocessID;
-                i=i/2;
+                if(p<Elements[i/2].pority||(p==Elements[i/2].pority&&ID<Elements[i/2].pocessID))
+                {
+                    Elements[i].pority=Elements[i/2].pority;
+                    Elements[i].pocessID=Elements[i/2].pocessID;
+                    i=i/2;
+                }
+                else
+                    break;
             }
             Elements[i].pocessID=ID;
             Elements[i].pority=p;
@@ -79,37 +84,27 @@ public:
         return Elements[1];
     }
 
-    bool DeleteMin()
-    {
-        int i=1,min;
-        CellElement last;
-        if(!empty())
-        {
-            last=Elements[size];
+    bool DeleteMin() {
+        int parent = 1, child = 2;
+        CellElement temp;
+        if (!empty()) {
+            temp = Elements[size];
             size--;
-            while(2*i<=size)
-            {
-                if(2*i+1<=size)
-                    min=Elements[2*i].pority<Elements[2*i+1].pority?Elements[2*i].pority:Elements[2*i+1].pority;
-                else
-                    min=Elements[2*i].pority;
-                if(last.pority>=min)
-                {
-                    if(2*i+1>size||Elements[2*i].pority<Elements[2*i+1].pority)
-                    {
-                        Elements[i]=Elements[2*i];
-                        i=2*i;
-                    }
-                    else
-                    {
-                        Elements[i]=Elements[2*i+1];
-                        i=2*i+1;
-                    }
-                }
-                else
+            while (child <= size) {
+                if (child < size && Elements[child].pority > Elements[child + 1].pority)
+                    child++;
+                else if(child < size && Elements[child].pority == Elements[child + 1].pority&&Elements[child].pocessID>Elements[child + 1].pocessID)
+                    child++;
+                if (temp.pority < Elements[child].pority)
                     break;
+                if(temp.pority==Elements[child].pority&&temp.pocessID<Elements[child].pocessID)
+                    break;
+                Elements[parent] = Elements[child];
+                parent = child;
+                child *= 2;
             }
-            Elements[i]=last;
+            Elements[parent] = temp;
+            return true;
         }
         return false;
     }
@@ -136,7 +131,7 @@ public:
     void establishTree()
     {
         int sum;
-        for(int i=codeNum,i<2*codeNum-1;i++)
+        for(int i=codeNum;i<2*codeNum-1;i++)
         {
             sum=0;
             HT[i].lchild=sortedNum.top().pocessID;
@@ -183,7 +178,7 @@ public:
         int index=sortedNum.top().pocessID;
         for(int i=0;i<input->size();i++)
         {
-            if(input[i]==0)
+            if(input[i]=="0")
             {
                 if(HT[index].lchild!=-1)
                     index=HT[index].lchild;
@@ -203,7 +198,6 @@ void getArticle()  //这是统计英语文章中字符出现频率的函数
     for(int i=0;i<256;i++)
         character[i]=0;
     string filePath;
-    char temp;
     cout<<"请输入要压缩处理的英文文章的路径"<<endl;
     cin>>filePath;
     ifstream englishArticle(filePath,ios::in);
@@ -220,7 +214,7 @@ void getArticle()  //这是统计英语文章中字符出现频率的函数
 
 void statistics()
 {
-    for(int i=0;i<256;i++)
+    for(int i=0;i<codeNum;i++)
     {
         character[i]=0;
     }
@@ -234,5 +228,7 @@ int main()
 {
     getArticle();
     statistics();
+    huffmanTree hft(character);
+    hft.establishTree();
     return 0;
 }

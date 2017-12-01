@@ -199,7 +199,6 @@ public:
         int k=7;
         for(int i=quotient*8;i<encodeResult.size();i++)
         {
-            cout<<encodeResult.size()<<endl;
             if(encodeResult[i]=='0')
                 temp=0;
             else
@@ -296,14 +295,19 @@ void getContent(int flag)  //这是统计英语文章中字符出现频率的函数
     {
         int count;
         unsigned char temp;
-        englishArticle>>count;
-        cout<<cout<<endl;
+        englishArticle.read((char*)&count, sizeof(int));
         for(int i=0;i<count;i++)
         {
-            englishArticle>>temp;
-            englishArticle>>character[(int)temp];
+            englishArticle.read((char*)&temp, sizeof(char));
+            englishArticle.read((char*)&character[(int)temp], sizeof(int));
         }
         englishArticle>>binary;
+        while(!englishArticle.eof())
+        {
+            string tempStr;
+            getline(englishArticle,tempStr);
+            binary+=tempStr;
+        }
     }
     englishArticle.close();
 }
@@ -344,12 +348,13 @@ void writeCode(int flag)
             if(character[i]!=0)
                 count++;
         }
-        outCode<<count;
+        outCode.write((char*)&count,sizeof(int));
         for(int i=0;i<codeNum;i++)
         {
             if(character[i]!=0)
             {
-                outCode<<char(i)<<character[i];
+                outCode.write((char*)&i,sizeof(char));
+                outCode.write((char*)&character[i], sizeof(int));
             }
         }
         outCode<<hft.encodeBinary;
@@ -378,14 +383,9 @@ int main()
             hft.encode();
             hft.encodeBinaryAction();
             writeCode(1);
-//            writeCode(2);
             break;
         case 2:
             getContent(2);
-//            for(int i=0;i<codeNum;i++)
-//            {
-//                cout<<i<<" "<<character[i]<<endl;
-//            }
             hft.establishTree();
             hft.decodeBinary();
             hft.decode();

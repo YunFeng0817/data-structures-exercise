@@ -301,13 +301,12 @@ void getContent(int flag)  //这是统计英语文章中字符出现频率的函数
             englishArticle.read((char*)&temp, sizeof(char));
             englishArticle.read((char*)&character[(int)temp], sizeof(int));
         }
-        englishArticle>>binary;
-        while(!englishArticle.eof())
-        {
-            string tempStr;
-            getline(englishArticle,tempStr);
-            binary+=tempStr;
-        }
+        englishArticle.close();
+        ifstream englishArticle(filePath.c_str(),ios::binary);
+        stringstream article;
+        article<<englishArticle.rdbuf();  //此处有坑，<<的方向反了
+        string test(article.str());
+        binary=test.substr(5*(count+1)-1);
     }
     englishArticle.close();
 }

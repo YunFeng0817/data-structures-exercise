@@ -1,9 +1,12 @@
 //
 // Created by Fitz on 2017/11/29.
-//
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
+#include <cstdlib>
+#include <cstdio>
 using namespace std;
 #define codeNum 256
 void getContent(int flag);
@@ -178,7 +181,7 @@ public:
     {
         char oneByte;
         int mod=8-(int)encodeResult.size()%8,temp,quotient=(int)encodeResult.size()/8;
-        for(int i=0;i<(encodeResult.size()-8);i+=8)
+        for(int i=0;i<((int)encodeResult.size()-8);i+=8)
         {
             oneByte=char(0xff);
             for(int j=7;j>=0;j--)
@@ -196,6 +199,7 @@ public:
         int k=7;
         for(int i=quotient*8;i<encodeResult.size();i++)
         {
+            cout<<encodeResult.size()<<endl;
             if(encodeResult[i]=='0')
                 temp=0;
             else
@@ -275,7 +279,7 @@ void getContent(int flag)  //这是统计英语文章中字符出现频率的函数
     else
         cout<<"请输入要解压的文件路径"<<endl;
     cin>>filePath;
-    ifstream englishArticle(filePath,ios::binary);
+    ifstream englishArticle(filePath.c_str(),ios::binary);
     if(!englishArticle.is_open())
     {
         cout<<"打开文件失败,请输入有效路径"<<endl;
@@ -293,11 +297,10 @@ void getContent(int flag)  //这是统计英语文章中字符出现频率的函数
         int count;
         unsigned char temp;
         englishArticle>>count;
-        cout<<count<<endl;
+        cout<<cout<<endl;
         for(int i=0;i<count;i++)
         {
             englishArticle>>temp;
-            cout<<temp<<endl;
             englishArticle>>character[(int)temp];
         }
         englishArticle>>binary;
@@ -327,7 +330,7 @@ void writeCode(int flag)
     else
         path="decode.txt";
     ofstream outCode;
-    outCode.open(path,ios::binary);
+    outCode.open(path.c_str(),ios_base::binary);
     if(!outCode.is_open())
     {
         cout<<"输出文件无法打开"<<endl;
@@ -379,14 +382,14 @@ int main()
             break;
         case 2:
             getContent(2);
-//            hft.establishTree();
 //            for(int i=0;i<codeNum;i++)
 //            {
-//                cout<<character[i]<<" "<<i<<endl;
+//                cout<<i<<" "<<character[i]<<endl;
 //            }
-//            hft.decodeBinary();
-//            hft.decode();
-//            writeCode(2);
+            hft.establishTree();
+            hft.decodeBinary();
+            hft.decode();
+            writeCode(2);
             break;
         default:goto a;
     }

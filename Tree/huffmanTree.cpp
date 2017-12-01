@@ -157,7 +157,6 @@ public:
             getCodeRule(HT[index].lchild);
             temp+='1';
             getCodeRule(HT[index].rchild);
-            cout<<temp<<endl;
             if(temp.size()!=0)
                 temp.erase(temp.size()-1);
         }
@@ -180,10 +179,8 @@ public:
         int index=2*codeNum-2;
         for(int i=0;i<input.size();i++)
         {
-//            cout<<index<<endl;
             if(input[i]=='0')
             {
-//                cout<<"input "<<input[i]<<endl;
                 if(HT[index].lchild!=-1)
                 {
                     index=HT[index].lchild;

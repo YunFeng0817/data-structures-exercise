@@ -6,7 +6,7 @@
 #include <sstream>
 using namespace std;
 #define codeNum 256
-void getContent();
+void getContent(int flag);
 void statistics();
 int character[codeNum+1];
 string Article;
@@ -136,7 +136,6 @@ public:
         {
             sum=0;
             HT[i].lchild=sortedNum.top().pocessID;
-//            cout<<sortedNum.top().pocessID<<endl;
             sum+=sortedNum.top().pority;
             sortedNum.DeleteMin();
             HT[i].rchild=sortedNum.top().pocessID;
@@ -173,7 +172,6 @@ public:
         {
             encodeResult+=codeRule[(unsigned char)(Article[i])];
         }
-        cout<<"test"<<endl;
     }
 
     void encodeBinaryAction()
@@ -185,7 +183,7 @@ public:
             oneByte=char(0xff);
             for(int j=7;j>=0;j--)
             {
-                if(encodeResult[i]=='0')
+                if(encodeResult[i-j+7]=='0') //i+7-j表示依次遍历 i+0,i+1,i+2,……i+7的元素
                     temp=0;
                 else
                     temp=1;
@@ -213,7 +211,7 @@ public:
             oneByte=char(oneByte&temp);
         }
         encodeBinary+=oneByte;
-//        encodeBinary+=(char)mod;
+        encodeBinary+=(char)mod;
     }
 
     void decode()
@@ -256,7 +254,6 @@ public:
             for(int j=7;j>=0;j--)
             {
                 temp=((1<<j)&onebyte)>>j;
-                cout<<temp<<endl;
                 if(temp==1)
                     input+='1';
                 else if(temp==0)
@@ -266,7 +263,6 @@ public:
         temp=binary[binary.size()-1];
         for(int i=0;i<temp;i++)
             input.erase(input.size()-1);
-        //cout<<input<<endl;
     }
 
 };
@@ -297,9 +293,11 @@ void getContent(int flag)  //这是统计英语文章中字符出现频率的函数
         int count;
         unsigned char temp;
         englishArticle>>count;
+        cout<<count<<endl;
         for(int i=0;i<count;i++)
         {
             englishArticle>>temp;
+            cout<<temp<<endl;
             englishArticle>>character[(int)temp];
         }
         englishArticle>>binary;
@@ -343,20 +341,20 @@ void writeCode(int flag)
             if(character[i]!=0)
                 count++;
         }
-//        outCode<<count;
-//        for(int i=0;i<codeNum;i++)
-//        {
-//            if(character[i]!=0)
-//            {
-//                outCode<<char(i)<<character[i];
-//            }
-//        }
+        outCode<<count;
+        for(int i=0;i<codeNum;i++)
+        {
+            if(character[i]!=0)
+            {
+                outCode<<char(i)<<character[i];
+            }
+        }
         outCode<<hft.encodeBinary;
         cout<<"该压缩文件保存为  名称为  "+path+"  的文件"<<endl;
     }
     else if(flag==2)
     {
-        outCode<<hft.encodeResult;
+        outCode<<hft.decodeResult;
         cout<<"解压后的文件保存为  名称为  "+path+"  的文件"<<endl;
     }
     outCode.close();
@@ -377,14 +375,18 @@ int main()
             hft.encode();
             hft.encodeBinaryAction();
             writeCode(1);
-            writeCode(2);
+//            writeCode(2);
             break;
         case 2:
             getContent(2);
-            hft.establishTree();
-            hft.decodeBinary();
-            hft.decode();
-            writeCode(2);
+//            hft.establishTree();
+//            for(int i=0;i<codeNum;i++)
+//            {
+//                cout<<character[i]<<" "<<i<<endl;
+//            }
+//            hft.decodeBinary();
+//            hft.decode();
+//            writeCode(2);
             break;
         default:goto a;
     }

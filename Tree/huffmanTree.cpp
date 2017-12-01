@@ -115,7 +115,7 @@ class huffmanTree
 {
 public:
     int * frequency,root;
-    string codeRule[codeNum+1],temp,encodeResult,decodeResult;
+    string codeRule[codeNum+1],temp,encodeResult,decodeResult,encodeBinary;
     cellElement HT[2*codeNum-1];
     huffmanTree(int *temp)
     {
@@ -170,8 +170,49 @@ public:
     {
         for(int i=0;i<Article.size();i++)
         {
-            encodeResult+=codeRule[int(Article[i])];
+            encodeResult+=codeRule[(unsigned char)(Article[i])];
         }
+        cout<<"test"<<endl;
+    }
+
+    void encodeBinaryAction()
+    {
+        char oneByte;
+        int mod=(int)encodeResult.size()%8,temp,quotient=(int)encodeResult.size()/8;
+        for(int i=0;i<encodeResult.size();i+=8)
+        {
+            oneByte=0xff;
+            for(int j=7;j>=0;j--)
+            {
+                if(encodeResult[i]=='0')
+                    temp=0;
+                else
+                    temp=1;
+                temp=temp<<j|((unsigned(1))>>(8-j));
+                oneByte=oneByte&temp;
+            }
+            encodeBinary+=oneByte;
+        }
+        oneByte=char(0xff);
+        for(int i=quotient*8;i<encodeResult.size();i++)
+        {
+            for(int j=7;j>=0;j--)
+            {
+                if(j>=mod)
+                {
+                    if(encodeResult[i]=='0')
+                        temp=0;
+                    else
+                        temp=1;
+                }
+                else
+                    temp=0;
+                temp=temp<<j|((unsigned(1))>>(8-j));
+                oneByte=char(oneByte&temp);
+            }
+        }
+        encodeBinary+=oneByte;
+        encodeBinary+=(char)mod;
     }
 
     void decode(string input)
@@ -211,7 +252,7 @@ void getArticle()  //这是统计英语文章中字符出现频率的函数
     string filePath;
     cout<<"请输入要压缩处理的英文文章的路径"<<endl;
     cin>>filePath;
-    ifstream englishArticle(filePath);
+    ifstream englishArticle(filePath,ios::binary);
     if(!englishArticle.is_open())
     {
         cout<<"打开文件失败,请输入有效路径"<<endl;
@@ -232,7 +273,7 @@ void statistics()
     }
     for(int i=0;i<Article.size();i++)
     {
-        character[int(Article[i])]++;
+        character[(unsigned char)(Article[i])]++;
     }
 }
 
@@ -241,7 +282,7 @@ huffmanTree hft(character);
 void writeCode(int flag)
 {
     ofstream outCode;
-    outCode.open("data.dat",ios::trunc);
+    outCode.open("data.dat",ios::binary);
     if(!outCode.is_open())
     {
         cout<<"输出文件无法打开"<<endl;
@@ -261,6 +302,7 @@ int main()
     hft.establishTree();
     hft.getCodeRule(2*codeNum-2);
     hft.encode();
+    //hft.encodeBinaryAction();
     writeCode(1);
     getArticle();
     hft.decode(Article);

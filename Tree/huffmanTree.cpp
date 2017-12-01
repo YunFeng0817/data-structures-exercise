@@ -116,7 +116,7 @@ class huffmanTree
 {
 public:
     int * frequency,root;
-    string codeRule[codeNum+1],temp,encodeResult,decodeResult,encodeBinary;
+    string codeRule[codeNum+1],temp,encodeResult,decodeResult,encodeBinary,input;
     cellElement HT[2*codeNum-1];
     huffmanTree(int *temp)
     {
@@ -136,6 +136,7 @@ public:
         {
             sum=0;
             HT[i].lchild=sortedNum.top().pocessID;
+//            cout<<sortedNum.top().pocessID<<endl;
             sum+=sortedNum.top().pority;
             sortedNum.DeleteMin();
             HT[i].rchild=sortedNum.top().pocessID;
@@ -189,7 +190,7 @@ public:
                     temp=0;
                 else
                     temp=1;
-                temp=temp<<j|((unsigned(1))>>(8-j));
+                temp=(temp<<j)|((unsigned(1))>>(8-j));
                 oneByte=oneByte&temp;
             }
             encodeBinary+=oneByte;
@@ -216,7 +217,7 @@ public:
         encodeBinary+=(char)mod;
     }
 
-    void decode(string input)
+    void decode()
     {
         int index=2*codeNum-2;
         for(int i=0;i<input.size();i++)
@@ -248,7 +249,25 @@ public:
 
     void decodeBinary()
     {
-
+        char onebyte;
+        int temp;
+        for(int i=0;i<binary.size()-1;i++)
+        {
+            onebyte=binary[i];
+            for(int j=7;j>=0;j--)
+            {
+                temp=((1<<j)&onebyte)>>j;
+                cout<<temp<<endl;
+                if(temp==1)
+                    input+='1';
+                else if(temp==0)
+                    input+='0';
+            }
+        }
+        temp=binary[binary.size()-1];
+        for(int i=0;i<temp;i++)
+            input.erase(input.size()-1);
+        //cout<<input<<endl;
     }
 
 };
@@ -277,12 +296,12 @@ void getContent(int flag)  //这是统计英语文章中字符出现频率的函数
     else
     {
         int count;
-        unsigned temp;
+        unsigned char temp;
         englishArticle>>count;
         for(int i=0;i<count;i++)
         {
             englishArticle>>temp;
-            englishArticle>>character[temp];
+            englishArticle>>character[(int)temp];
         }
         englishArticle>>binary;
     }
@@ -307,7 +326,7 @@ void writeCode(int flag)
 {
     string path;
     if(flag==1)
-        path="file.zip";
+        path="zip";
     else
         path="decode.txt";
     ofstream outCode;
@@ -325,20 +344,20 @@ void writeCode(int flag)
             if(character[i]!=0)
                 count++;
         }
-        outCode<<count;
-        for(int i=0;i<codeNum;i++)
-        {
-            if(character[i]!=0)
-            {
-                outCode<<char(i)<<character[i];
-            }
-        }
+//        outCode<<count;
+//        for(int i=0;i<codeNum;i++)
+//        {
+//            if(character[i]!=0)
+//            {
+//                outCode<<char(i)<<character[i];
+//            }
+//        }
         outCode<<hft.encodeBinary;
         cout<<"该压缩文件保存为了名为  "+path+"  的文件"<<endl;
     }
     else if(flag==2)
     {
-        outCode<<hft.decodeResult;
+        outCode<<hft.encodeResult;
         cout<<"解压后的文件保存为了名为  "+path+"  的文件"<<endl;
     }
     outCode.close();
@@ -346,9 +365,6 @@ void writeCode(int flag)
 
 int main()
 {
-    getContent(1);
-    hft.decode(Article);
-    writeCode(2);
     a:cout<<">>>您要压缩文件还是解压文件？(输入1 或 2)"<<endl<<">>>1、压缩文件"<<endl<<">>>2、解压文件"<<endl;
     int choice;
     cin>>choice;
@@ -362,9 +378,14 @@ int main()
             hft.encode();
             hft.encodeBinaryAction();
             writeCode(1);
+            writeCode(2);
             break;
         case 2:
             getContent(2);
+            hft.establishTree();
+            hft.decodeBinary();
+            hft.decode();
+            writeCode(2);
             break;
         default:goto a;
     }

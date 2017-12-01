@@ -115,7 +115,7 @@ heapmin sortedNum(codeNum+1);
 class huffmanTree
 {
 public:
-    int * frequency,root;
+    int * frequency;
     string codeRule[codeNum+1],temp,encodeResult,decodeResult,encodeBinary,input;
     cellElement HT[2*codeNum-1];
     huffmanTree(int *temp)
@@ -145,7 +145,6 @@ public:
             HT[i].weight=sum;
             sortedNum.insert(HT[i].weight,i);
         }
-        root=sortedNum.top().pocessID;
     }
 
     //通过遍历哈夫曼树得到相应的编码规则
@@ -159,7 +158,7 @@ public:
             getCodeRule(HT[index].lchild);
             temp+='1';
             getCodeRule(HT[index].rchild);
-            if(temp.size()!=0)
+            if(!temp.empty())
                 temp.erase(temp.size()-1);
         }
         else
@@ -180,41 +179,41 @@ public:
     void encodeBinaryAction()
     {
         char oneByte;
-        int mod=(int)encodeResult.size()%8,temp,quotient=(int)encodeResult.size()/8;
-        for(int i=0;i<encodeResult.size();i+=8)
+        int mod=8-(int)encodeResult.size()%8,temp,quotient=(int)encodeResult.size()/8;
+        for(int i=0;i<(encodeResult.size()-8);i+=8)
         {
-            oneByte=0xff;
+            oneByte=char(0xff);
             for(int j=7;j>=0;j--)
             {
                 if(encodeResult[i]=='0')
                     temp=0;
                 else
                     temp=1;
-                temp=(temp<<j)|((unsigned(1))>>(8-j));
-                oneByte=oneByte&temp;
+                temp=(temp<<j)|(~(1<<j));
+                oneByte=char(oneByte&temp);
             }
             encodeBinary+=oneByte;
         }
         oneByte=char(0xff);
+        int k=7;
         for(int i=quotient*8;i<encodeResult.size();i++)
         {
-            for(int j=7;j>=0;j--)
-            {
-                if(j>=mod)
-                {
-                    if(encodeResult[i]=='0')
-                        temp=0;
-                    else
-                        temp=1;
-                }
-                else
-                    temp=0;
-                temp=temp<<j|((unsigned(1))>>(8-j));
-                oneByte=char(oneByte&temp);
-            }
+            if(encodeResult[i]=='0')
+                temp=0;
+            else
+                temp=1;
+            temp=(temp<<k)|(~(1<<k));
+            oneByte=char(oneByte&temp);
+            k--;
+        }
+        for(int j=mod-1;j>=0;j--)
+        {
+            temp=0;
+            temp=(temp<<j)|(~(1<<j));
+            oneByte=char(oneByte&temp);
         }
         encodeBinary+=oneByte;
-        encodeBinary+=(char)mod;
+//        encodeBinary+=(char)mod;
     }
 
     void decode()
@@ -353,12 +352,12 @@ void writeCode(int flag)
 //            }
 //        }
         outCode<<hft.encodeBinary;
-        cout<<"该压缩文件保存为了名为  "+path+"  的文件"<<endl;
+        cout<<"该压缩文件保存为  名称为  "+path+"  的文件"<<endl;
     }
     else if(flag==2)
     {
         outCode<<hft.encodeResult;
-        cout<<"解压后的文件保存为了名为  "+path+"  的文件"<<endl;
+        cout<<"解压后的文件保存为  名称为  "+path+"  的文件"<<endl;
     }
     outCode.close();
 }

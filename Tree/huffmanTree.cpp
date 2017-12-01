@@ -262,10 +262,6 @@ int main()
     getArticle();
     statistics();
     hft.establishTree();
-    for(int i=0;i<2*codeNum-1;i++)
-    {
-        cout<<"i: "<<i<<"\t"<<hft.HT[i].weight<<"\t"<<hft.HT[i].lchild<<"\t"<<hft.HT[i].rchild<<endl;
-    }
     hft.getCodeRule(2*codeNum-2);
     hft.encode();
     writeCode(1);
@@ -274,4 +270,3 @@ int main()
     writeCode(2);
     return 0;
 }
-//C:\Users\29488\Desktop\task.dat

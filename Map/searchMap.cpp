@@ -11,7 +11,7 @@ class map{
 public:
     int pointNum,edgeNum;
     int point[maxNum],edge[maxNum][maxNum];
-    initMap(int p,int e)
+    void initMap(int p,int e)
     {
         pointNum=p;
         edgeNum=e;
@@ -63,7 +63,7 @@ void DFSRecursive(int currentPoint)
     visited[currentPoint]=true;
     for(int i=0;i<newMap.pointNum;i++)
     {
-        if(newMap.edge[currentPoint][i])
+        if(!visited[i]&&newMap.edge[currentPoint][i])
         {
             dfsCode[count]=i;
             count++;

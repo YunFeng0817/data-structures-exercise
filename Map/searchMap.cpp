@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <stack>
+#include<queue>
 #include <cstdlib>
 using namespace std;
 #define maxNum 30
@@ -146,11 +147,47 @@ void DFSNotRecursive()
     }
 }
 
+void BFS()
+{
+    queue<int> point;
+    count=0;
+    for(int i=0;i<newMap.pointNum;i++)
+    {
+        visited[i]=false;
+        dfsCode[i]=-1;
+    }
+    for(int i=0;i<newMap.pointNum;i++)
+    {
+        if(!visited[i])
+        {
+            visited[i]=true;
+            dfsCode[count]=i;
+            count++;
+            point.push(0);
+            while(!point.empty())
+            {
+                for(int j=0;j<newMap.pointNum;j++)
+                {
+                    if(!visited[j]&&newMap.edge[point.front()][j])
+                    {
+                        point.push(j);
+                        visited[point.front()]=true;
+                        dfsCode[count]=j;
+                        count++;
+                    }
+                }
+                point.pop();
+            }
+        }
+    }
+}
+
 int main()
 {
     readFile();
     //DFSRecursiveMain();
-    DFSNotRecursive();
+    //DFSNotRecursive();
+    BFS();
     for(int i=0;i<newMap.pointNum;i++)
         cout<<dfsCode[i]<<endl;
     return 0;

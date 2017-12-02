@@ -187,6 +187,7 @@ public:
     //该函数通过遍历存储原文章内容的字符串，将相应的ascii码替换为已经得到的对应01编码，并存入成员变量encodeResul中
     void encode()
     {
+        encodeResult="";
         for(int i=0;i<Article.size();i++)
         {
             encodeResult+=codeRule[(unsigned char)(Article[i])];
@@ -196,6 +197,7 @@ public:
     //该函数是将encode()函数得到的encodeResult通过位运算，每8位01编码存为一个字节的大小，达到压缩的目的
     void encodeBinaryAction()
     {
+        encodeBinary="";
         char oneByte;
         int mod=8-(int)encodeResult.size()%8,temp,quotient=(int)encodeResult.size()/8;
         for(int i=0;i<((int)encodeResult.size()-8);i+=8)
@@ -237,6 +239,7 @@ public:
     //该函数通过对01字符串和已经建立的哈夫曼树，得到解码后的原文件内容
     void decode()
     {
+        decodeResult="";
         int index=2*codeNum-2;
         for(int i=0;i<input.size();i++)
         {
@@ -268,6 +271,7 @@ public:
     //该函数通过对得到的压缩后的内容进行还原，将每一位的01信息编程一个01字符，放入到decodeResult中
     void decodeBinary()
     {
+        input="";
         char onebyte;
         int temp;
         for(int i=0;i<binary.size()-1;i++)
@@ -292,6 +296,8 @@ public:
 void getContent(int flag,char* path)  //这是统计英语文章中字符出现频率的函数
 {
     string filePath;
+    Article="";
+    binary="";
     ifstream englishArticle;
     if(flag==1)
     {
@@ -335,7 +341,6 @@ void getContent(int flag,char* path)  //这是统计英语文章中字符出现频率的函数
         if(flag==2)
         {
             englishArticle.open(filePath.c_str(),ios::binary);
-            cout<<"called"<<endl;
         }
         else
             englishArticle.open(path,ios::binary);

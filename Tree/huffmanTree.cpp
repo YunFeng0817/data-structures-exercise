@@ -8,19 +8,27 @@
 #include <cstdlib>
 #include <cstdio>
 using namespace std;
+//用于确定数组建立时分配大小
 #define codeNum 256
-void getContent(int flag);
+//这个函数用于从文件读取信息，flag=1表明读取一个未压缩文件，flag=2表明读取一个已经压缩过的文件，用于解压
+void getContent(int flag,char* path);
+//这个函数用于统计文章中每种字符的出现频数
 void statistics();
+//这个函数用于将压缩或者解压后的内容写入文件
+void writeCode(int flag,char* path);
+//用来存储输入文章的字符频数，以其对应的ascii码作为数组的下标
 int character[codeNum+1];
+//用来存储从文件读入的二进制的编码
 string Article;
+//用来存储从文件读入的二进制的编码
 string binary;
-
+//这个结构踢表示一个哈夫曼树的一个节点
 struct CellElement
 {
     int pority;   //编码节点的权重
     int pocessID; //编码的ID
 };
-
+//这个类表示小根堆的一个节点
 class cellElement
 {
 public:
@@ -112,7 +120,7 @@ public:
         return false;
     }
 };
-
+//建立了一个以codeNum+1大小的小根堆，用于森林权重的比较大小
 heapmin sortedNum(codeNum+1);
 
 class huffmanTree
@@ -125,10 +133,17 @@ public:
     {
         frequency=temp;
     }
-
+    //该函数根据传入的字符出现频率，建立哈夫曼树
     void establishTree()
     {
-        //初始化小根堆
+        for(int i=0;i<2*codeNum-1;i++)
+        {
+            HT[i].weight=0;
+            HT[i].lchild=-1;
+            HT[i].rchild=-1;
+        }
+        while(!sortedNum.empty())
+            sortedNum.DeleteMin();
         for(int i=0;i<codeNum;i++)
         {
             HT[i].weight=frequency[i];
@@ -169,6 +184,7 @@ public:
         }
     }
 
+    //该函数通过遍历存储原文章内容的字符串，将相应的ascii码替换为已经得到的对应01编码，并存入成员变量encodeResul中
     void encode()
     {
         for(int i=0;i<Article.size();i++)
@@ -177,6 +193,7 @@ public:
         }
     }
 
+    //该函数是将encode()函数得到的encodeResult通过位运算，每8位01编码存为一个字节的大小，达到压缩的目的
     void encodeBinaryAction()
     {
         char oneByte;
@@ -217,6 +234,7 @@ public:
         encodeBinary+=(char)mod;
     }
 
+    //该函数通过对01字符串和已经建立的哈夫曼树，得到解码后的原文件内容
     void decode()
     {
         int index=2*codeNum-2;
@@ -247,6 +265,7 @@ public:
         }
     }
 
+    //该函数通过对得到的压缩后的内容进行还原，将每一位的01信息编程一个01字符，放入到decodeResult中
     void decodeBinary()
     {
         char onebyte;
@@ -270,21 +289,30 @@ public:
 
 };
 
-void getContent(int flag)  //这是统计英语文章中字符出现频率的函数
+void getContent(int flag,char* path)  //这是统计英语文章中字符出现频率的函数
 {
     string filePath;
+    ifstream englishArticle;
     if(flag==1)
-        cout<<"请输入要压缩处理的文件的路径"<<endl;
+    {
+        cout<<"请输入要压缩处理的文件的路径"<<endl<<">>>";
+        cin>>filePath;
+        englishArticle.open(filePath.c_str(),ios::binary);
+    }
+    else if(flag==2)
+    {
+        cout<<"请输入要解压的文件路径"<<endl<<">>>";
+        cin>>filePath;
+        englishArticle.open(filePath.c_str(),ios::binary);
+    }
     else
-        cout<<"请输入要解压的文件路径"<<endl;
-    cin>>filePath;
-    ifstream englishArticle(filePath.c_str(),ios::binary);
+        englishArticle.open(path,ios::binary);
     if(!englishArticle.is_open())
     {
         cout<<"打开文件失败,请输入有效路径"<<endl;
         exit(0);
     }
-    if(flag==1)
+    if(flag==1||flag==3)
     {
         stringstream article;
         article<<englishArticle.rdbuf();  //此处有坑，<<的方向反了
@@ -296,13 +324,21 @@ void getContent(int flag)  //这是统计英语文章中字符出现频率的函数
         int count;
         unsigned char temp;
         englishArticle.read((char*)&count, sizeof(int));
+        for(int i=0;i<codeNum;i++)
+            character[i]=0;
         for(int i=0;i<count;i++)
         {
             englishArticle.read((char*)&temp, sizeof(char));
             englishArticle.read((char*)&character[(int)temp], sizeof(int));
         }
         englishArticle.close();
-        ifstream englishArticle(filePath.c_str(),ios::binary);
+        if(flag==2)
+        {
+            englishArticle.open(filePath.c_str(),ios::binary);
+            cout<<"called"<<endl;
+        }
+        else
+            englishArticle.open(path,ios::binary);
         stringstream article;
         article<<englishArticle.rdbuf();  //此处有坑，<<的方向反了
         string test(article.str());
@@ -322,24 +358,33 @@ void statistics()
         character[(unsigned char)(Article[i])]++;
     }
 }
-
+//建立了一棵哈夫曼树
 huffmanTree hft(character);
 
-void writeCode(int flag)
+void writeCode(int flag,char* path)
 {
-    string path;
-    if(flag==1)
-        path="zip";
-    else
-        path="decode.txt";
+    string filePath;
     ofstream outCode;
-    outCode.open(path.c_str(),ios_base::binary);
+    if(flag==1)
+    {
+        cout<<"请输入压缩后文件的保存路径"<<endl<<">>>";
+        cin>>filePath;
+        outCode.open(filePath.c_str(),ios_base::binary);
+    }
+    else if(flag==2)
+    {
+        cout<<"请输入解压后文件的保存路径"<<endl<<">>>";
+        cin>>filePath;
+        outCode.open(filePath.c_str(),ios_base::binary);
+    }
+    else
+        outCode.open(path,ios_base::binary);
     if(!outCode.is_open())
     {
         cout<<"输出文件无法打开"<<endl;
         exit(0);
     }
-    if(flag==1)
+    if(flag==1||flag==3)
     {
         int count=0;
         for(int i=0;i<codeNum;i++)
@@ -357,41 +402,83 @@ void writeCode(int flag)
             }
         }
         outCode<<hft.encodeBinary;
-        cout<<"该压缩文件保存为  名称为  "+path+"  的文件"<<endl;
+        if(flag<3)
+            cout<<"该压缩文件保存为  名称为  "+filePath+"  的文件"<<endl;
+        else
+            cout<<"该压缩文件保存为  名称为  "<<path<<"  的文件"<<endl;
     }
-    else if(flag==2)
+    else
     {
         outCode<<hft.decodeResult;
-        cout<<"解压后的文件保存为  名称为  "+path+"  的文件"<<endl;
+        if(flag<3)
+            cout<<"解压后的文件保存为  名称为  "+filePath+"  的文件"<<endl;
+        else
+            cout<<"解压后的文件保存为  名称为  "<<path<<"  的文件"<<endl;
     }
     outCode.close();
 }
 
-int main()
+void communicate()   //与用户交互的界面
 {
-    a:cout<<">>>您要压缩文件还是解压文件？(输入1 或 2)"<<endl<<">>>1、压缩文件"<<endl<<">>>2、解压文件"<<endl;
+    a:cout<<"您要压缩文件还是解压文件？(输入1 或 2)"<<endl<<"tips:输入其他任意的字符都可以结束程序"<<endl<<"1、压缩文件"<<endl<<"2、解压文件"<<endl<<">>>";
     int choice;
     cin>>choice;
     switch (choice)
     {
         case 1:
-            getContent(1);
+            getContent(1, nullptr);
             statistics();
             hft.establishTree();
             hft.getCodeRule(2*codeNum-2);
             hft.encode();
             hft.encodeBinaryAction();
-            writeCode(1);
+            writeCode(1, nullptr);
             break;
         case 2:
-            getContent(2);
+            getContent(2, nullptr);
             hft.establishTree();
             hft.decodeBinary();
             hft.decode();
-            writeCode(2);
+            writeCode(2, nullptr);
             break;
-        default:goto a;
+        default:
+            cout<<"程序正常退出"<<endl;
+            exit(0);
     }
+    goto a;
+}
 
+int main(int argc,char *argv[])
+{
+    if(argc==1)
+        communicate();
+    else if(argc==4)
+    {
+        if(argv[1][0]=='-'&&!argv[1][2])
+        {
+            if(argv[1][1]=='c')
+            {
+                getContent(3,argv[2]);
+                statistics();
+                hft.establishTree();
+                hft.getCodeRule(2*codeNum-2);
+                hft.encode();
+                hft.encodeBinaryAction();
+                writeCode(3,argv[3]);
+                exit(0);
+            }
+            else if(argv[1][1]=='d')
+            {
+                getContent(4,argv[2]);
+                hft.establishTree();
+                hft.decodeBinary();
+                hft.decode();
+                writeCode(4,argv[3]);
+                exit(0);
+            }
+        }
+    }
+    cout<<"usage:-c <input file path> <ouput file path>"<<endl<<"tips:this is to encode your file"<<endl;
+    cout<<"usage:-d <input file path> <output file path>"<<endl<<"tips:this is to decode yout file"<<endl;
     return 0;
 }

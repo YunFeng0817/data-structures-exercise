@@ -163,7 +163,7 @@ void BFS()
             visited[i]=true;
             dfsCode[count]=i;
             count++;
-            point.push(0);
+            point.push(i);
             while(!point.empty())
             {
                 for(int j=0;j<newMap.pointNum;j++)
@@ -171,8 +171,9 @@ void BFS()
                     if(!visited[j]&&newMap.edge[point.front()][j])
                     {
                         point.push(j);
-                        visited[point.front()]=true;
+                        visited[j]=true;
                         dfsCode[count]=j;
+                        //cout<<j<<endl;
                         count++;
                     }
                 }

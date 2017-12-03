@@ -88,12 +88,10 @@ int main()
     {
         for(int j=0;j<i;j++)
         {
-//            cout<<count<<endl;
-//            cout<<main[j+year-i-1]<<endl;
             if(main[j+year-i-1]!=n)
                 newMap.addEdge(count,main[j+year-i-1],newDevicePrice[j+1]+repareDevicePrice[0]);
             else
-                newMap.addEdge(count,main[j+year-i-1],repareDevicePrice[j+1]<newDevicePrice[j+1]?repareDevicePrice[j+1]:newDevicePrice[j+1]);
+                newMap.addEdge(count,main[j+year-i-1],repareDevicePrice[j+1]<newDevicePrice[j+1]+repareDevicePrice[0]?repareDevicePrice[j+1]:newDevicePrice[j+1]);
             count++;
         }
         main[count1]=count;
@@ -124,15 +122,9 @@ int main()
     }
     for(int i=1;i<=n;i++)
         cout<<dis[i]<<endl;
-    //cout<<dis[n]+newDevicePrice[0]+repareDevicePrice[0]<<endl;
-//    for(int i=1;i<=n;i++)
-//    {
-//        for(int j=1;j<=n;j++)
-//        {
-//            cout<<newMap.edge[i][j]<<" ";
-//        }
-//        cout<<endl;
-//    }
+    cout<<endl;
+    cout<<dis[n]+newDevicePrice[0]+repareDevicePrice[0]<<endl;
     return 0;
 }
 //5 11 11 12 12 13 5 6 8 11 18
+//6 11 11 12 12 13 10 5 6 8 11 18 20

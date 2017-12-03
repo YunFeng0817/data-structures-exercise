@@ -36,6 +36,7 @@ int year,n;
 int newDevicePrice[Max];
 int repareDevicePrice[Max];
 int dis[Max];
+int p[Max];
 bool s[Max];
 
 int MinCost()
@@ -91,16 +92,15 @@ int main()
             if(main[j+year-i-1]!=n)
                 newMap.addEdge(count,main[j+year-i-1],newDevicePrice[j+1]+repareDevicePrice[0]);
             else
-                newMap.addEdge(count,main[j+year-i-1],repareDevicePrice[j+1]<newDevicePrice[j+1]+repareDevicePrice[0]?repareDevicePrice[j+1]:newDevicePrice[j+1]);
+                newMap.addEdge(count,main[j+year-i-1],repareDevicePrice[j+1]<newDevicePrice[j+1]+repareDevicePrice[0]?repareDevicePrice[j+1]:newDevicePrice[j+1]+repareDevicePrice[0]);
             count++;
         }
-        main[count1]=count;
-        count1++;
     }
     for(int i=2;i<=n;i++)
     {
         dis[i]=newMap.edge[1][i];
         s[i]=false;
+        p[i]=1;
     }
     dis[1]=0;
     s[1]=true;
@@ -116,14 +116,31 @@ int main()
                 if(sum<dis[v])
                 {
                     dis[v]=sum;
+                    p[v]=w;
                 }
             }
         }
     }
-    for(int i=1;i<=n;i++)
-        cout<<dis[i]<<endl;
+//    for(int i=1;i<=n;i++)
+//        cout<<p[i]<<endl;
+    int i=n;
+    while(p[i]!=0)
+    {
+        i=p[i];
+        for(int j=0;j<count1;j++)
+        {
+            if(i==main[j])
+                cout<<"购进的年份是 "<<j+2<<endl;
+        }
+    }
+    cout<<"购进的年份是 "<<1<<endl;
+    for(int j=0;j<count1;j++)
+    {
+
+            //cout<<main[j]<<endl;
+    }
     cout<<endl;
-    cout<<dis[n]+newDevicePrice[0]+repareDevicePrice[0]<<endl;
+    cout<<"最少的经费是"<<dis[n]+newDevicePrice[0]+repareDevicePrice[0]<<endl;
     return 0;
 }
 //5 11 11 12 12 13 5 6 8 11 18

@@ -42,7 +42,7 @@ int MinCost()
 {
     int temp=infite;
     int w=2;
-    for(int i=2;i<=year;i++)
+    for(int i=2;i<=n;i++)
     {
         if(!s[i]&&dis[i]<temp)
         {
@@ -55,7 +55,7 @@ int MinCost()
 
 int main()
 {
-    int count=1,pre,w,sum;
+    int count=1,pre,w,sum,main[Max],count1=0;
     cout<<"请输入年份"<<endl;
     cin>>year;
     cout<<"请输入"<<year<<"年内每年的设备的价格"<<endl;
@@ -79,11 +79,26 @@ int main()
             count++;
         }
         count++;
+        main[count1]=count;
+        count1++;
         newMap.addEdge(pre,count,newDevicePrice[year-i-1]+repareDevicePrice[0]);
     }
-    newMap.addEdge(2,8,17);
-    newMap.addEdge(3,10,17);
-    newMap.addEdge(6,10,17);
+    count=1;
+    for(int i=year-1;i>0;i--)
+    {
+        for(int j=0;j<i;j++)
+        {
+//            cout<<count<<endl;
+//            cout<<main[j+year-i-1]<<endl;
+            if(main[j+year-i-1]!=n)
+                newMap.addEdge(count,main[j+year-i-1],newDevicePrice[j+1]+repareDevicePrice[0]);
+            else
+                newMap.addEdge(count,main[j+year-i-1],repareDevicePrice[j+1]<newDevicePrice[j+1]?repareDevicePrice[j+1]:newDevicePrice[j+1]);
+            count++;
+        }
+        main[count1]=count;
+        count1++;
+    }
     for(int i=2;i<=n;i++)
     {
         dis[i]=newMap.edge[1][i];

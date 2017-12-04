@@ -2,17 +2,17 @@
 // Created by Fitz on 2017/12/3.
 //
 #include<iostream>
+#include <stack>
 #include <cstdlib>
 #include "Map.h"
 using namespace std;
 #define Max 500
-#define infite 0x3fffffff
 
 Map newMap;
 int year,n;
 int newDevicePrice[Max];
 int repareDevicePrice[Max];
-
+stack<int> trace;
 
 int main()
 {
@@ -56,51 +56,25 @@ int main()
             count++;
         }
     }
-    for(int i=2;i<=n;i++)
-    {
-        dis[i]=newMap.edge[1][i];
-        s[i]=false;
-        p[i]=1;
-    }
-    dis[1]=0;
-    s[1]=true;
-    for(int i=1;i<=n-1;i++)
-    {
-        w=MinCost();
-        s[w]=true;
-        for(int v=2;v<=n;v++)
-        {
-            if(!s[v])
-            {
-                sum=dis[w]+newMap.edge[w][v];
-                if(sum<dis[v])
-                {
-                    dis[v]=sum;
-                    p[v]=w;
-                }
-            }
-        }
-    }
-//    for(int i=1;i<=n;i++)
-//        cout<<p[i]<<endl;
+    newMap.dijkstra();
     int i=n;
-    while(p[i]!=0)
+    while(newMap.p[i]!=0)
     {
-        i=p[i];
+        i=newMap.p[i];
         for(int j=0;j<count1;j++)
         {
             if(i==main[j])
-                cout<<"购进的年份是 "<<j+2<<endl;
+                trace.push(j+2);
         }
     }
-    cout<<"购进的年份是 "<<1<<endl;
-    for(int j=0;j<count1;j++)
+    trace.push(1);
+    while(!trace.empty())
     {
-
-            //cout<<main[j]<<endl;
+        cout<<"购进的年份是 "<<trace.top()<<endl;
+        trace.pop();
     }
     cout<<endl;
-    cout<<"最少的经费是"<<dis[n]+newDevicePrice[0]+repareDevicePrice[0]<<endl;
+    cout<<"最少的经费是"<<newMap.dis[n]+newDevicePrice[0]+repareDevicePrice[0]<<endl;
     return 0;
 }
 //5 11 11 12 12 13 5 6 8 11 18

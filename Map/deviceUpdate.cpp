@@ -3,56 +3,16 @@
 //
 #include<iostream>
 #include <cstdlib>
+#include "Map.h"
 using namespace std;
 #define Max 500
 #define infite 0x3fffffff
-class Map
-{
-public:
-    int pointNum;
-    int edge[Max][Max];
 
-    void initMap(int p)
-    {
-        pointNum=p;
-        for(int i=1;i<=pointNum;i++)
-        {
-            for(int j=1;j<=pointNum;j++)
-            {
-                edge[i][j]=infite;
-            }
-        }
-
-    }
-
-    void addEdge(int a,int b,int weight)
-    {
-        edge[a][b]=weight;
-    }
-
-};
 Map newMap;
 int year,n;
 int newDevicePrice[Max];
 int repareDevicePrice[Max];
-int dis[Max];
-int p[Max];
-bool s[Max];
 
-int MinCost()
-{
-    int temp=infite;
-    int w=2;
-    for(int i=2;i<=n;i++)
-    {
-        if(!s[i]&&dis[i]<temp)
-        {
-            temp=dis[i];
-            w=i;
-        }
-    }
-    return w;
-}
 
 int main()
 {

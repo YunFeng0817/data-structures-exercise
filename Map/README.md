@@ -3,7 +3,11 @@
 
 之后是图的各种实际问题的解决
 
+searchMap.cpp
+是包含图的深度优先搜索的递归和非递归算法，以及广度优先搜索的算法
+
 newDeviceUpdate.cpp and deviceUpdate.cpp
+
 newDeviceUpdate.cpp是高效正确的解法，deviceUpdate.cpp是一个低效而不正确的版本，但是算法是正确的
 >题的内容： 设备更新问题。某企业使用一台设备，在每年年初，企业领导部门就要决定
   是购置新的，还是继续使用旧的。若购置新设备，就要支付一定的购置费用；

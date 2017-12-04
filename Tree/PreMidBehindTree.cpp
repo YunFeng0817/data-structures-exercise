@@ -5,11 +5,11 @@
 #include <stack>
 #include <queue>
 using namespace std;
-
+//此类和结构体的作用相同，作为树的一个节点，只比结构体多了一个对节点左右字数的初始化的过程
 class cellElement{
 public:
-    char data;
-    cellElement *lchild,*rchild;
+    char data;  //储存的节点信息
+    cellElement *lchild,*rchild;    //一个是指向左儿子节点的指针，一个是指向右儿子节点的指针
     cellElement()
     {
         lchild= nullptr;
@@ -20,9 +20,9 @@ public:
 class BinaryTree
 {
 public:
-    string pre,mid;
-    cellElement *root;
-    int length;
+    string pre,mid;  //由外部输入的前序序列和中序序列
+    cellElement *root;   //建立的二叉树的根节点
+    int length;  //二叉树的节点总数
     BinaryTree(string a,string b)
     {
         pre=a;
@@ -41,9 +41,10 @@ public:
                 exit(0);
             }
         }
-        root=create(0,length-1);
+        root=createRecursive(0,length-1);
     }
-    cellElement * create(int left,int right)
+    //由递归的方式建立二叉树，采用二分的思想
+    cellElement * createRecursive(int left,int right)
     {
         static int i=0;
         int temp;
@@ -77,7 +78,42 @@ public:
         }
         return root;
     }
-//前序遍历递归
+
+    //由非递归的方式建立二叉树，采用栈存储相对根节点的地址
+    void createNotRecursive()
+    {
+        int j,temp;
+        stack<int> cell; //用来记录遍历的树的节点
+        for(int i=0;i<length;i++)
+        {
+            j=mid.find(pre[i]);
+            if(cell.empty())
+            {
+                head=j;
+                cell.push(j);
+            }
+            else
+            {
+                if(j<cell.top())
+                {
+                    tree[cell.top()].lchild=j;
+                    cell.push(j);
+                }
+                else
+                {
+                    while(!cell.empty()&&j>cell.top())
+                    {
+                        temp=cell.top();
+                        cell.pop();
+                    }
+                    tree[temp].rchild=j;
+                    cell.push(j);
+                }
+            }
+        }
+    }
+
+//前序遍历递归的递归实现
     void PreviousRecursive(cellElement *root)
     {
         if(root!=nullptr)
@@ -87,7 +123,7 @@ public:
             PreviousRecursive(root->rchild);
         }
     }
-//前序遍历非递归
+//前序遍历非递归实现
     void PreviousNotRecursive(cellElement *root)
     {
         stack<cellElement*> trace;
@@ -107,7 +143,7 @@ public:
             }
         }
     }
-//中序遍历递归
+//中序遍历递归实现
     void MidNotRecursive(cellElement *root)
     {
         stack<cellElement *> trace;
@@ -127,7 +163,7 @@ public:
             }
         }
     }
-//中序遍历非递归
+//中序遍历非递归实现
     void MidRecursive(cellElement *root)
     {
         if(root!=nullptr)
@@ -137,7 +173,7 @@ public:
             MidRecursive(root->rchild);
         }
     }
-//后序遍历递归
+//后序遍历递归实现
     void BehindNotRecursive(cellElement *root)
     {
         stack<cellElement*> trace;
@@ -169,7 +205,7 @@ public:
             }
         }while(!trace.empty());
     }
-//后序遍历非递归
+//后序遍历非递归实现
     void BehindRecursive(cellElement *root)
     {
         if(root!=nullptr)
@@ -179,7 +215,7 @@ public:
             cout<<root->data<<" ";
         }
     }
-//层序遍历
+//层序遍历实现
     void FloorOrder(cellElement *root)
     {
         queue<cellElement*> floor;

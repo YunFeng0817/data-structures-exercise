@@ -7,9 +7,11 @@
 #include <string>
 #include <cstdlib>
 #include <cstdio>
+
 using namespace std;
 //用于确定数组建立时分配大小
 #define codeNum 256
+#define nullptr NULL
 //这个函数用于从文件读取信息，flag=1表明读取一个未压缩文件，flag=2表明读取一个已经压缩过的文件，用于解压
 void getContent(int flag,char* path);
 //这个函数用于统计文章中每种字符的出现频数

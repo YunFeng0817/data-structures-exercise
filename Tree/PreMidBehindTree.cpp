@@ -61,7 +61,7 @@ public:
         if(temp-1>=left)
         {
             i++;
-            root->lchild=create(left,temp-1);
+            root->lchild=createRecursive(left,temp-1);
         }
         else
         {
@@ -70,7 +70,7 @@ public:
         if(temp+1<=right)
         {
             i++;
-            root->rchild=create(temp+1,right);
+            root->rchild=createRecursive(temp+1,right);
         }
         else
         {
@@ -79,39 +79,6 @@ public:
         return root;
     }
 
-    //由非递归的方式建立二叉树，采用栈存储相对根节点的地址
-    void createNotRecursive()
-    {
-        int j,temp;
-        stack<int> cell; //用来记录遍历的树的节点
-        for(int i=0;i<length;i++)
-        {
-            j=mid.find(pre[i]);
-            if(cell.empty())
-            {
-                head=j;
-                cell.push(j);
-            }
-            else
-            {
-                if(j<cell.top())
-                {
-                    tree[cell.top()].lchild=j;
-                    cell.push(j);
-                }
-                else
-                {
-                    while(!cell.empty()&&j>cell.top())
-                    {
-                        temp=cell.top();
-                        cell.pop();
-                    }
-                    tree[temp].rchild=j;
-                    cell.push(j);
-                }
-            }
-        }
-    }
 
 //前序遍历递归的递归实现
     void PreviousRecursive(cellElement *root)

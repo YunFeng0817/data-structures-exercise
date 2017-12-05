@@ -21,7 +21,13 @@ void Map::addEdge(int a,int b,int weight)
     edge[a][b]=weight;
 }
 
-int Map::dijkstra()
+void Map::addEdge2(int a,int b,int weight)
+{
+    edge[a][b]=weight;
+    edge[b][a]=weight;
+}
+
+void Map::dijkstra()
 {
     int w,sum;
     for(int i=2;i<=pointNum;i++)

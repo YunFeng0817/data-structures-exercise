@@ -9,41 +9,64 @@ using namespace std;
 int size,count=0;
 bool mazeMap[Max][Max];
 bool visited[Max][Max];
-queue<int> getPoint[2];
-void searchRoad()
+struct point{
+    int x,y,next,pre;
+};
+queue<point> getPoint;
+point trace[Max];
+bool searchRoad()
 {
+    point temp;
     if(mazeMap[1][1])
     {
         cout<<"迷宫无法进入"<<endl;
         exit(0);
     }
     visited[1][1]=true;
-    getPoint[0].push(1);
-    getPoint[1].push(1);
-    while(!getPoint[0].empty())
+    temp.x=1;
+    temp.y=1;
+    temp.next=count;
+    getPoint.push(temp);
+    trace[count].x=1;
+    trace[count].y=1;
+    trace[count].pre=-1;
+    count++;
+    while(!getPoint.empty())
     {
-        cout<<getPoint[0].front()<<" "<<getPoint[1].front()<<endl;
-        if(getPoint[0].front()==size&&getPoint[1].front()==size)
+        if(getPoint.front().x==size&&getPoint.front().y==size)
         {
-            cout<<count<<endl;
-            return;
+            return true;
         }
         for(int i=-1;i<=1;i++)
         {
             for(int j=-1;j<=1;j++)
             {
-                if(!mazeMap[getPoint[0].front()+i][getPoint[1].front()+j]&&!visited[getPoint[0].front()+i][getPoint[1].front()+j])
+                if(!mazeMap[getPoint.front().x+i][getPoint.front().y+j]&&!visited[getPoint.front().x+i][getPoint.front().y+j])
                 {
-                    getPoint[0].push(getPoint[0].front()+i);
-                    getPoint[1].push(getPoint[1].front()+j);
-                    visited[getPoint[0].front()+i][getPoint[1].front()+j]=true;
+                    trace[count].x=getPoint.front().x+i;
+                    trace[count].y=getPoint.front().y+j;
+                    trace[count].pre=getPoint.front().next;
+                    count++;
+                    temp.x=getPoint.front().x+i;
+                    temp.y=getPoint.front().y+j;
+                    temp.next=count-1;
+                    getPoint.push(temp);
+                    visited[getPoint.front().x+i][getPoint.front().y+j]=true;
                 }
             }
         }
-        getPoint[0].pop();
-        getPoint[1].pop();
-        count++;
+        getPoint.pop();
     }
+    return false;
+}
+
+void getRoad(int a)
+{
+    if(trace[a].pre!=-1)
+    {
+        getRoad(trace[a].pre);
+    }
+    cout<<"( "<<trace[a].x<<" , "<<trace[a].y<<" )"<<endl;
 }
 
 int main()
@@ -64,6 +87,7 @@ int main()
         }
     }
     searchRoad();
+    getRoad(count-1);
     return 0;
 }
 /*

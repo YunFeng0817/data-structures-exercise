@@ -9,7 +9,7 @@
 #include "Map.h"
 using namespace std;
 
-Map newMap;
+MapMatrix newMap;
 int index[11]={0,0,1,2,4,5,10,11,13,14,15};   //存储合理状态的点
 void establish()
 {

@@ -3,8 +3,9 @@
 //
 
 #include "Map.h"
+#include "linkList.h"
 #define infite 0x3fffffff
-void Map::initMap(int p)
+void MapMatrix::initMap(int p)
 {
     pointNum=p;
     for(int i=1;i<=pointNum;i++)
@@ -16,18 +17,18 @@ void Map::initMap(int p)
     }
 }
 
-void Map::addEdge(int a,int b,int weight)
+void MapMatrix::addEdge(int a,int b,int weight)
 {
     edge[a][b]=weight;
 }
 
-void Map::addEdge2(int a,int b,int weight)
+void MapMatrix::addEdge2(int a,int b,int weight)
 {
     edge[a][b]=weight;
     edge[b][a]=weight;
 }
 
-void Map::dijkstra()
+void MapMatrix::dijkstra()
 {
     int w,sum;
     for(int i=2;i<=pointNum;i++)
@@ -57,7 +58,7 @@ void Map::dijkstra()
     }
 }
 
-int Map::dijkstra_MinCost()
+int MapMatrix::dijkstra_MinCost()
 {
     int temp=infite;
     int w=2;
@@ -71,3 +72,22 @@ int Map::dijkstra_MinCost()
     }
     return w;
 }
+
+void MapVertex::initMap(int p){
+    pointNum=p;
+    for(int i=1;i<=pointNum;i++)
+    {
+        vertex[i]=-1;
+    }
+}
+
+void MapVertex::addEdgeTableIn(int a, int b, int weight) {
+    vertex[b]=weight;
+    edgeNode[b].insert(0,a);
+}
+
+void MapVertex::addEdgeTableOut(int a, int b, int weight) {
+    vertex[a]=weight;
+    edgeNode[a].insert(0,b);
+}
+

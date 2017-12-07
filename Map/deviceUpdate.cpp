@@ -8,7 +8,7 @@
 using namespace std;
 #define Max 500
 
-Map newMap;
+MapMatrix newMap;
 int year,n;
 int newDevicePrice[Max];
 int repareDevicePrice[Max];

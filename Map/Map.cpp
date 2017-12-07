@@ -78,23 +78,48 @@ void MapVertex::initMap(int p){
     for(int i=1;i<=pointNum;i++)
     {
         vertex[i]=-1;
+        visited[i]=false;
     }
 }
 
 void MapVertex::addEdgeTableIn(int a, int b, int weight) {
-    edgeNode[b].insert(0,a,weight);
+    edgeNodeIn[b].insert(0,a,weight);
 }
 
 void MapVertex::addEdgeTableOut(int a, int b, int weight) {
-    edgeNode[a].insert(0,b,weight);
+    edgeNodeOut[a].insert(0,b,weight);
 }
 
 void MapVertex::addEdgeTableIn(int a, int b, int weight,char name) {
     vertex[b]=name;
-    edgeNode[b].insert(0,a,weight);
+    edgeNodeIn[b].insert(0,a,weight);
 }
 
 void MapVertex::addEdgeTableOut(int a, int b, int weight,char name) {
     vertex[a]=name;
-    edgeNode[a].insert(0,b,weight);
+    edgeNodeOut[a].insert(0,b,weight);
+}
+
+int MapVertex::topoSort(){
+    for(int i=1;i<=pointNum;i++)
+    {
+        if(edgeNodeIn[i].empty()&&!visited[i])
+        {
+            visited[i]=true;
+            for(int j=1;j<=pointNum;j++)
+            {
+                if(!edgeNodeIn[j].empty())
+                {
+                    for(int k=1;k<=edgeNodeIn[j].size;k++)
+                    {
+                        if(edgeNodeIn[j].inquire(k)->data1==i)
+                        {
+                            edgeNodeIn[j].pop(k);
+                        }
+                    }
+                }
+            }
+            return i;
+        }
+    }
 }

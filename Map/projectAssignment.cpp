@@ -5,7 +5,6 @@
 #include <fstream>
 #include "Map.h"
 using namespace std;
-#define Max 100
 MapVertex newMap;
 
 int point[Max];

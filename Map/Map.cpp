@@ -4,7 +4,6 @@
 
 #include "Map.h"
 #include "linkList.h"
-#define infinite 0x3fffffff
 void MapMatrix::initMap(int p)
 {
     pointNum=p;
@@ -17,12 +16,12 @@ void MapMatrix::initMap(int p)
     }
 }
 
-void MapMatrix::addEdge(int a,int b,int weight)
+void MapMatrix::addEdge(int a,int b,double weight)
 {
     edge[a][b]=weight;
 }
 
-void MapMatrix::addEdge2(int a,int b,int weight)
+void MapMatrix::addEdge2(int a,int b,double weight)
 {
     edge[a][b]=weight;
     edge[b][a]=weight;
@@ -30,7 +29,8 @@ void MapMatrix::addEdge2(int a,int b,int weight)
 
 void MapMatrix::dijkstra()
 {
-    int w,sum;
+    int w;
+    double sum;
     for(int i=2;i<=pointNum;i++)
     {
         dis[i]=edge[1][i];
@@ -58,14 +58,17 @@ void MapMatrix::dijkstra()
     }
 }
 
-void MapMatrix::prim(){
-    int min,k;
+bool MapMatrix::prim(){
+    double min;
+    int k;
     for(int i=2;i<=pointNum;i++)
     {
+        s[i]=false;
         dis[i]=edge[1][i];
         p[i]=1;
     }
-
+    s[1]=true;
+    dis[1]=0;
     for(int i=2;i<=pointNum;i++)
     {
         min=dis[i];
@@ -78,13 +81,13 @@ void MapMatrix::prim(){
                 k=j;
             }
         }
-        dis[k]=infinite;
+        s[k]=true;
         for(int j=2;j<=pointNum;j++)
         {
-            if(edge[k][j]<dis[j]&&dis[j]<infinite)
+            if(edge[k][j]<dis[j]&&!s[j])
             {
-                dis[k]=edge[k][j];
-                dis[j]=k;
+                dis[j]=edge[k][j];
+                p[j]=k;
             }
         }
     }
@@ -92,7 +95,7 @@ void MapMatrix::prim(){
 
 int MapMatrix::dijkstra_MinCost()
 {
-    int temp=infite;
+    int temp=infinite;
     int w=2;
     for(int i=2;i<=pointNum;i++)
     {

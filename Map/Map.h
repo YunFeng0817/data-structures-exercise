@@ -16,6 +16,7 @@ public:
     void addEdge(int a ,int b ,int weight);
     void addEdge2(int a ,int b ,int weight);
     void dijkstra();
+    void prim();
 
 private:
     int dijkstra_MinCost();   //选取起始点到其他为访问过的点的距离最小的点

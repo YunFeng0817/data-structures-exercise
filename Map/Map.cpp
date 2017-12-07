@@ -4,7 +4,7 @@
 
 #include "Map.h"
 #include "linkList.h"
-#define infite 0x3fffffff
+#define infinite 0x3fffffff
 void MapMatrix::initMap(int p)
 {
     pointNum=p;
@@ -12,7 +12,7 @@ void MapMatrix::initMap(int p)
     {
         for(int j=1;j<=pointNum;j++)
         {
-            edge[i][j]=infite;
+            edge[i][j]=infinite;
         }
     }
 }
@@ -53,6 +53,38 @@ void MapMatrix::dijkstra()
                     dis[v]=sum;
                     p[v]=w;
                 }
+            }
+        }
+    }
+}
+
+void MapMatrix::prim(){
+    int min,k;
+    for(int i=2;i<=pointNum;i++)
+    {
+        dis[i]=edge[1][i];
+        p[i]=1;
+    }
+
+    for(int i=2;i<=pointNum;i++)
+    {
+        min=dis[i];
+        k=i;
+        for(int j=2;j<=pointNum;j++)
+        {
+            if(dis[j]<min)
+            {
+                min=dis[j];
+                k=j;
+            }
+        }
+        dis[k]=infinite;
+        for(int j=2;j<=pointNum;j++)
+        {
+            if(edge[k][j]<dis[j]&&dis[j]<infinite)
+            {
+                dis[k]=edge[k][j];
+                dis[j]=k;
             }
         }
     }

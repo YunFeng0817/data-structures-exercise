@@ -52,6 +52,6 @@ int main()
         }
         sum+=newMap.dis[i];
     }
-    cout<<sum*100<<endl;
+    cout<<"最小的花费为"<<sum*100<<endl;
     return 0;
 }

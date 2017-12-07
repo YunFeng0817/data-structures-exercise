@@ -5,7 +5,7 @@
 #include <fstream>
 #include "Map.h"
 using namespace std;
-MapVertex newMap;
+MapVertex newMap;   //这里是用的邻接表
 
 int point[Max];
 int ve[Max];

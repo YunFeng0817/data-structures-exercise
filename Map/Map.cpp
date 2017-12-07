@@ -3,7 +3,6 @@
 //
 
 #include "Map.h"
-#include "linkList.h"
 void MapMatrix::initMap(int p)
 {
     pointNum=p;
@@ -86,7 +85,7 @@ bool MapMatrix::prim(){
         {
             if(edge[k][j]<dis[j]&&!s[j])
             {
-                dis[j]=edge[k][j];
+                dis[j]=edge[k][j];   //存的是当前从k到j的最短路
                 p[j]=k;
             }
         }

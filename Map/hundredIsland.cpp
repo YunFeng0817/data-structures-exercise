@@ -22,7 +22,7 @@ int main()
     file.open("position.dat");
     if(!file.is_open())
     {
-        cout<<"æ— æ³•æ‰“å¼€æ–‡ä»¶"<<endl;
+        cout<<"ÎÞ·¨´ò¿ªÎÄ¼þ"<<endl;
         exit(0);
     }
     file>>point;
@@ -52,6 +52,6 @@ int main()
         }
         sum+=newMap.dis[i];
     }
-    cout<<"æœ€å°çš„èŠ±è´¹ä¸º"<<sum*100<<endl;
+    cout<<"×îÐ¡µÄ»¨·ÑÎª"<<sum*100<<endl;
     return 0;
 }

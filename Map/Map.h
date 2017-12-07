@@ -23,11 +23,13 @@ private:
 
 class MapVertex{
     int pointNum;
-    int vertex[Max];  //这里存储邻接表的顶点
+    char vertex[Max];  //这里存储邻接表的顶点
     linkList<int> edgeNode[Max];
     void initMap(int p);
     void addEdgeTableIn(int a,int b,int weight);
     void addEdgeTableOut(int a,int b,int weight);
+    void addEdgeTableIn(int a,int b,int weight,char name);
+    void addEdgeTableOut(int a,int b,int weight,char name);
 };
 
 

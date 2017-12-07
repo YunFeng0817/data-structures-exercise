@@ -82,12 +82,19 @@ void MapVertex::initMap(int p){
 }
 
 void MapVertex::addEdgeTableIn(int a, int b, int weight) {
-    vertex[b]=weight;
-    edgeNode[b].insert(0,a);
+    edgeNode[b].insert(0,a,weight);
 }
 
 void MapVertex::addEdgeTableOut(int a, int b, int weight) {
-    vertex[a]=weight;
-    edgeNode[a].insert(0,b);
+    edgeNode[a].insert(0,b,weight);
 }
 
+void MapVertex::addEdgeTableIn(int a, int b, int weight,char name) {
+    vertex[b]=name;
+    edgeNode[b].insert(0,a,weight);
+}
+
+void MapVertex::addEdgeTableOut(int a, int b, int weight,char name) {
+    vertex[a]=name;
+    edgeNode[a].insert(0,b,weight);
+}

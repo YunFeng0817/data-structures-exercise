@@ -34,7 +34,7 @@ bool linkList<Type>::insert(int place,Type d) {
     }
     p=pr->next;
     temp=new cellElement;
-    temp->data=d;
+    temp->data1=d;
     temp->next=p;
     pr->next=temp;
     size++;
@@ -42,15 +42,34 @@ bool linkList<Type>::insert(int place,Type d) {
 }
 
 template <typename Type>
-Type linkList<Type>::inquire(int place) {
+typename linkList<Type>::cellElement *linkList<Type>::inquire(int place) {
     if(empty()||place>size||place==0)
-        return -1;
+        return nullptr;
     cellElement *p=head;
     for(int i=0;i<place;i++)
     {
         p=p->next;
     }
-    return p->data;
+    return p;
+}
+
+template <typename Type>
+bool linkList<Type>::insert(int place,Type d1,Type d2){
+    if(place>size+1)
+        return false;
+    cellElement *p,*pr=head,*temp;
+    for(int i=0;i<place;i++)
+    {
+        pr=pr->next;
+    }
+    p=pr->next;
+    temp=new cellElement;
+    temp->data1=d1;
+    temp->data2=d2;
+    temp->next=p;
+    pr->next=temp;
+    size++;
+    return true;
 }
 
 template <typename Type>

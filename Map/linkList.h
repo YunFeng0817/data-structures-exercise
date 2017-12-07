@@ -5,15 +5,9 @@
 #ifndef SCORE_SYSTEM_LINKLIST_H
 #define SCORE_SYSTEM_LINKLIST_H
 
-template <class Type>
+template <typename Type>
 class linkList {
-    struct cellElement
-    {
-        cellElement *next;
-        Type data;
-    };
-
-    cellElement* head;
+public:
     int size;  //链表的长度
     linkList();
 
@@ -24,7 +18,15 @@ class linkList {
     Type inquire(int place);
 
     bool pop(int place);
-};
 
+private:
+    struct cellElement
+    {
+        cellElement *next;
+        Type data;
+    };
+
+    cellElement* head;
+};
 
 #endif //SCORE_SYSTEM_LINKLIST_H

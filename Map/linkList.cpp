@@ -1,20 +1,30 @@
 //
 // Created by Fitz on 2017/12/7.
 //
-
+#include <iostream>
 #include "linkList.h"
-linkList::linkList() {
+using namespace std;
+
+//此处这样写是因为c++ template的函数的具体实现一般需要和声明放在一起（即放在.h文件中），但是我想要分开写，只能添加这些字段
+template class linkList<int>;
+template class linkList<float>;
+template class linkList<char>;
+template class linkList<double>;
+
+template <typename Type>
+linkList<Type>::linkList() {
     head=new cellElement;
     head->next= nullptr;
     size=0;
 }
 
-bool linkList::empty(){
+template <typename Type>
+bool linkList<Type>::empty(){
     return !(bool)head->next;
 }
 
 template <typename Type>
-bool linkList::insert(int place,Type d) {
+bool linkList<Type>::insert(int place,Type d) {
     if(place>size+1)
         return false;
     cellElement *p,*pr=head,*temp;
@@ -32,7 +42,7 @@ bool linkList::insert(int place,Type d) {
 }
 
 template <typename Type>
-Type linkList::inquire(int place) {
+Type linkList<Type>::inquire(int place) {
     if(empty()||place>size||place==0)
         return -1;
     cellElement *p=head;
@@ -43,17 +53,18 @@ Type linkList::inquire(int place) {
     return p->data;
 }
 
-bool linkList::pop(int place) {
+template <typename Type>
+bool linkList<Type>::pop(int place) {
     if(empty()||place>size||place==0)
         return false;
     cellElement *p=head,*pr=head;
-    for(int i=0;i<size;i++)
+    for(int i=0;i<place;i++)
     {
         pr=p;
         p=p->next;
     }
     pr->next=p->next;
     delete(p);
+    size--;
     return true;
 }
-

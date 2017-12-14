@@ -7,7 +7,6 @@
 using namespace std;
 #define nullptr NULL
 
-
 class node{
 public:
     int balancedFactor;  //AVL的平衡因子
@@ -26,11 +25,6 @@ public:
 
 class AVL{
 public:
-    //contain the message of the search result
-    struct searchResult{
-        node * tree;
-        bool found;
-    };
     node *root;
     int size;
     AVL()
@@ -46,91 +40,27 @@ public:
     }
 
     //search the specific data
-    searchResult search(int searchNum)
+    node* search(int searchNum)
     {
-        searchResult temp;
         if(searchNum==root->data)
-        {
-            temp.tree=root;
-            temp.found=true;
-            return temp;
-        }
+            return root;
         else if(searchNum<root->data)
-        {
-            if(root->lchild==nullptr)
-            {
-                temp.tree=root;
-                temp.tree=false;
-                return temp;
-            }
-            else
-            {
-                return searchRecursive(searchNum,root->lchild);
-            }
-        }
+            return searchRecursive(searchNum,root->lchild);
         else
-        {
-            if(root->lchild==nullptr)
-            {
-                temp.tree=root;
-                temp.found=false;
-                return temp;
-            }
-            else
-            {
-                return searchRecursive(searchNum,root->rchild);
-            }
-        }
+            return searchRecursive(searchNum,root->rchild);
     }
 
-    void insert(int insertNum)
-    {
-        searchResult result;
-        result = search(insertNum);
-        if(result.found)
-            result.tree->sameNum++;
-        else
-        {
 
-        }
-    }
 private:
     //this is for recursive search use and the other users can't use and see it and parameter is complex ,the search() is more easy for use
-    searchResult searchRecursive(int searchNum,node* newTree)
+    node* searchRecursive(int searchNum,node* newTree)
     {
-        searchResult temp;
-        if(searchNum==newTree->data)
-        {
-            temp.tree=newTree;
-            temp.found=true;
-            return temp;
-        }
-        else if(searchNum<newTree->data)
-        {
-            if(newTree->lchild==nullptr)
-            {
-                temp.tree=newTree;
-                temp.tree=false;
-                return temp;
-            }
-            else
-            {
-                return searchRecursive(searchNum,newTree->lchild);
-            }
-        }
+        if(searchNum==root->data)
+            return newTree;
+        else if(searchNum<root->data)
+            return searchRecursive(searchNum,root->lchild);
         else
-        {
-            if(newTree->lchild==nullptr)
-            {
-                temp.tree=newTree;
-                temp.found=false;
-                return temp;
-            }
-            else
-            {
-                return searchRecursive(searchNum,newTree->rchild);
-            }
-        }
+            return searchRecursive(searchNum,root->rchild);
     }
 };
 

@@ -6,13 +6,12 @@
 #include"Map.h"
 #include <cstdlib>
 using namespace std;
-#define Max 500
 
-MapMatrix newMap;
-int year,n;
-int newDevicePrice[Max];
-int repareDevicePrice[Max];
-stack<int> trace;
+MapMatrix newMap;   //用图的类实例化一个图的对象
+int year,n;   //year 是总的年份
+int newDevicePrice[Max];   //在某一年更新设备的花费
+int repareDevicePrice[Max]; //在某一年维修设备的花费
+stack<int> trace;   //将路径的信息倒序时需要用到的栈的数据结构
 
 
 int main()
@@ -32,18 +31,22 @@ int main()
     }
     n=year;
     newMap.initMap(year);
+    //这个三重循环主要用来为图录入边的信息
     for(int i=1;i<=year;i++)
     {
+        //以第i年为边的一个起点，以第j年为中点
         for(int j=i+1;j<=year;j++)
         {
             temp=0;
+            //这个循环 需要加上多年的维修费用
             for(int k=0;k<j-i;k++)
             {
                 temp+=repareDevicePrice[k];
+                //如果是计算到最后一年的花费，需要判断最后一年重新买新的设备合算还是维修合算，这样就可以减少一个节点
                 if(k==year-i-1)
                     temp+=repareDevicePrice[k+1]<newDevicePrice[year-1]+repareDevicePrice[0]?repareDevicePrice[k+1]:newDevicePrice[year-1]+repareDevicePrice[0];
             }
-            newMap.addEdge(i,j,newDevicePrice[i-1]+temp);
+            newMap.addEdge(i,j,newDevicePrice[i-1]+temp);   //在图的对象中添加该边的信息
         }
     }
     newMap.dijkstra();

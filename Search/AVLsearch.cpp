@@ -24,6 +24,9 @@ public:
 };
 
 class AVL{
+#define LH 1
+#define EH 0
+#define RH -1
 public:
     node *root;
     int size;
@@ -45,9 +48,19 @@ public:
         if(searchNum==root->data)
             return root;
         else if(searchNum<root->data)
-            return searchRecursive(searchNum,root->lchild);
+        {
+            if(root->lchild)
+                return searchRecursive(searchNum,root->lchild);
+            else
+                return nullptr;
+        }
         else
-            return searchRecursive(searchNum,root->rchild);
+        {
+            if(root->rchild)
+                return searchRecursive(searchNum,root->rchild);
+            else
+                return nullptr;
+        }
     }
 
 
@@ -58,9 +71,17 @@ private:
         if(searchNum==root->data)
             return newTree;
         else if(searchNum<root->data)
-            return searchRecursive(searchNum,root->lchild);
+        {
+            if(newTree->lchild)
+                return searchRecursive(searchNum,root->lchild);
+        }
         else
-            return searchRecursive(searchNum,root->rchild);
+        {
+            if(newTree->rchild)
+                return searchRecursive(searchNum,root->rchild);
+            else
+                return nullptr;
+        }
     }
 };
 

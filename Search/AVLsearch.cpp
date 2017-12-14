@@ -63,6 +63,83 @@ public:
         }
     }
 
+    void leftBalanced(node* tree)
+    {
+
+    }
+
+    void rightBalanced(node* tree)
+    {
+
+    }
+
+    void insert(node *tree,int insertNum,bool *addFloor)
+    {
+        if(tree->data==insertNum)
+        {
+            tree->sameNum++;
+            *addFloor=false;
+            return ;
+        }
+        else if(insertNum<tree->data)
+        {
+            if(tree->lchild)
+            {
+                insert(tree->lchild,insertNum,addFloor);
+                if(addFloor)
+                {
+                    switch (tree->balancedFactor)
+                    {
+                        case LH:
+                            leftBalanced(tree);
+                            *addFloor=false;
+                            break;
+                        case EH:
+                            tree->balancedFactor=LH;
+                            *addFloor=true;
+                            break;
+                        case RH:
+                            tree->balancedFactor=EH;
+                            *addFloor=false;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                node*temp = new node;
+                temp->data=insertNum;
+                if(!tree->rchild)
+                    *addFloor=true;
+            }
+        }
+        else
+        {
+            if(tree->rchild)
+            {
+                insert(tree,insertNum,addFloor);
+                if(addFloor)
+                {
+                    switch(tree->balancedFactor)
+                    {
+                        case LH:
+                            tree->balancedFactor=EH;
+                            *addFloor=false;
+                            break;
+                        case EH:
+                            tree->balancedFactor=RH;
+                            *addFloor=true;
+                            break;
+                        case RH:
+                            rightBalanced(tree);
+                            *addFloor=false;
+                            break;
+                    }
+
+                }
+            }
+        }
+    }
 
 private:
     //this is for recursive search use and the other users can't use and see it and parameter is complex ,the search() is more easy for use

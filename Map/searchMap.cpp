@@ -11,9 +11,9 @@ using namespace std;
 
 class map{
 public:
-    int pointNum,edgeNum;
-    int point[maxNum],edge[maxNum][maxNum];
-    void initMap(int p,int e)
+    int pointNum,edgeNum;  //点的个数 边的个数
+    int point[maxNum],edge[maxNum][maxNum];  //在图的节点处存的信息  在图的边上存的信息(边的权重)
+    void initMap(int p,int e)    //将邻接矩阵初始化为全0
     {
         pointNum=p;
         edgeNum=e;
@@ -28,6 +28,7 @@ public:
 
     map() = default;
 
+    //为图的类添加一条无向的边
     void addEdge(int a,int b,int weight)
     {
         edge[a][b]=weight;
@@ -38,7 +39,9 @@ public:
 
 //实例一个图的对象
 map newMap;
+//在dfs和bfs时需要判断节点是否已经访问过，这个数组用来存储节点是否已经访问过
 bool visited[maxNum];
+//存储搜索得到的搜索路径
 int dfsCode[maxNum];
 int count=0;
 //通过文件读入图的信息并建立图
@@ -65,6 +68,7 @@ void readFile()
     fileReader.close();
 }
 
+//深度优先搜索递归方式的写法
 void DFSRecursive(int currentPoint)
 {
     visited[currentPoint]=true;
@@ -79,6 +83,7 @@ void DFSRecursive(int currentPoint)
     }
 }
 
+//深度优先索搜用到的主函数
 void DFSRecursiveMain()
 {
     count=0;
@@ -98,6 +103,7 @@ void DFSRecursiveMain()
     }
 }
 
+//深度优先搜索的非递归的写法
 void DFSNotRecursive()
 {
     count=0;
@@ -111,7 +117,7 @@ void DFSNotRecursive()
     for(int i=0;i<newMap.pointNum;i++)
     {
         index=i;
-        while(!visited[index])
+        while(!visited[index])  //这个循环保证所有与该节点相连的没有访问过的点的都会搜索到
         {
             visited[index]=true;
             dfsCode[count]=index;
@@ -129,7 +135,7 @@ void DFSNotRecursive()
                         break;
                     }
                 }
-                if(flag==0)
+                if(flag==0)    //与该节点没有相连且没有访问过的点 ，需要回溯到之前访问的节点
                 {
                     trace.pop();
                     if(trace.empty())
@@ -142,11 +148,12 @@ void DFSNotRecursive()
                         index=trace.top();
                     }
                 }
-            }while(flag==0);
+            }while(flag==0);    //该循环一直持续到回溯到有满足条件的新点可以访问为止
         }
     }
 }
 
+//广度优先搜索的函数
 void BFS()
 {
     queue<int> point;
@@ -186,10 +193,21 @@ void BFS()
 int main()
 {
     readFile();
-    //DFSRecursiveMain();
-    //DFSNotRecursive();
-    BFS();
+    DFSRecursiveMain();
+
+    cout<<"深度优先搜索递归 ";
     for(int i=0;i<newMap.pointNum;i++)
-        cout<<dfsCode[i]<<endl;
+        cout<<dfsCode[i]<<" ";
+    cout<<endl;
+    DFSNotRecursive();
+    cout<<"深度优先搜索非递归 ";
+    for(int i=0;i<newMap.pointNum;i++)
+        cout<<dfsCode[i]<<" ";
+    cout<<endl;
+    BFS();
+    cout<<"广度的优先搜索 ";
+    for(int i=0;i<newMap.pointNum;i++)
+        cout<<dfsCode[i]<<" ";
+    cout<<endl;
     return 0;
 }

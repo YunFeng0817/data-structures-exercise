@@ -69,7 +69,7 @@ int search(int pre)
                     count++;
                     if(search(i))
                         return 1;
-                    /*if(!search(i))
+                    /*if(!Search(i))
                         count--;
                         printf("count:%d\n",count);*/
                     /*else

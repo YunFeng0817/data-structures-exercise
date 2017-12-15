@@ -18,7 +18,7 @@ public:
         lchild = nullptr;
         rchild = nullptr;
         data=-1;
-        sameNum=0;
+        sameNum=1;
         balancedFactor=0;
     }
 };
@@ -114,7 +114,123 @@ public:
 
     void rightBalanced(node* tree)
     {
+        node *r=tree->rchild,*rl=r->lchild;
+        switch(r->balancedFactor)
+        {
+            case RH:
+                leftRotate(tree);
+                tree->balancedFactor=r->balancedFactor=EH;
+                break;
+            case LH:
+                switch(rl->balancedFactor)
+                {
+                    case LH:
+                        tree->balancedFactor=EH;
+                        r->balancedFactor=RH;
+                    break;
+                    case EH:
+                        tree->balancedFactor=r->balancedFactor=EH;
+                    break;
+                    case RH:
+                        tree->balancedFactor=LH;
+                        r->balancedFactor=EH;
+                    break;
+                }
+                rl->balancedFactor=EH;
+                rightRotate(r);
+                leftRotate(tree);
+        }
+    }
 
+    void insert(int insertNum)
+    {
+        bool addFloor=false;
+        if(root->data==insertNum)
+        {
+            root->sameNum++;
+            return ;
+        }
+        else if(insertNum<root->data)
+        {
+            if(root->lchild)
+            {
+                insert(root->lchild,insertNum,&addFloor);
+                if(addFloor)
+                {
+                    switch (root->balancedFactor)
+                    {
+                        case LH:
+                            leftBalanced(root);
+                            addFloor=false;
+                            break;
+                        case EH:
+                            root->balancedFactor=LH;
+                            addFloor=true;
+                            break;
+                        case RH:
+                            root->balancedFactor=EH;
+                            addFloor=false;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                node*temp = new node;
+                temp->data=insertNum;
+            }
+        }
+        else
+        {
+            if(root->rchild)
+            {
+                insert(root,insertNum,&addFloor);
+                if(addFloor)
+                {
+                    switch(root->balancedFactor)
+                    {
+                        case LH:
+                            root->balancedFactor=EH;
+                            addFloor=false;
+                            break;
+                        case EH:
+                            root->balancedFactor=RH;
+                            addFloor=true;
+                            break;
+                        case RH:
+                            rightBalanced(root);
+                            addFloor=false;
+                            break;
+                    }
+
+                }
+            }
+            else
+            {
+                node*temp = new node;
+                temp->data=insertNum;
+            }
+        }
+    }
+
+private:
+    //this is for recursive search use and the other users can't use and see it and parameter is complex ,the search() is more easy for use
+    node* searchRecursive(int searchNum,node* newTree)
+    {
+        if(searchNum==root->data)
+            return newTree;
+        else if(searchNum<root->data)
+        {
+            if(newTree->lchild)
+                return searchRecursive(searchNum,root->lchild);
+        }
+        else
+        {
+            if(newTree->rchild)
+                return searchRecursive(searchNum,root->rchild);
+            else
+                return nullptr;
+        }
     }
 
     void insert(node *tree,int insertNum,bool *addFloor)
@@ -196,28 +312,15 @@ public:
         }
     }
 
-private:
-    //this is for recursive search use and the other users can't use and see it and parameter is complex ,the search() is more easy for use
-    node* searchRecursive(int searchNum,node* newTree)
-    {
-        if(searchNum==root->data)
-            return newTree;
-        else if(searchNum<root->data)
-        {
-            if(newTree->lchild)
-                return searchRecursive(searchNum,root->lchild);
-        }
-        else
-        {
-            if(newTree->rchild)
-                return searchRecursive(searchNum,root->rchild);
-            else
-                return nullptr;
-        }
-    }
 };
 
 int main()
 {
+    AVL atree;
+    int test[10]={5,4,3,7,6,2,1,8,9,0};
+    for(int i=0;i<10;i++)
+    {
+        atree.insert(test[i]);
+    }
     return 0;
 }

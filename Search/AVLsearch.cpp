@@ -43,6 +43,26 @@ public:
         return !size;
     }
 
+    void PreviousRecursive(node *root)
+    {
+        if(root!=nullptr)
+        {
+            cout<<root->data<<" ";
+            PreviousRecursive(root->lchild);
+            PreviousRecursive(root->rchild);
+        }
+    }
+
+    void MidRecursive(node *root)
+    {
+        if(root!=nullptr)
+        {
+            MidRecursive(root->lchild);
+            cout<<root->data<<" ";
+            MidRecursive(root->rchild);
+        }
+    }
+
     //search the specific data
     node* search(int searchNum)
     {
@@ -203,7 +223,6 @@ public:
                         addFloor=false;
                         break;
                 }
-
             }
         }
     }
@@ -245,7 +264,7 @@ private:
         else if(insertNum<tree->data)
         {
             tree->lchild=insertRecursive(tree->lchild,insertNum,addFloor);
-            if(addFloor)
+            if(*addFloor)
             {
                 switch (tree->balancedFactor)
                 {
@@ -267,7 +286,7 @@ private:
         else
         {
             tree->rchild=insertRecursive(tree->rchild,insertNum,addFloor);
-            if(addFloor)
+            if(*addFloor)
             {
                 switch(tree->balancedFactor)
                 {
@@ -293,10 +312,18 @@ private:
 int main()
 {
     AVL atree;
-    int test[10]={1,5,3,7,6,2,4,8,9,0};
-    for(int i=0;i<10;i++)
+    int n,a;
+    cout<<"input the number of the num"<<endl;
+    cin>>n;
+    for(int i=0;i<n;i++)
     {
-        atree.insert(test[i]);
+        cin>>a;
+        atree.insert(a);
     }
+    cout<<"mid sequence results are:"<<endl;
+    atree.MidRecursive(atree.root);
     return 0;
 }
+//13 12 10 6 4 11 2 8 7 5 3 1 9 13
+//1,5,3,7,6,2,4,8,9,0
+//21 12 10 6 4 11 2 8 7 5 3 1 9 13 102 3 14 45 23 455 65 12 4 56 546 1 45 6

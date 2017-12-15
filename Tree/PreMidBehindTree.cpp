@@ -110,7 +110,7 @@ public:
             }
         }
     }
-//中序遍历递归实现
+//中序遍历非递归实现
     void MidNotRecursive(cellElement *root)
     {
         stack<cellElement *> trace;
@@ -130,7 +130,7 @@ public:
             }
         }
     }
-//中序遍历非递归实现
+//中序遍历递归实现
     void MidRecursive(cellElement *root)
     {
         if(root!=nullptr)
@@ -140,7 +140,7 @@ public:
             MidRecursive(root->rchild);
         }
     }
-//后序遍历递归实现
+//后序遍历非递归实现
     void BehindNotRecursive(cellElement *root)
     {
         stack<cellElement*> trace;
@@ -172,7 +172,7 @@ public:
             }
         }while(!trace.empty());
     }
-//后序遍历非递归实现
+//后序遍历递归实现
     void BehindRecursive(cellElement *root)
     {
         if(root!=nullptr)

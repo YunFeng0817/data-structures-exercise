@@ -63,9 +63,53 @@ public:
         }
     }
 
+    void leftRotate(node* tree)
+    {
+        node newNode;
+        newNode=*tree->lchild;
+        newNode.rchild=tree;
+        tree->lchild=newNode.rchild;
+        *tree=newNode;
+    }
+
+    void rightRotate(node* tree)
+    {
+        node newNode;
+        newNode=*tree->rchild;
+        newNode.lchild=tree;
+        tree->rchild=newNode.lchild;
+        *tree=newNode;
+    }
+
     void leftBalanced(node* tree)
     {
+        node* l=tree->lchild,*lr=l->rchild;
+        switch(l->balancedFactor)
+        {
+            case LH:
+                rightRotate(tree);
+                tree->balancedFactor=l->balancedFactor=EH;
+                break;
+            case RH:
+                switch(lr->balancedFactor)
+                {
+                    case LH:
+                        l->balancedFactor=EH;
+                        tree->balancedFactor=RH;
+                        break;
+                    case EH:
+                        l->balancedFactor=tree->balancedFactor=EH;
+                        break;
+                    case RH:
+                        l->balancedFactor=LH;
+                        tree->balancedFactor=EH;
+                        break;
+                }
+                lr->balancedFactor=EH;
+                leftRotate(tree->lchild);
+                rightRotate(tree);
 
+        }
     }
 
     void rightBalanced(node* tree)
@@ -111,6 +155,8 @@ public:
                 temp->data=insertNum;
                 if(!tree->rchild)
                     *addFloor=true;
+                else
+                    *addFloor=false;
             }
         }
         else
@@ -137,6 +183,15 @@ public:
                     }
 
                 }
+            }
+            else
+            {
+                node*temp = new node;
+                temp->data=insertNum;
+                if(!tree->lchild)
+                    *addFloor=true;
+                else
+                    *addFloor=false;
             }
         }
     }

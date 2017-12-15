@@ -1,6 +1,10 @@
 //
 // Created by Fitz on 2017/12/14.
 //
+/*
+ * 在构建平衡二叉树的过程中，每当插入一个结点时，先检查是否因插入而破坏了树的平衡性，若是，则找出最小不平衡子树(通过递归的方式)，在保持二叉排序树特性的前提下，调整关系。
+这句话意味着：只要破坏了平衡性，就马上修改使得二叉树重新平衡，意思就是只要修改了最小不平衡树就可以使得整个二叉树重新平衡.
+ */
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
@@ -220,6 +224,81 @@ public:
         }
     }
 
+    void Delete(node *tree,int deleteNum)
+    {
+        if(!tree)
+            return ;
+        node*pr,*p;
+        if(empty())
+            return ;
+        if(tree->data==deleteNum)
+        {
+            size--;
+            if(tree->sameNum>1)
+            {
+                tree->sameNum--;
+            }
+            else
+            {
+                if(!tree->lchild&&!tree->rchild)
+                {
+                    if(tree==root)
+                        tree->data=infinite;
+                    else
+                        delete(tree);
+                }
+                else if(!tree->lchild)
+                {
+                    tree->data=tree->rchild->data;
+                    tree->sameNum=tree->rchild->sameNum;
+                    pr=tree->rchild->lchild;
+                    p=tree->rchild->rchild;
+                    delete(tree->rchild);
+                    tree->lchild=pr;
+                    tree->rchild=p;
+                }
+                else if(!tree->rchild)
+                {
+                    tree->data=tree->lchild->data;
+                    tree->sameNum=tree->lchild->sameNum;
+                    pr=tree->lchild->lchild;
+                    p=tree->lchild->rchild;
+                    delete(tree->lchild);
+                    tree->lchild=pr;
+                    tree->rchild=p;
+                }
+                else
+                {
+                    pr=p=tree->rchild;
+                    while(p->lchild)
+                    {
+                        pr=p;
+                        p=p->lchild;
+                    }
+                    tree->data=p->data;
+                    tree->sameNum=p->sameNum;
+                    if(pr!=p)
+                    {
+                        pr->lchild=p->rchild;
+                    }
+                    else
+                    {
+                        tree->rchild=p->rchild;
+                    }
+                    delete(p);
+                }
+            }
+        }
+        else if(deleteNum<tree->data)
+        {
+            Delete(tree->lchild,deleteNum);
+        }
+        else
+        {
+            Delete(tree->rchild,deleteNum);
+        }
+    }
+
 private:
     //this is for recursive search use and the other users can't use and see it and parameter is complex ,the search() is more easy for use
     node* searchRecursive(int searchNum,node* newTree)
@@ -314,9 +393,16 @@ int main()
         cin>>a;
         atree.insert(a);
     }
-    cout<<atree.search(4)->data<<endl;
+    for(int i=1;i<9;i++)
+    {
+        atree.Delete(atree.root,i);
+    }
+//    atree.Delete(atree.root,3);
+//    atree.Delete(atree.root,3);
+    cout<<atree.size<<endl;
     cout<<"mid sequence results are:"<<endl;
     atree.MidRecursive(atree.root);
+    cout<<endl;
     return 0;
 }
 //13 12 10 6 4 11 2 8 7 5 3 1 9 13

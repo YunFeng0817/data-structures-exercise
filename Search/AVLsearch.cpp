@@ -43,16 +43,7 @@ public:
         return !size;
     }
 
-    void PreviousRecursive(node *root)
-    {
-        if(root!=nullptr)
-        {
-            cout<<root->data<<" ";
-            PreviousRecursive(root->lchild);
-            PreviousRecursive(root->rchild);
-        }
-    }
-
+    //通过中序遍历建立的搜索树来得到排序后的结果
     void MidRecursive(node *root)
     {
         if(root!=nullptr)
@@ -84,6 +75,7 @@ public:
         }
     }
 
+    //单次向左旋转
     void leftRotate(node** tree)
     {
         node *newNode;
@@ -93,6 +85,7 @@ public:
         *tree=newNode;
     }
 
+    //单次向右旋转
     void rightRotate(node** tree)
     {
         node *newNode;
@@ -104,15 +97,15 @@ public:
 
     node* leftBalanced(node* tree)
     {
-        node* l=tree->lchild,*lr=l->rchild;
-        switch(l->balancedFactor)
+        node* l=tree->lchild,*lr=l->rchild;    //l表示tree的左子树 lr表示左子树的右子树
+        switch(l->balancedFactor)             //根据l的平衡因子来判断  是LL旋转还是LR旋转的方式来调节树的平衡
         {
             case LH:
-                rightRotate(&tree);
+                rightRotate(&tree);       //是左子树的左子树导致不平衡，是LL的旋转方式
                 tree->balancedFactor=l->balancedFactor=EH;
                 break;
             case RH:
-                switch(lr->balancedFactor)
+                switch(lr->balancedFactor)   //调节tree和l的平衡因子
                 {
                     case LH:
                         l->balancedFactor=EH;
@@ -127,7 +120,7 @@ public:
                         break;
                 }
                 lr->balancedFactor=EH;
-                leftRotate(&l);
+                leftRotate(&l);    //是LR的情况
                 tree->lchild=l;
                 rightRotate(&tree);
 
@@ -142,7 +135,7 @@ public:
         {
             case RH:
                 leftRotate(&tree);
-                tree->balancedFactor=r->balancedFactor=EH;
+                tree->balancedFactor=r->balancedFactor=EH;     //是RR的情况
                 break;
             case LH:
                 switch(rl->balancedFactor)
@@ -161,7 +154,7 @@ public:
                 }
                 rl->balancedFactor=EH;
                 rightRotate(&r);
-                tree->rchild=r;
+                tree->rchild=r;   //是RL的旋转调节平衡方式
                 leftRotate(&tree);
         }
         return tree;
@@ -171,12 +164,12 @@ public:
     {
         size++;
         bool addFloor=false;
-        if(root->data==infinite)
+        if(root->data==infinite)    //在第一次插入节点时，需要特殊处理
         {
             root->data=insertNum;
             return ;
         }
-        if(root->data==insertNum)
+        if(root->data==insertNum)   //如果有相同的关键字，就在该节点的记录重复的数据上加一
         {
             root->sameNum++;
             return ;
@@ -186,17 +179,17 @@ public:
             root->lchild=insertRecursive(root->lchild,insertNum,&addFloor);
             if(addFloor)
             {
-                switch (root->balancedFactor)
+                switch (root->balancedFactor)        //addFloor  是表示插入新节点导致层数增加，根据原来的状态来判断现在的平衡因子
                 {
-                    case LH:
+                    case LH:    //原本左子树比右子树高，需要作左平衡处理
                         root=leftBalanced(root);
                         addFloor=false;
                         break;
-                    case EH:
+                    case EH:   //原本左、右子树等高，现因左子树增高而使树增高
                         root->balancedFactor=LH;
                         addFloor=true;
                         break;
-                    case RH:
+                    case RH:   //原本右子树比左子树高，现左、右子树等高
                         root->balancedFactor=EH;
                         addFloor=false;
                         break;
@@ -210,15 +203,15 @@ public:
             {
                 switch(root->balancedFactor)
                 {
-                    case LH:
+                    case LH:    //原本左子树比右子树高，现左、右子树等高
                         root->balancedFactor=EH;
                         addFloor=false;
                         break;
-                    case EH:
+                    case EH:    //原本左、右子树等高，现因右子树增高而使树增高
                         root->balancedFactor=RH;
                         addFloor=true;
                         break;
-                    case RH:
+                    case RH:   //原本右子树比左子树高，需要作右平衡处理
                         root=rightBalanced(root);
                         addFloor=false;
                         break;
@@ -231,25 +224,26 @@ private:
     //this is for recursive search use and the other users can't use and see it and parameter is complex ,the search() is more easy for use
     node* searchRecursive(int searchNum,node* newTree)
     {
-        if(searchNum==root->data)
+        if(searchNum==newTree->data)
             return newTree;
-        else if(searchNum<root->data)
+        else if(searchNum<newTree->data)
         {
             if(newTree->lchild)
-                return searchRecursive(searchNum,root->lchild);
+                return searchRecursive(searchNum,newTree->lchild);
         }
         else
         {
             if(newTree->rchild)
-                return searchRecursive(searchNum,root->rchild);
+                return searchRecursive(searchNum,newTree->rchild);
             else
                 return nullptr;
         }
     }
 
+    //这个函数用于递归调用，与上面public属性的区别在于上面的函数传入的参数更少，更符合restful api 的设计
     node* insertRecursive(node *tree,int insertNum,bool *addFloor)
     {
-        if(!tree)
+        if(!tree)   //如果是空，表示搜索树中没有该节点
         {
             tree = new node;
             tree->data=insertNum;
@@ -320,6 +314,7 @@ int main()
         cin>>a;
         atree.insert(a);
     }
+    cout<<atree.search(4)->data<<endl;
     cout<<"mid sequence results are:"<<endl;
     atree.MidRecursive(atree.root);
     return 0;

@@ -7,27 +7,28 @@
 using namespace std;
 #define nullptr NULL
 
-class node{
-public:
-    int balancedFactor;  //AVL的平衡因子
-    int data;
-    int sameNum;  //表示与该节点有相同关键字的个数
-    node *lchild , *rchild;
-    node()
-    {
-        lchild = nullptr;
-        rchild = nullptr;
-        data=-1;
-        sameNum=1;
-        balancedFactor=0;
-    }
-};
 
 class AVL{
 #define LH 1
 #define EH 0
 #define RH -1
 public:
+    class node{
+#define infinite 0x0fffffff
+    public:
+        int balancedFactor;  //AVL的平衡因子
+        int data;
+        int sameNum;  //表示与该节点有相同关键字的个数
+        node *lchild , *rchild;
+        node()
+        {
+            lchild = nullptr;
+            rchild = nullptr;
+            data=infinite;
+            sameNum=1;
+            balancedFactor=0;
+        }
+    };
     node *root;
     int size;
     AVL()
@@ -63,31 +64,31 @@ public:
         }
     }
 
-    void leftRotate(node* tree)
+    void leftRotate(node** tree)
     {
-        node newNode;
-        newNode=*tree->lchild;
-        newNode.rchild=tree;
-        tree->lchild=newNode.rchild;
+        node *newNode;
+        newNode=(**tree).rchild;
+        (**tree).rchild=newNode->lchild;
+        newNode->lchild=*tree;
         *tree=newNode;
     }
 
-    void rightRotate(node* tree)
+    void rightRotate(node** tree)
     {
-        node newNode;
-        newNode=*tree->rchild;
-        newNode.lchild=tree;
-        tree->rchild=newNode.lchild;
+        node *newNode;
+        newNode=(**tree).lchild;
+        (**tree).lchild=newNode->rchild;
+        newNode->rchild=*tree;
         *tree=newNode;
     }
 
-    void leftBalanced(node* tree)
+    node* leftBalanced(node* tree)
     {
         node* l=tree->lchild,*lr=l->rchild;
         switch(l->balancedFactor)
         {
             case LH:
-                rightRotate(tree);
+                rightRotate(&tree);
                 tree->balancedFactor=l->balancedFactor=EH;
                 break;
             case RH:
@@ -106,19 +107,21 @@ public:
                         break;
                 }
                 lr->balancedFactor=EH;
-                leftRotate(tree->lchild);
-                rightRotate(tree);
+                leftRotate(&l);
+                tree->lchild=l;
+                rightRotate(&tree);
 
         }
+        return tree;
     }
 
-    void rightBalanced(node* tree)
+    node* rightBalanced(node* tree)
     {
         node *r=tree->rchild,*rl=r->lchild;
         switch(r->balancedFactor)
         {
             case RH:
-                leftRotate(tree);
+                leftRotate(&tree);
                 tree->balancedFactor=r->balancedFactor=EH;
                 break;
             case LH:
@@ -137,14 +140,22 @@ public:
                     break;
                 }
                 rl->balancedFactor=EH;
-                rightRotate(r);
-                leftRotate(tree);
+                rightRotate(&r);
+                tree->rchild=r;
+                leftRotate(&tree);
         }
+        return tree;
     }
 
     void insert(int insertNum)
     {
+        size++;
         bool addFloor=false;
+        if(root->data==infinite)
+        {
+            root->data=insertNum;
+            return ;
+        }
         if(root->data==insertNum)
         {
             root->sameNum++;
@@ -152,63 +163,47 @@ public:
         }
         else if(insertNum<root->data)
         {
-            if(root->lchild)
+            root->lchild=insertRecursive(root->lchild,insertNum,&addFloor);
+            if(addFloor)
             {
-                insert(root->lchild,insertNum,&addFloor);
-                if(addFloor)
+                switch (root->balancedFactor)
                 {
-                    switch (root->balancedFactor)
-                    {
-                        case LH:
-                            leftBalanced(root);
-                            addFloor=false;
-                            break;
-                        case EH:
-                            root->balancedFactor=LH;
-                            addFloor=true;
-                            break;
-                        case RH:
-                            root->balancedFactor=EH;
-                            addFloor=false;
-                            break;
-                    }
+                    case LH:
+                        root=leftBalanced(root);
+                        addFloor=false;
+                        break;
+                    case EH:
+                        root->balancedFactor=LH;
+                        addFloor=true;
+                        break;
+                    case RH:
+                        root->balancedFactor=EH;
+                        addFloor=false;
+                        break;
                 }
-            }
-            else
-            {
-                node*temp = new node;
-                temp->data=insertNum;
             }
         }
         else
         {
-            if(root->rchild)
+            root->rchild=insertRecursive(root->rchild,insertNum,&addFloor);
+            if(addFloor)
             {
-                insert(root,insertNum,&addFloor);
-                if(addFloor)
+                switch(root->balancedFactor)
                 {
-                    switch(root->balancedFactor)
-                    {
-                        case LH:
-                            root->balancedFactor=EH;
-                            addFloor=false;
-                            break;
-                        case EH:
-                            root->balancedFactor=RH;
-                            addFloor=true;
-                            break;
-                        case RH:
-                            rightBalanced(root);
-                            addFloor=false;
-                            break;
-                    }
-
+                    case LH:
+                        root->balancedFactor=EH;
+                        addFloor=false;
+                        break;
+                    case EH:
+                        root->balancedFactor=RH;
+                        addFloor=true;
+                        break;
+                    case RH:
+                        root=rightBalanced(root);
+                        addFloor=false;
+                        break;
                 }
-            }
-            else
-            {
-                node*temp = new node;
-                temp->data=insertNum;
+
             }
         }
     }
@@ -233,91 +228,72 @@ private:
         }
     }
 
-    void insert(node *tree,int insertNum,bool *addFloor)
+    node* insertRecursive(node *tree,int insertNum,bool *addFloor)
     {
+        if(!tree)
+        {
+            tree = new node;
+            tree->data=insertNum;
+            *addFloor=true;
+            return tree;
+        }
         if(tree->data==insertNum)
         {
             tree->sameNum++;
             *addFloor=false;
-            return ;
         }
         else if(insertNum<tree->data)
         {
-            if(tree->lchild)
+            tree->lchild=insertRecursive(tree->lchild,insertNum,addFloor);
+            if(addFloor)
             {
-                insert(tree->lchild,insertNum,addFloor);
-                if(addFloor)
+                switch (tree->balancedFactor)
                 {
-                    switch (tree->balancedFactor)
-                    {
-                        case LH:
-                            leftBalanced(tree);
-                            *addFloor=false;
-                            break;
-                        case EH:
-                            tree->balancedFactor=LH;
-                            *addFloor=true;
-                            break;
-                        case RH:
-                            tree->balancedFactor=EH;
-                            *addFloor=false;
-                            break;
-                    }
+                    case LH:
+                        tree=leftBalanced(tree);
+                        *addFloor=false;
+                        break;
+                    case EH:
+                        tree->balancedFactor=LH;
+                        *addFloor=true;
+                        break;
+                    case RH:
+                        tree->balancedFactor=EH;
+                        *addFloor=false;
+                        break;
                 }
-            }
-            else
-            {
-                node*temp = new node;
-                temp->data=insertNum;
-                if(!tree->rchild)
-                    *addFloor=true;
-                else
-                    *addFloor=false;
             }
         }
         else
         {
-            if(tree->rchild)
+            tree->rchild=insertRecursive(tree->rchild,insertNum,addFloor);
+            if(addFloor)
             {
-                insert(tree,insertNum,addFloor);
-                if(addFloor)
+                switch(tree->balancedFactor)
                 {
-                    switch(tree->balancedFactor)
-                    {
-                        case LH:
-                            tree->balancedFactor=EH;
-                            *addFloor=false;
-                            break;
-                        case EH:
-                            tree->balancedFactor=RH;
-                            *addFloor=true;
-                            break;
-                        case RH:
-                            rightBalanced(tree);
-                            *addFloor=false;
-                            break;
-                    }
-
+                    case LH:
+                        tree->balancedFactor=EH;
+                        *addFloor=false;
+                        break;
+                    case EH:
+                        tree->balancedFactor=RH;
+                        *addFloor=true;
+                        break;
+                    case RH:
+                        tree=rightBalanced(tree);
+                        *addFloor=false;
+                        break;
                 }
             }
-            else
-            {
-                node*temp = new node;
-                temp->data=insertNum;
-                if(!tree->lchild)
-                    *addFloor=true;
-                else
-                    *addFloor=false;
-            }
         }
+        return tree;
     }
-
 };
 
 int main()
 {
     AVL atree;
-    int test[10]={5,4,3,7,6,2,1,8,9,0};
+    int test[10]={1,5,3,7,6,2,4,8,9,0};
     for(int i=0;i<10;i++)
     {
         atree.insert(test[i]);

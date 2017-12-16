@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 100000
-#define Max 10000
+#define Num 1000
+#define Max 10
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;
 using namespace std;
@@ -18,7 +18,7 @@ int findKey(int* num,int a,int b)
         swap(num[mid],num[b]);
     if(num[a]>num[mid])
         swap(num[a],num[mid]);
-    return a;
+    return mid;
 }
 
 void quickSort(int *num,int left,int right)
@@ -26,65 +26,76 @@ void quickSort(int *num,int left,int right)
     int i,j,t,temp,l,r,lLen=0,rLen=0;
     if(left>right)
         return;
-//    int pivot=findKey(num,left,right);
-    temp=num[left]; //temp中存的就是基准数
+    int pivot=findKey(num,left,right);
+    temp=num[pivot]; //temp中存的就是基准数
     i=left;
     j=right;
     l=left;
     r=right;
-    while(i!=j)
+    while(i<j)
     {
         //顺序很重要，要先从右边开始找
         while(num[j]>=temp && i<j)
         {
-//            if(num[j]==temp)
-//            {
-//                swap(num[j],num[r]);
-//                r--;
-//                rLen++;
-//            }
+            if(num[j]==temp&&j!=pivot)
+            {
+                swap(num[j],num[r]);
+                r--;
+                rLen++;
+            }
             j--;
         }
+        num[i]=num[j];
         //再找右边的
         while(num[i]<=temp && i<j)
         {
-//            if(num[i]==temp)
-//            {
-//                swap(num[i],num[l]);
-//                l++;
-//                rLen++;
-//            }
+            if(num[i]==temp&&i!=pivot)
+            {
+                swap(num[i],num[l]);
+                l++;
+                rLen++;
+            }
             i++;
         }
-        //交换两个数在数组中的位置
-        if(i<j)
-        {
-            t=num[i];
-            num[i]=num[j];
-            num[j]=t;
-        }
+        num[j]=num[i];
+//        //交换两个数在数组中的位置
+//        if(i<j)
+//        {
+//            t=num[i];
+//            num[i]=num[j];
+//            num[j]=t;
+//        }
     }
-//    int x=1;
-//    while(l!=left)
-//    {
-//        swap(num[l],num[i-x]);
-//        x++;
-//        l--;
-//    }
-//    x=1;
-////    swap(num[left],num[i-x]);
-//    while(r!=right)
-//    {
-//        swap(num[r],num[i+x]);
-//        x++;
-//        r++;
-//    }
-//    swap(num[r],num[i+x]);
+    int x=0;
+    while(l!=left)
+    {
+        if(i-x==pivot)
+        {
+            x++;
+            continue;
+        }
+        x++;
+        swap(num[l],num[i-x]);
+        l--;
+    }
+    swap(num[l],num[i-x]);
+    x=0;
+    while(r!=right)
+    {
+        if(i+x==pivot)
+        {
+            x++;
+            continue;
+        }
+        x++;
+        swap(num[r],num[i+x]);
+        r++;
+    }
     //最终将基准数归位
-    num[left]=num[i];
-    num[i]=temp;
-    quickSort(num,left,i-1);
-    quickSort(num,i+1,right);
+    swap(num[r],num[i+x]);
+    swap(num[i],num[pivot]);
+    quickSort(num,left,i-1-lLen);
+    quickSort(num,i+1+rLen,right);
 }
 
 int main()
@@ -110,14 +121,14 @@ int main()
     time=clock()-time;
     cout<<"排序随机数的数据规模是"<<Num<<endl<<"自己的快排的用时为：\t";
     cout<<time<<endl;
-//    for(int i=0;i<Num;i++)
-//    {
-////        cout<<randomNum2[i]<<"\t";
-//        if(randomNum1[i]!=randomNum2[i])
-//        {
-//            cout<<i<<endl;
-//            cout<<randomNum1[i]<<"  "<<randomNum2[i]<<endl;
-//        }
-//    }
+    for(int i=0;i<Num;i++)
+    {
+//        cout<<randomNum2[i]<<"\t";
+        if(randomNum1[i]!=randomNum2[i])
+        {
+            cout<<i<<endl;
+            cout<<randomNum1[i]<<"  "<<randomNum2[i]<<endl;
+        }
+    }
     return 0;
 }

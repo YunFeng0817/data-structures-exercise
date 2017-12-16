@@ -5,55 +5,61 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 4000
+#define Num 10000000
 #define Max 10000
 #define Min 1
-
+int randomNum1[Num],randomNum2[Num],temp;
 using namespace std;
 int findKey(int* num,int a,int b)
 {
-    int m=num[a];
-    for(int k=a+1;k<=b;k++)
-    {
-        if(num[k]>m)
-            return k;
-        else if(num[k]<m)
-            return a;
-    }
-    return 0;
+    int mid;
+    mid=(a+b)>>1;
+    if(num[mid]>num[b])
+        swap(num[mid],num[b]);
+    if(num[a]>num[mid])
+        swap(num[a],num[mid]);
+    return a;
 }
 
-void swap(int *a,int *b)
+void quickSort(int *num,int left,int right)
 {
-    int temp;
-    temp=*a;
-    *a=*b;
-    *b=temp;
-}
-
-void quickSort(int *num,int a,int b)
-{
-    int l=a,r=b,pivot;
-    pivot=findKey(num,a,b);
-    do{
-        for(l;num[l]<num[pivot];l++);
-        for(r;num[r]>=num[pivot];r--);
-        if(l<r)
-            swap(&num[l],&num[r]);
-    }while(l<=r);
-    if(pivot!=0)
+    int i,j,t,temp;
+    if(left>right)
+        return;
+    int pivot=findKey(num,left,right);
+    temp=num[left]; //temp中存的就是基准数
+    i=left;
+    j=right;
+    while(i!=j)
     {
-        quickSort(num,a,l-1);
-        quickSort(num,l,b);
+        //顺序很重要，要先从右边开始找
+        while(num[j]>=temp && i<j)
+            j--;
+        //再找右边的
+        while(num[i]<=temp && i<j)
+            i++;
+        //交换两个数在数组中的位置
+        if(i<j)
+        {
+            t=num[i];
+            num[i]=num[j];
+            num[j]=t;
+        }
     }
+    //最终将基准数归位
+    num[left]=num[i];
+    num[i]=temp;
+
+
+    quickSort(num,left,i-1);
+    quickSort(num,i+1,right);
 }
 
 int main()
 {
-    int randomNum1[Num],randomNum2[Num],temp;
     for(int i=0;i<Num;i++)
     {
-        temp=Min+(int)Max*rand()/(RAND_MAX+1);
+        temp=Min+rand()%Max;
         randomNum1[i]=temp;
         randomNum2[i]=temp;
 //        cout<<randomNum[i]<<"\t";

@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 10000000
+#define Num 100000
 #define Max 10000
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;
@@ -23,21 +23,39 @@ int findKey(int* num,int a,int b)
 
 void quickSort(int *num,int left,int right)
 {
-    int i,j,t,temp;
+    int i,j,t,temp,l,r,lLen=0,rLen=0;
     if(left>right)
         return;
-    int pivot=findKey(num,left,right);
+//    int pivot=findKey(num,left,right);
     temp=num[left]; //temp中存的就是基准数
     i=left;
     j=right;
+    l=left;
+    r=right;
     while(i!=j)
     {
         //顺序很重要，要先从右边开始找
         while(num[j]>=temp && i<j)
+        {
+//            if(num[j]==temp)
+//            {
+//                swap(num[j],num[r]);
+//                r--;
+//                rLen++;
+//            }
             j--;
+        }
         //再找右边的
         while(num[i]<=temp && i<j)
+        {
+//            if(num[i]==temp)
+//            {
+//                swap(num[i],num[l]);
+//                l++;
+//                rLen++;
+//            }
             i++;
+        }
         //交换两个数在数组中的位置
         if(i<j)
         {
@@ -46,11 +64,25 @@ void quickSort(int *num,int left,int right)
             num[j]=t;
         }
     }
+//    int x=1;
+//    while(l!=left)
+//    {
+//        swap(num[l],num[i-x]);
+//        x++;
+//        l--;
+//    }
+//    x=1;
+////    swap(num[left],num[i-x]);
+//    while(r!=right)
+//    {
+//        swap(num[r],num[i+x]);
+//        x++;
+//        r++;
+//    }
+//    swap(num[r],num[i+x]);
     //最终将基准数归位
     num[left]=num[i];
     num[i]=temp;
-
-
     quickSort(num,left,i-1);
     quickSort(num,i+1,right);
 }
@@ -59,7 +91,8 @@ int main()
 {
     for(int i=0;i<Num;i++)
     {
-        temp=Min+rand()%Max;
+//        temp=Min+rand()%Max;
+        temp=i;
         randomNum1[i]=temp;
         randomNum2[i]=temp;
 //        cout<<randomNum[i]<<"\t";
@@ -77,14 +110,14 @@ int main()
     time=clock()-time;
     cout<<"排序随机数的数据规模是"<<Num<<endl<<"自己的快排的用时为：\t";
     cout<<time<<endl;
-    for(int i=0;i<Num;i++)
-    {
-//        cout<<randomNum2[i]<<"\t";
-        if(randomNum1[i]!=randomNum2[i])
-        {
-            cout<<i<<endl;
-            cout<<randomNum1[i]<<"  "<<randomNum2[i]<<endl;
-        }
-    }
+//    for(int i=0;i<Num;i++)
+//    {
+////        cout<<randomNum2[i]<<"\t";
+//        if(randomNum1[i]!=randomNum2[i])
+//        {
+//            cout<<i<<endl;
+//            cout<<randomNum1[i]<<"  "<<randomNum2[i]<<endl;
+//        }
+//    }
     return 0;
 }

@@ -91,9 +91,24 @@ void quickSort(int *num,int left,int right)
         swap(num[r],num[i+x]);
         r++;
     }
-    //最终将基准数归位
     swap(num[r],num[i+x]);
-    swap(num[i],num[pivot]);
+    //    最终将基准数归位
+    if(pivot<=i||num[i]>num[pivot])
+    {
+        num[pivot]=num[i];
+        num[i]=temp;
+    }
+    else if(i+1<=right)
+    {
+        num[pivot]=num[i+1];
+        num[i+1]=temp;
+        i++;
+    }
+    else
+    {
+        num[pivot]=num[i+1];
+        num[i+1]=temp;
+    }
     quickSort(num,left,i-1-lLen);
     quickSort(num,i+1+rLen,right);
 }

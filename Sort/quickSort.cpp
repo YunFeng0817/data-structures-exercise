@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 10000000
+#define Num 100000000
 #define Max 30000000
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;
@@ -146,6 +146,11 @@ void quickSort(int *num,int left,int right)
     quickSort(num,left,i-1-lLen);
 }
 
+int cmp( const void *a , const void *b)
+{
+    return *(int *)a - *(int *)b;
+}
+
 int main()
 {
 //    srand(time(0));
@@ -161,7 +166,8 @@ int main()
     double time;
     time=clock();
 //    sort(randomNum1,&randomNum1[Num],greater<int>());  //从大到小排序
-    sort(randomNum1,&randomNum1[Num]);   //从小到大排序
+    qsort(randomNum1,Num, sizeof(int),cmp);   //从小到大排序
+//    sort(randomNum1,&randomNum1[Num]);
     time=clock()-time;
     cout<<"排序随机数的数据规模是"<<Num<<endl<<"STL快排的用时为：\t";
     cout<<time<<endl;

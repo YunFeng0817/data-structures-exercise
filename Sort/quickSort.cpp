@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 1000
+#define Num 10
 #define Max 10
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;
@@ -24,7 +24,7 @@ int findKey(int* num,int a,int b)
 void quickSort(int *num,int left,int right)
 {
     int i,j,t,temp,l,r,lLen=0,rLen=0;
-    if(left>right)
+    if(left>=right)
         return;
     int pivot=findKey(num,left,right);
     temp=num[pivot]; //temp中存的就是基准数
@@ -45,53 +45,25 @@ void quickSort(int *num,int left,int right)
             }
             j--;
         }
-        num[i]=num[j];
-        //再找右边的
+        //再找左边的
         while(num[i]<=temp && i<j)
         {
             if(num[i]==temp&&i!=pivot)
             {
                 swap(num[i],num[l]);
                 l++;
-                rLen++;
+                lLen++;
             }
             i++;
         }
-        num[j]=num[i];
-//        //交换两个数在数组中的位置
-//        if(i<j)
-//        {
-//            t=num[i];
-//            num[i]=num[j];
-//            num[j]=t;
-//        }
-    }
-    int x=0;
-    while(l!=left)
-    {
-        if(i-x==pivot)
+        //交换两个数在数组中的位置
+        if(i<j)
         {
-            x++;
-            continue;
+            t=num[i];
+            num[i]=num[j];
+            num[j]=t;
         }
-        x++;
-        swap(num[l],num[i-x]);
-        l--;
     }
-    swap(num[l],num[i-x]);
-    x=0;
-    while(r!=right)
-    {
-        if(i+x==pivot)
-        {
-            x++;
-            continue;
-        }
-        x++;
-        swap(num[r],num[i+x]);
-        r++;
-    }
-    swap(num[r],num[i+x]);
     //    最终将基准数归位
     if(pivot<=i||num[i]>num[pivot])
     {
@@ -109,6 +81,28 @@ void quickSort(int *num,int left,int right)
         num[pivot]=num[i+1];
         num[i+1]=temp;
     }
+    int x=1;
+    if(l!=left&&l!=i)
+        l--;
+    while(l!=left)
+    {
+        swap(num[l],num[i-x]);
+        x++;
+        l--;
+    }
+    if(num[l]==temp&&l!=i)
+    swap(num[l],num[i-x]);
+    x=1;
+    if(r!=right&&r!=i)
+        r++;
+    while(r!=right)
+    {
+        swap(num[r],num[i+x]);
+        x++;
+        r++;
+    }
+    if(num[r]==temp&&r!=i)
+        swap(num[r],num[i+x]);
     quickSort(num,left,i-1-lLen);
     quickSort(num,i+1+rLen,right);
 }
@@ -117,8 +111,8 @@ int main()
 {
     for(int i=0;i<Num;i++)
     {
-//        temp=Min+rand()%Max;
-        temp=i;
+        temp=Min+rand()%Max;
+//        temp=i;
         randomNum1[i]=temp;
         randomNum2[i]=temp;
 //        cout<<randomNum[i]<<"\t";

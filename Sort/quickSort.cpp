@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 800
-#define Max 800
+#define Num 80000
+#define Max 8
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;
 using namespace std;
@@ -18,14 +18,49 @@ int findKey(int* num,int a,int b)
         swap(num[mid],num[b]);
     if(num[a]>num[mid])
         swap(num[a],num[mid]);
+    if(num[mid]>num[b])
+        swap(num[mid],num[b]);
     return mid;
 }
+
+void insertSort(int num[],int left,int right)
+{
+    int j,temp,k;
+    for(int i=left+1;i<=right;i++)
+    {
+        temp=num[i];
+        j=i;
+        while(temp<=num[j]&&j>left)
+        {
+            j--;
+        }
+        k=i;
+        while(k!=j+1)
+        {
+            num[k]=num[k-1];
+            k--;
+        }
+        if(temp<num[j])
+        {
+            num[j+1]=num[j];
+            num[j]=temp;
+        }
+        else
+            num[j+1]=temp;
+    }
+}
+
 
 void quickSort(int *num,int left,int right)
 {
     int i,j,t,temp,l,r,lLen=0,rLen=0;
     if(left>=right)
         return;
+//    if(right-left<16)
+//    {
+//        insertSort(num,left,right);
+//        return ;
+//    }
     int pivot=findKey(num,left,right);
     temp=num[pivot]; //temp中存的就是基准数
     i=left;
@@ -82,27 +117,31 @@ void quickSort(int *num,int left,int right)
         num[i+1]=temp;
     }
     int x=1;
-    if(l!=left)
+    if(lLen>0)
         l--;
-    while(l!=left)
+    int a=lLen;
+    while(a>0)
     {
         swap(num[l],num[i-x]);
         x++;
         l--;
+        a--;
     }
-    if(num[l]==temp&&l!=i)
-    swap(num[l],num[i-x]);
+//    if(num[l]==temp&&l!=i)
+//    swap(num[l],num[i-x]);
+    a=rLen;
     x=1;
-    if(r!=right)
+    if(rLen>0)
         r++;
-    while(r!=right)
+    while(a>0)
     {
         swap(num[r],num[i+x]);
         x++;
         r++;
+        a--;
     }
-    if(num[r]==temp&&r!=i)
-        swap(num[r],num[i+x]);
+//    if(num[r]==temp&&r!=i)
+//        swap(num[r],num[i+x]);
     quickSort(num,i+1+rLen,right);
     quickSort(num,left,i-1-lLen);
 }

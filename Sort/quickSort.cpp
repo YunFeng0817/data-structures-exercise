@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 80000
-#define Max 8
+#define Num 1000000
+#define Max 300
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;
 using namespace std;
@@ -56,11 +56,11 @@ void quickSort(int *num,int left,int right)
     int i,j,t,temp,l,r,lLen=0,rLen=0;
     if(left>=right)
         return;
-//    if(right-left<16)
-//    {
-//        insertSort(num,left,right);
-//        return ;
-//    }
+    if(right-left<16)
+    {
+        insertSort(num,left,right);
+        return ;
+    }
     int pivot=findKey(num,left,right);
     temp=num[pivot]; //temp中存的就是基准数
     i=left;
@@ -74,6 +74,8 @@ void quickSort(int *num,int left,int right)
         {
             if(num[j]==temp&&j!=pivot)
             {
+                if(pivot==r)
+                    pivot=j;
                 swap(num[j],num[r]);
                 r--;
                 rLen++;
@@ -85,6 +87,8 @@ void quickSort(int *num,int left,int right)
         {
             if(num[i]==temp&&i!=pivot)
             {
+                if(pivot==l)
+                    pivot=i;
                 swap(num[i],num[l]);
                 l++;
                 lLen++;
@@ -99,7 +103,7 @@ void quickSort(int *num,int left,int right)
             num[j]=t;
         }
     }
-    //    最终将基准数归位
+//        最终将基准数归位
     if(pivot<=i||num[i]>num[pivot])
     {
         num[pivot]=num[i];
@@ -127,8 +131,6 @@ void quickSort(int *num,int left,int right)
         l--;
         a--;
     }
-//    if(num[l]==temp&&l!=i)
-//    swap(num[l],num[i-x]);
     a=rLen;
     x=1;
     if(rLen>0)
@@ -140,8 +142,6 @@ void quickSort(int *num,int left,int right)
         r++;
         a--;
     }
-//    if(num[r]==temp&&r!=i)
-//        swap(num[r],num[i+x]);
     quickSort(num,i+1+rLen,right);
     quickSort(num,left,i-1-lLen);
 }

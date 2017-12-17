@@ -5,8 +5,8 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 10
-#define Max 10
+#define Num 800
+#define Max 800
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;
 using namespace std;
@@ -82,7 +82,7 @@ void quickSort(int *num,int left,int right)
         num[i+1]=temp;
     }
     int x=1;
-    if(l!=left&&l!=i)
+    if(l!=left)
         l--;
     while(l!=left)
     {
@@ -93,7 +93,7 @@ void quickSort(int *num,int left,int right)
     if(num[l]==temp&&l!=i)
     swap(num[l],num[i-x]);
     x=1;
-    if(r!=right&&r!=i)
+    if(r!=right)
         r++;
     while(r!=right)
     {
@@ -103,12 +103,13 @@ void quickSort(int *num,int left,int right)
     }
     if(num[r]==temp&&r!=i)
         swap(num[r],num[i+x]);
-    quickSort(num,left,i-1-lLen);
     quickSort(num,i+1+rLen,right);
+    quickSort(num,left,i-1-lLen);
 }
 
 int main()
 {
+//    srand(time(0));
     for(int i=0;i<Num;i++)
     {
         temp=Min+rand()%Max;

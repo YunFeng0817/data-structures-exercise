@@ -8,167 +8,134 @@
 #include "linkList.h"
 using namespace std;
 #define Max 100
-int num[Max];
+#define BUCKET_NUM 100000
+#define BUCKET_SIZE 1000
+int array_1[BUCKET_NUM*BUCKET_SIZE], array_2[BUCKET_NUM*BUCKET_SIZE], array_3[BUCKET_NUM*BUCKET_SIZE];
 int count[10];
 int tmp[10];
-void bucketSort(int num[],int length)
+
+
+typedef struct b
 {
-    linkList<int> bucket[16];
-    int flag;
-    for(int i=0;i<length;i++)
+    int key;
+    int count;
+    struct b *next;
+} bucket_t;
+
+typedef struct
+{
+    int a, b;
+} data_t;
+
+typedef struct b1
+{
+    data_t data;
+    int count;
+    struct b1 *next;
+} bucket1_t;
+
+bucket_t *new_bucket(int key)
+{
+    bucket_t *ptr = (bucket_t *)malloc(sizeof(bucket_t));
+    memset(ptr, 0, sizeof(bucket_t));
+    ptr->key = key;
+    return ptr;
+}
+
+void free_bucket(bucket_t *first)
+{
+    bucket_t *ptr = first;
+    while(ptr)
     {
-        if(bucket[num[i]/16].size==0)
-            bucket[num[i]/16].insert(0,num[i]);
-        else
+        first = ptr;
+        ptr = ptr->next;
+        free(first);
+    }
+}
+
+void bucketSort(int array[],int length)
+{
+    int i, j = 0, pos;
+    bucket_t *ptr, *last;
+    bucket_t *buckets[BUCKET_NUM] = {NULL};
+    for(i = 0; i < length; i++)
+    {
+        pos = (array[i] - (array[i] % BUCKET_SIZE))/BUCKET_SIZE;
+        if(buckets[pos])
         {
-            flag=0;
-            for(int j=1;j<=bucket[num[i]/16].size;j++)
+            ptr = buckets[pos];
+            last = ptr;
+            while(ptr && ptr->key < array[i])
             {
-                if(bucket[num[i]/16].inquire(j)->data1>num[i])
-                {
-                    bucket[num[i]/16].insert(j-1,num[i]);
-                    flag=1;
-                    break;
-                }
+                last = ptr;
+                ptr = ptr->next;
             }
-            if(flag==0)
-                bucket[num[i]/16].insert(bucket->size+1,num[i]);
+            if(ptr && ptr->key == array[i])
+                ptr->count++;
+            else
+            {
+                ptr = new_bucket(array[i]);
+                ptr->next = last->next;
+                last->next = ptr;
+            }
         }
+        else
+            buckets[pos] = new_bucket(array[i]);
     }
-    int count=0;
-    for(int i=0;i<16;i++)
+
+    for(i = 0; i < BUCKET_NUM; i++)
     {
-        for(int j=1;j<=bucket[i].size;j++)
+        ptr = buckets[i];
+        while(ptr)
         {
-            num[count]=bucket[i].inquire(j)->data1;
-            count++;
+            while(ptr->count >= 0)
+            {
+                array[j] = ptr->key;
+                j++; ptr->count--;
+            }
+            ptr = ptr->next;
         }
+        free_bucket(buckets[i]);
     }
 }
 
-void CountingSort(int *A,int *B,int *Order,int N,int K)
+void countSort(int array[],int length)
 {
-    int *C=new int[K+1];
-    int i;
-    memset(C,0,sizeof(int)*(K+1));
-    for (i=1;i<=N;i++) //把A中的每个元素分配
-        C[A[i]]++;
-    for (i=2;i<=K;i++) //统计不大于i的元素的个数
-        C[i]+=C[i-1];
-    for (i=N;i>=1;i--)
-    {
-        B[C[A[i]]]=A[i]; //按照统计的位置，将值输出到B中，将顺序输出到Order中
-        Order[C[A[i]]]=i;
-        C[A[i]]--;
-    }
-}
+    int i, j=0;
+    int count[BUCKET_SIZE*BUCKET_NUM] = {0};
+    for(i = 0; i < length; i++)
+        count[array[i]]++;
 
-void countSort(int num[],int length,int maxNum)
-{
-    int temp[maxNum+1];
-    memset(temp,0, sizeof(int)*length);
-    for(int i=0;i<length;i++)
-        temp[num[i]]++;
-    int count=0;
-    for(int i=0;i<=maxNum;i++)
+    for(i = 0; i < BUCKET_NUM*BUCKET_SIZE; i++)
     {
-        for(int j=0;j<temp[i];j++)
+        while(count[i])
         {
-            num[count]=i;
-            count++;
+            array[j] = i;
+            count[i]--; j++;
         }
     }
-}
-
-int maxbit(int data[],int n)
-{
-    int d=1;
-    for(int i=0;i<n;i++)
-    {
-        int c=1;
-        int p=data[i];
-        while(p/10)
-        {
-            p=p/10;
-            c++;
-        }
-        if(c>d)
-            d=c;
-    }
-    return d;
-}
-
-void RadixSort(int data[],int n)
-{
-    int d=maxbit(data,n);
-    int r=1;
-    int rad[n];
-    int c[10],count1;
-    memset(c,0, sizeof(int)*10);
-    for(int i=0;i<d;i++)
-    {
-
-        for(int i=0;i<10;i++)//装桶之前要先清桶
-            count[i]=0;
-        for(i=0;i<n;i++) //记录每个桶的记录数
-        {
-            int k=data[i]/r;
-            int q=k%10;
-            count[q]++;
-        }
-        for(i=1;i<10;i++)//计算位置
-        {
-            count[i]+=count[i-1];
-        }
-        for(int j=n-1;j>=0;j--)
-        {
-            int p=data[j]/r;
-            int s=p%10;
-            tmp[count[s]-1]=data[j];
-            count[s]--;
-        }
-//        countSort(tmp,10,100);
-        for(int k=0;k<n;k++)
-        {
-            num[i]=tmp[i];
-            c[i]++;
-        }
-        r=r*10;
-    }
-//    r=0;
-//    count1=0;
-//    for(int i=0;i<10;i++)
-//    {
-//        for(int j=i;j<c[i];j++)
-//        {
-//            num[r]=rad[count1+j];
-//            r++;
-//        }
-//        count1+=c[i];
-//    }
-
 }
 
 int main()
 {
-    for(int i=0;i<Max;i++)
+    for(int i = 0; i < BUCKET_NUM*BUCKET_SIZE; i++)
     {
-        num[i]=i;
+        array_1[i] = rand() % BUCKET_NUM*BUCKET_SIZE;
     }
     double time;
     time=clock();
-    bucketSort(num,Max);
+    bucketSort(array_1,BUCKET_NUM*BUCKET_SIZE);
     time=clock()-time;
-    cout<<"排序随机数的数据规模是"<<Max<<endl<<"用时为：\t";
+    cout<<"��������������ݹ�ģ��"<<Max<<endl<<"��ʱΪ��\t";
     cout<<time<<endl;
     time=clock();
-    countSort(num,Max,Max);
+    countSort(array_1,BUCKET_NUM*BUCKET_SIZE);
     time=clock()-time;
-    cout<<"排序随机数的数据规模是"<<Max<<endl<<"用时为：\t";
+    cout<<"��������������ݹ�ģ��"<<Max<<endl<<"��ʱΪ��\t";
     cout<<time<<endl;
 //    RadixSort(num,Max);
-    for(int i=0;i<Max;i++)
-        cout<<num[i]<<" ";
-    cout<<endl;
+//    for(int i=0;i<Max;i++)
+//        cout<<num[i]<<" ";
+//    cout<<endl;
     return 0;
 }

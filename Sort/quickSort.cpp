@@ -153,14 +153,12 @@ int cmp( const void *a , const void *b)
 
 int main()
 {
-//    srand(time(0));
     for(int i=0;i<Num;i++)
     {
         temp=Min+rand()%Max;
 //        temp=i;
         randomNum1[i]=temp;
         randomNum2[i]=temp;
-//        cout<<randomNum[i]<<"\t";
     }
     cout<<endl;
     double time;
@@ -178,7 +176,6 @@ int main()
     cout<<time<<endl;
     for(int i=0;i<Num;i++)
     {
-//        cout<<randomNum2[i]<<"\t";
         if(randomNum1[i]!=randomNum2[i])
         {
             cout<<i<<endl;

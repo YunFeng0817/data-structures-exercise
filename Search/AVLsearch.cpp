@@ -227,7 +227,7 @@ public:
 
     void Delete(node **tree,int deleteNum)
     {
-        if(!tree)
+        if(!*tree)
             return ;
         node*pr,*p;
         if(empty())

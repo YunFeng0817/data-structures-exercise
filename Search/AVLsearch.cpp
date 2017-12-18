@@ -53,7 +53,7 @@ public:
         if(root!=nullptr)
         {
             MidRecursive(root->lchild);
-//            for(int i=0;i<root->sameNum;i++)
+            for(int i=0;i<root->sameNum;i++)
                 cout<<root->data<<" ";
             MidRecursive(root->rchild);
         }
@@ -394,10 +394,10 @@ int main()
         cin>>a;
         atree.insert(a);
     }
-    for(int i=1;i<15;i++)
-    {
-        atree.Delete(atree.root,i);
-    }
+//    for(int i=1;i<15;i++)
+//    {
+//        atree.Delete(atree.root,i);
+//    }
     cout<<atree.size<<endl;
     cout<<"mid sequence results are:"<<endl;
     atree.MidRecursive(atree.root);

@@ -53,8 +53,7 @@ public:
         if(root!=nullptr)
         {
             MidRecursive(root->lchild);
-            for(int i=0;i<root->sameNum;i++)
-                cout<<root->data<<" ";
+            cout<<root->data<<" ";
             MidRecursive(root->rchild);
         }
     }
@@ -148,14 +147,14 @@ public:
                     case LH:
                         tree->balancedFactor=EH;
                         r->balancedFactor=RH;
-                    break;
+                        break;
                     case EH:
                         tree->balancedFactor=r->balancedFactor=EH;
-                    break;
+                        break;
                     case RH:
                         tree->balancedFactor=LH;
                         r->balancedFactor=EH;
-                    break;
+                        break;
                 }
                 rl->balancedFactor=EH;
                 rightRotate(&r);
@@ -225,78 +224,87 @@ public:
         }
     }
 
-    void Delete(node *tree,int deleteNum)
+    void Delete(node **tree,int deleteNum)
     {
         if(!tree)
             return ;
         node*pr,*p;
         if(empty())
             return ;
-        if(tree->data==deleteNum)
+        if((*tree)->data==deleteNum)
         {
+            node*temp;
             size--;
-            if(tree->sameNum>1)
+            if((*tree)->sameNum>1)
             {
-                tree->sameNum--;
+                (*tree)->sameNum--;
             }
             else
             {
-                if(!tree->lchild&&!tree->rchild)
+                if(!(*tree)->lchild&&!(*tree)->rchild)
                 {
-                    if(tree==root)
-                        tree->data=infinite;
+                    if((*tree)==root)
+                        (*tree)->data=infinite;
                     else
-                        delete(tree);
+                    {
+                        temp=*tree;
+                        delete(temp);
+                        *tree= nullptr;
+                    }
                 }
-                else if(!tree->lchild)
+                else if(!(*tree)->lchild)
                 {
-                    tree->data=tree->rchild->data;
-                    tree->sameNum=tree->rchild->sameNum;
-                    pr=tree->rchild->lchild;
-                    p=tree->rchild->rchild;
-                    delete(tree->rchild);
-                    tree->lchild=pr;
-                    tree->rchild=p;
+                    (*tree)->data=(*tree)->rchild->data;
+                    (*tree)->sameNum=(*tree)->rchild->sameNum;
+                    pr=(*tree)->rchild->lchild;
+                    p=(*tree)->rchild->rchild;
+                    temp=(*tree)->rchild;
+                    delete(temp);
+                    (*tree)->rchild= nullptr;
+                    (*tree)->lchild=pr;
+                    (*tree)->rchild=p;
                 }
-                else if(!tree->rchild)
+                else if(!(*tree)->rchild)
                 {
-                    tree->data=tree->lchild->data;
-                    tree->sameNum=tree->lchild->sameNum;
-                    pr=tree->lchild->lchild;
-                    p=tree->lchild->rchild;
-                    delete(tree->lchild);
-                    tree->lchild=pr;
-                    tree->rchild=p;
+                    (*tree)->data=(*tree)->lchild->data;
+                    (*tree)->sameNum=(*tree)->lchild->sameNum;
+                    pr=(*tree)->lchild->lchild;
+                    p=(*tree)->lchild->rchild;
+                    temp=(*tree)->lchild;
+                    delete(temp);
+                    (*tree)->lchild= nullptr;
+                    (*tree)->lchild=pr;
+                    (*tree)->rchild=p;
                 }
                 else
                 {
-                    pr=p=tree->rchild;
+                    pr=p=(*tree)->rchild;
                     while(p->lchild)
                     {
                         pr=p;
                         p=p->lchild;
                     }
-                    tree->data=p->data;
-                    tree->sameNum=p->sameNum;
+                    (*tree)->data=p->data;
+                    (*tree)->sameNum=p->sameNum;
                     if(pr!=p)
                     {
                         pr->lchild=p->rchild;
                     }
                     else
                     {
-                        tree->rchild=p->rchild;
+                        (*tree)->rchild=p->rchild;
                     }
                     delete(p);
                 }
             }
         }
-        else if(deleteNum<tree->data)
+        else if(deleteNum<(*tree)->data)
         {
-            Delete(tree->lchild,deleteNum);
+            Delete(&(*tree)->lchild,deleteNum);
         }
         else
         {
-            Delete(tree->rchild,deleteNum);
+            Delete(&(*tree)->rchild,deleteNum);
         }
     }
 
@@ -394,10 +402,12 @@ int main()
         cin>>a;
         atree.insert(a);
     }
-//    for(int i=1;i<15;i++)
-//    {
-//        atree.Delete(atree.root,i);
-//    }
+    for(int i=1;i<9;i++)
+    {
+        atree.Delete(&atree.root,i);
+    }
+//    atree.Delete(atree.root,3);
+//    atree.Delete(atree.root,3);
     cout<<atree.size<<endl;
     cout<<"mid sequence results are:"<<endl;
     atree.MidRecursive(atree.root);
@@ -406,4 +416,4 @@ int main()
 }
 //13 12 10 6 4 11 2 8 7 5 3 1 9 13
 //1,5,3,7,6,2,4,8,9,0
-//27 12 10 6 4 11 2 8 7 5 3 1 9 13 102 3 14 45 23 455 65 12 4 56 56 546 1 45 6
+//21 12 10 6 4 11 2 8 7 5 3 1 9 13 102 3 14 45 23 455 65 12 4 56 546 1 45 6

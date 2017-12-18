@@ -339,8 +339,6 @@ int main() {
     for (int i = 1; i < 9; i++) {
         atree.Delete(&atree.root, i);
     }
-//    atree.Delete(atree.root,3);
-//    atree.Delete(atree.root,3);
     cout << atree.size << endl;
     cout << "mid sequence results are:" << endl;
     atree.MidRecursive(atree.root);

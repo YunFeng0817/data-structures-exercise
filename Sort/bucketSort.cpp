@@ -7,36 +7,37 @@
 #include <cstring>
 #include "linkList.h"
 using namespace std;
-#define Max 100
+#define Max 5000
+#define Size 100000
 int num[Max];
-int count[10];
-int tmp[10];
+linkList<int> bucket[Size];
+//int count[10];
+//int tmp[10];
 void bucketSort(int num[],int length)
 {
-    linkList<int> bucket[16];
     int flag;
     for(int i=0;i<length;i++)
     {
-        if(bucket[num[i]/16].size==0)
-            bucket[num[i]/16].insert(0,num[i]);
+        if(bucket[num[i]/Size].size==0)
+            bucket[num[i]/Size].insert(0,num[i]);
         else
         {
             flag=0;
-            for(int j=1;j<=bucket[num[i]/16].size;j++)
+            for(int j=1;j<=bucket[num[i]/Size].size;j++)
             {
-                if(bucket[num[i]/16].inquire(j)->data1>num[i])
+                if(bucket[num[i]/Size].inquire(j)->data1>num[i])
                 {
-                    bucket[num[i]/16].insert(j-1,num[i]);
+                    bucket[num[i]/Size].insert(j-1,num[i]);
                     flag=1;
                     break;
                 }
             }
             if(flag==0)
-                bucket[num[i]/16].insert(bucket->size+1,num[i]);
+                bucket[num[i]/Size].insert(bucket[num[i]/Size].size,num[i]);
         }
     }
     int count=0;
-    for(int i=0;i<16;i++)
+    for(int i=0;i<Size;i++)
     {
         for(int j=1;j<=bucket[i].size;j++)
         {
@@ -80,74 +81,74 @@ void countSort(int num[],int length,int maxNum)
     }
 }
 
-int maxbit(int data[],int n)
-{
-    int d=1;
-    for(int i=0;i<n;i++)
-    {
-        int c=1;
-        int p=data[i];
-        while(p/10)
-        {
-            p=p/10;
-            c++;
-        }
-        if(c>d)
-            d=c;
-    }
-    return d;
-}
-
-void RadixSort(int data[],int n)
-{
-    int d=maxbit(data,n);
-    int r=1;
-    int rad[n];
-    int c[10],count1;
-    memset(c,0, sizeof(int)*10);
-    for(int i=0;i<d;i++)
-    {
-
-        for(int i=0;i<10;i++)//装桶之前要先清桶
-            count[i]=0;
-        for(i=0;i<n;i++) //记录每个桶的记录数
-        {
-            int k=data[i]/r;
-            int q=k%10;
-            count[q]++;
-        }
-        for(i=1;i<10;i++)//计算位置
-        {
-            count[i]+=count[i-1];
-        }
-        for(int j=n-1;j>=0;j--)
-        {
-            int p=data[j]/r;
-            int s=p%10;
-            tmp[count[s]-1]=data[j];
-            count[s]--;
-        }
-//        countSort(tmp,10,100);
-        for(int k=0;k<n;k++)
-        {
-            num[i]=tmp[i];
-            c[i]++;
-        }
-        r=r*10;
-    }
-//    r=0;
-//    count1=0;
-//    for(int i=0;i<10;i++)
+//int maxbit(int data[],int n)
+//{
+//    int d=1;
+//    for(int i=0;i<n;i++)
 //    {
-//        for(int j=i;j<c[i];j++)
+//        int c=1;
+//        int p=data[i];
+//        while(p/10)
 //        {
-//            num[r]=rad[count1+j];
-//            r++;
+//            p=p/10;
+//            c++;
 //        }
-//        count1+=c[i];
+//        if(c>d)
+//            d=c;
 //    }
-
-}
+//    return d;
+//}
+//
+//void RadixSort(int data[],int n)
+//{
+//    int d=maxbit(data,n);
+//    int r=1;
+//    int rad[n];
+//    int c[10],count1;
+//    memset(c,0, sizeof(int)*10);
+//    for(int i=0;i<d;i++)
+//    {
+//
+//        for(int i=0;i<10;i++)//装桶之前要先清桶
+//            count[i]=0;
+//        for(i=0;i<n;i++) //记录每个桶的记录数
+//        {
+//            int k=data[i]/r;
+//            int q=k%10;
+//            count[q]++;
+//        }
+//        for(i=1;i<10;i++)//计算位置
+//        {
+//            count[i]+=count[i-1];
+//        }
+//        for(int j=n-1;j>=0;j--)
+//        {
+//            int p=data[j]/r;
+//            int s=p%10;
+//            tmp[count[s]-1]=data[j];
+//            count[s]--;
+//        }
+////        countSort(tmp,10,100);
+//        for(int k=0;k<n;k++)
+//        {
+//            num[i]=tmp[i];
+//            c[i]++;
+//        }
+//        r=r*10;
+//    }
+////    r=0;
+////    count1=0;
+////    for(int i=0;i<10;i++)
+////    {
+////        for(int j=i;j<c[i];j++)
+////        {
+////            num[r]=rad[count1+j];
+////            r++;
+////        }
+////        count1+=c[i];
+////    }
+//
+//}
 
 int main()
 {
@@ -162,13 +163,13 @@ int main()
     cout<<"排序随机数的数据规模是"<<Max<<endl<<"用时为：\t";
     cout<<time<<endl;
     time=clock();
-    countSort(num,Max,Max);
+//    countSort(num,Max,Max);
     time=clock()-time;
     cout<<"排序随机数的数据规模是"<<Max<<endl<<"用时为：\t";
     cout<<time<<endl;
 //    RadixSort(num,Max);
-    for(int i=0;i<Max;i++)
-        cout<<num[i]<<" ";
-    cout<<endl;
+//    for(int i=0;i<Max;i++)
+//        cout<<num[i]<<" ";
+//    cout<<endl;
     return 0;
 }

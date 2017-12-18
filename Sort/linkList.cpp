@@ -4,7 +4,7 @@
 #include <iostream>
 #include "linkList.h"
 using namespace std;
-
+#define nullptr NULL
 //此处这样写是因为c++ template的函数的具体实现一般需要和声明放在一起（即放在.h文件中），但是我想要分开写，只能添加这些字段
 template class linkList<int>;
 template class linkList<float>;

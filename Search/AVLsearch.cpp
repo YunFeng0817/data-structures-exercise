@@ -77,6 +77,183 @@ public:
         }
     }
 
+
+    void insert(int insertNum) {
+        size++;
+        bool addFloor = false;
+        if (root->data == infinite)    //在第一次插入节点时，需要特殊处理, 如果是根节点没有数据,则他的值是宏 infinite
+        {
+            root->data = insertNum;
+            return;
+        }
+        if (root->data == insertNum)   //如果有相同的关键字，就在该节点的记录重复的数据上加1
+        {
+            root->sameNum++;
+            return;
+        } else if (insertNum < root->data) {    //插入的节点在该节点的左子树上
+            root->lchild = insertRecursive(root->lchild, insertNum, &addFloor);
+            if (addFloor) {
+                switch (root->balancedFactor)        //addFloor  是表示插入新节点导致层数增加，根据原来的状态来判断现在的平衡因子
+                {
+                    case LH:    //原本左子树比右子树高，需要作左平衡处理
+                        root = leftBalanced(root);    //进行左平衡
+                        addFloor = false;
+                        break;
+                    case EH:   //原本左、右子树等高，现因左子树增高而使树增高
+                        root->balancedFactor = LH;
+                        addFloor = true;
+                        break;
+                    case RH:   //原本右子树比左子树高，现左、右子树等高
+                        root->balancedFactor = EH;
+                        addFloor = false;
+                        break;
+                }
+            }
+        } else {
+            root->rchild = insertRecursive(root->rchild, insertNum, &addFloor);
+            if (addFloor) {
+                switch (root->balancedFactor) {
+                    case LH:    //原本左子树比右子树高，现左、右子树等高
+                        root->balancedFactor = EH;
+                        addFloor = false;
+                        break;
+                    case EH:    //原本左、右子树等高，现因右子树增高而使树增高
+                        root->balancedFactor = RH;
+                        addFloor = true;
+                        break;
+                    case RH:   //原本右子树比左子树高，需要作右平衡处理
+                        root = rightBalanced(root);   //进行右平衡
+                        addFloor = false;
+                        break;
+                }
+            }
+        }
+    }
+
+    //负责删除节点的函数
+    void Delete(node *tree, int deleteNum) {
+        if (!tree)
+            return;
+        node *pr, *p;
+        if (empty())
+            return;
+        if (tree->data == deleteNum) {
+            size--;
+            if (tree->sameNum > 1) {   //如果遇到该关键词有多个相同的,需要将count减1
+                tree->sameNum--;
+            } else {
+                if (!tree->lchild && !tree->rchild) {    //如果该节点是叶节点的情况,直接删除节点
+                    if (tree == root)
+                        tree->data = infinite;
+                    else
+                        delete (tree);
+                } else if (!tree->lchild) {   //如果是只有左子树,没有右子树
+                    tree->data = tree->rchild->data;
+                    tree->sameNum = tree->rchild->sameNum;
+                    pr = tree->rchild->lchild;
+                    p = tree->rchild->rchild;
+                    delete (tree->rchild);
+                    tree->lchild = pr;
+                    tree->rchild = p;
+                } else if (!tree->rchild) {   //只有右子树,没有左子树
+                    tree->data = tree->lchild->data;
+                    tree->sameNum = tree->lchild->sameNum;
+                    pr = tree->lchild->lchild;
+                    p = tree->lchild->rchild;
+                    delete (tree->lchild);
+                    tree->lchild = pr;
+                    tree->rchild = p;
+                } else {    //既有左子树,又有右子树,需要找到右子树中最左的节点,将其删除
+                    pr = p = tree->rchild;
+                    while (p->lchild) {
+                        pr = p;
+                        p = p->lchild;
+                    }
+                    tree->data = p->data;
+                    tree->sameNum = p->sameNum;
+                    if (pr != p) {
+                        pr->lchild = p->rchild;
+                    } else {
+                        tree->rchild = p->rchild;
+                    }
+                    delete (p);
+                }
+            }
+        } else if (deleteNum < tree->data) {   //递归左子树,寻找匹配的节点
+            Delete(tree->lchild, deleteNum);
+        } else {
+            Delete(tree->rchild, deleteNum);  //递归右子树,寻找匹配的节点
+        }
+    }
+
+private:
+    //this is for recursive search use and the other users can't use and see it and parameter is complex ,the search() is more easy for use
+    node *searchRecursive(int searchNum, node *newTree) {
+        if (searchNum == newTree->data)
+            return newTree;
+        else if (searchNum < newTree->data) {
+            if (newTree->lchild)
+                return searchRecursive(searchNum, newTree->lchild);
+        } else {
+            if (newTree->rchild)
+                return searchRecursive(searchNum, newTree->rchild);
+            else
+                return nullptr;
+        }
+    }
+
+    //这个函数用于递归调用，与上面public属性的区别在于上面的函数传入的参数更少，更符合restful api 的设计
+    node *insertRecursive(node *tree, int insertNum, bool *addFloor) {
+        if (!tree)   //如果是空，表示搜索树中没有该节点
+        {
+            tree = new node;
+            tree->data = insertNum;
+            *addFloor = true;
+            return tree;
+        }
+        if (tree->data == insertNum) {
+            tree->sameNum++;
+            *addFloor = false;
+        } else if (insertNum < tree->data) {
+            tree->lchild = insertRecursive(tree->lchild, insertNum, addFloor);
+            if (*addFloor) {
+                switch (tree->balancedFactor) {
+                    case LH:
+                        tree = leftBalanced(tree);
+                        *addFloor = false;
+                        break;
+                    case EH:
+                        tree->balancedFactor = LH;
+                        *addFloor = true;
+                        break;
+                    case RH:
+                        tree->balancedFactor = EH;
+                        *addFloor = false;
+                        break;
+                }
+            }
+        } else {
+            tree->rchild = insertRecursive(tree->rchild, insertNum, addFloor);
+            if (*addFloor) {
+                switch (tree->balancedFactor) {
+                    case LH:
+                        tree->balancedFactor = EH;
+                        *addFloor = false;
+                        break;
+                    case EH:
+                        tree->balancedFactor = RH;
+                        *addFloor = true;
+                        break;
+                    case RH:
+                        tree = rightBalanced(tree);
+                        *addFloor = false;
+                        break;
+                }
+            }
+        }
+        return tree;
+    }
+
     //单次向左旋转
     void leftRotate(node **tree) {
         node *newNode;
@@ -152,181 +329,6 @@ public:
                 rightRotate(&r);
                 tree->rchild = r;   //是RL的旋转调节平衡方式
                 leftRotate(&tree);
-        }
-        return tree;
-    }
-
-    void insert(int insertNum) {
-        size++;
-        bool addFloor = false;
-        if (root->data == infinite)    //在第一次插入节点时，需要特殊处理
-        {
-            root->data = insertNum;
-            return;
-        }
-        if (root->data == insertNum)   //如果有相同的关键字，就在该节点的记录重复的数据上加一
-        {
-            root->sameNum++;
-            return;
-        } else if (insertNum < root->data) {
-            root->lchild = insertRecursive(root->lchild, insertNum, &addFloor);
-            if (addFloor) {
-                switch (root->balancedFactor)        //addFloor  是表示插入新节点导致层数增加，根据原来的状态来判断现在的平衡因子
-                {
-                    case LH:    //原本左子树比右子树高，需要作左平衡处理
-                        root = leftBalanced(root);
-                        addFloor = false;
-                        break;
-                    case EH:   //原本左、右子树等高，现因左子树增高而使树增高
-                        root->balancedFactor = LH;
-                        addFloor = true;
-                        break;
-                    case RH:   //原本右子树比左子树高，现左、右子树等高
-                        root->balancedFactor = EH;
-                        addFloor = false;
-                        break;
-                }
-            }
-        } else {
-            root->rchild = insertRecursive(root->rchild, insertNum, &addFloor);
-            if (addFloor) {
-                switch (root->balancedFactor) {
-                    case LH:    //原本左子树比右子树高，现左、右子树等高
-                        root->balancedFactor = EH;
-                        addFloor = false;
-                        break;
-                    case EH:    //原本左、右子树等高，现因右子树增高而使树增高
-                        root->balancedFactor = RH;
-                        addFloor = true;
-                        break;
-                    case RH:   //原本右子树比左子树高，需要作右平衡处理
-                        root = rightBalanced(root);
-                        addFloor = false;
-                        break;
-                }
-            }
-        }
-    }
-
-    void Delete(node *tree, int deleteNum) {
-        if (!tree)
-            return;
-        node *pr, *p;
-        if (empty())
-            return;
-        if (tree->data == deleteNum) {
-            size--;
-            if (tree->sameNum > 1) {
-                tree->sameNum--;
-            } else {
-                if (!tree->lchild && !tree->rchild) {
-                    if (tree == root)
-                        tree->data = infinite;
-                    else
-                        delete (tree);
-                } else if (!tree->lchild) {
-                    tree->data = tree->rchild->data;
-                    tree->sameNum = tree->rchild->sameNum;
-                    pr = tree->rchild->lchild;
-                    p = tree->rchild->rchild;
-                    delete (tree->rchild);
-                    tree->lchild = pr;
-                    tree->rchild = p;
-                } else if (!tree->rchild) {
-                    tree->data = tree->lchild->data;
-                    tree->sameNum = tree->lchild->sameNum;
-                    pr = tree->lchild->lchild;
-                    p = tree->lchild->rchild;
-                    delete (tree->lchild);
-                    tree->lchild = pr;
-                    tree->rchild = p;
-                } else {
-                    pr = p = tree->rchild;
-                    while (p->lchild) {
-                        pr = p;
-                        p = p->lchild;
-                    }
-                    tree->data = p->data;
-                    tree->sameNum = p->sameNum;
-                    if (pr != p) {
-                        pr->lchild = p->rchild;
-                    } else {
-                        tree->rchild = p->rchild;
-                    }
-                    delete (p);
-                }
-            }
-        } else if (deleteNum < tree->data) {
-            Delete(tree->lchild, deleteNum);
-        } else {
-            Delete(tree->rchild, deleteNum);
-        }
-    }
-
-private:
-    //this is for recursive search use and the other users can't use and see it and parameter is complex ,the search() is more easy for use
-    node *searchRecursive(int searchNum, node *newTree) {
-        if (searchNum == newTree->data)
-            return newTree;
-        else if (searchNum < newTree->data) {
-            if (newTree->lchild)
-                return searchRecursive(searchNum, newTree->lchild);
-        } else {
-            if (newTree->rchild)
-                return searchRecursive(searchNum, newTree->rchild);
-            else
-                return nullptr;
-        }
-    }
-
-    //这个函数用于递归调用，与上面public属性的区别在于上面的函数传入的参数更少，更符合restful api 的设计
-    node *insertRecursive(node *tree, int insertNum, bool *addFloor) {
-        if (!tree)   //如果是空，表示搜索树中没有该节点
-        {
-            tree = new node;
-            tree->data = insertNum;
-            *addFloor = true;
-            return tree;
-        }
-        if (tree->data == insertNum) {
-            tree->sameNum++;
-            *addFloor = false;
-        } else if (insertNum < tree->data) {
-            tree->lchild = insertRecursive(tree->lchild, insertNum, addFloor);
-            if (*addFloor) {
-                switch (tree->balancedFactor) {
-                    case LH:
-                        tree = leftBalanced(tree);
-                        *addFloor = false;
-                        break;
-                    case EH:
-                        tree->balancedFactor = LH;
-                        *addFloor = true;
-                        break;
-                    case RH:
-                        tree->balancedFactor = EH;
-                        *addFloor = false;
-                        break;
-                }
-            }
-        } else {
-            tree->rchild = insertRecursive(tree->rchild, insertNum, addFloor);
-            if (*addFloor) {
-                switch (tree->balancedFactor) {
-                    case LH:
-                        tree->balancedFactor = EH;
-                        *addFloor = false;
-                        break;
-                    case EH:
-                        tree->balancedFactor = RH;
-                        *addFloor = true;
-                        break;
-                    case RH:
-                        tree = rightBalanced(tree);
-                        *addFloor = false;
-                        break;
-                }
-            }
         }
         return tree;
     }

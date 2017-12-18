@@ -53,7 +53,7 @@ public:
         if(root!=nullptr)
         {
             MidRecursive(root->lchild);
-            for(int i=0;i<root->sameNum;i++)
+//            for(int i=0;i<root->sameNum;i++)
                 cout<<root->data<<" ";
             MidRecursive(root->rchild);
         }

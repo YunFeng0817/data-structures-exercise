@@ -9,7 +9,7 @@
 #include "linkList.h"
 
 using namespace std;
-#define Max 10000000
+#define Max 60000000
 #define bucketNum 5000000
 #define madix 10
 #define MaxRandom 10000000
@@ -60,12 +60,27 @@ void countSortEasy(int num[], int length, int maxNum) {
 }
 
 void countSortComplex(int num[], int length, int maxNum) {
+    int better1,better2,better3;
     memset(temp1, 0, sizeof(int) * (maxNum + 1));
     for (int i = 0; i < length; i++)
         temp1[num[i]]++;
-    for (int i = 0; i < maxNum; i++) {
-        temp1[i + 1] = temp1[i] + temp1[i + 1];
+    int x;
+    for ( x = 0; x < length-4; x+=3) {
+        better1=temp1[x]+temp1[x+1];
+        better2=temp1[x]+(temp1[x+1]+temp1[x+2]);
+        temp1[x+1]=better1;
+        better3=better1+(temp1[x+2]+temp1[x+3]);
+        temp1[x + 2] = better2;
+        temp1[x+3]=better3;
     }
+    for(;x<maxNum-1;x++)
+    {
+        temp1[x+1]=temp1[x]+temp1[x+1];
+    }
+//    for(int i=0;i<maxNum-1;i++)
+//    {
+//        temp1[i+1]=temp1[i]+temp1[i+1];
+//    }
     for (int i = length - 1; i >= 0; i--) {
         temp2[temp1[num[i]] - 1] = num[i];
         temp1[num[i]]--;
@@ -138,6 +153,14 @@ int main() {
     cout << "基数排序的数据规模是" << Max << endl << "用时为：\t";
     cout << time / 1000 << "s" << endl;
     for (int i = 0; i < Max; i++) {
+        if (randomNum1[i] != randomNum2[i]) {
+            cout << i << endl;
+            cout << randomNum1[i] << "  " << randomNum2[i] << endl;
+        }
+        if (randomNum1[i] != randomNum3[i]) {
+            cout << i << endl;
+            cout << randomNum1[i] << "  " << randomNum2[i] << endl;
+        }
         if (randomNum1[i] != randomNum4[i]) {
             cout << i << endl;
             cout << randomNum1[i] << "  " << randomNum2[i] << endl;

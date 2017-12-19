@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 100000000
+#define Num 10000000
 #define Max 30000000
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;

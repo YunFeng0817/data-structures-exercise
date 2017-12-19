@@ -5,12 +5,14 @@
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 #include "linkList.h"
 using namespace std;
-#define Max 10000
-#define bucketNum 50
+#define Max 10000000
+#define bucketNum 5000000
 #define madix 10
-int num[Max];
+#define MaxRandom 10000000
+int randomNum1[Max],randomNum2[Max],randomNum3[Max],randomNum4[Max];
 int temp1[Max+1];
 int temp2[Max+1];
 linkList<int> bucket[bucketNum];
@@ -102,14 +104,14 @@ void countSortComplex(int num[],int length,int maxNum)
     }
 }
 
-void madixSort(int num[],int length)
+void madixSort(int num[],int length,int max)
 {
-    int max=num[0];
-    for(int i=0;i<length-1;i++)
-    {
-        if(max<num[i+1])
-            max=num[i+1];
-    }
+//    int max=num[0];
+//    for(int i=0;i<length-1;i++)
+//    {
+//        if(max<num[i+1])
+//            max=num[i+1];
+//    }
     int temp=1;
     memset(temp1,0, sizeof(int)*(max+1));
     while(max/temp)
@@ -125,30 +127,57 @@ void madixSort(int num[],int length)
             temp2[temp1[(num[i]/temp)%madix]-1]=num[i];
             temp1[(num[i]/temp)%madix]--;
         }
+        memset(temp1,0, sizeof(int)*(max+1));
+        for(int i=0;i<length;i++)
+        {
+            num[i]=temp2[i];
+        }
         temp*=madix;
     }
 }
 
 int main()
 {
+    int temp;
     for(int i=0;i<Max;i++)
     {
-        num[i]=Max-i;
+        temp=rand()%MaxRandom;
+        randomNum1[i]=temp;
+        randomNum2[i]=temp;
+        randomNum3[i]=temp;
+        randomNum4[i]=temp;
     }
+    cout<<endl;
     double time;
     time=clock();
-//    bucketSort(num,Max);
+//    sort(randomNum1,&randomNum1[Num],greater<int>());  //从大到小排序
+//    qsort(randomNum1,Max, sizeof(int),cmp);   //从小到大排序
+    sort(randomNum1,&randomNum1[Max]);
     time=clock()-time;
-    cout<<"排序随机数的数据规模是"<<Max<<endl<<"用时为：\t";
-    cout<<time<<endl;
+    cout<<"排序随机数的数据规模是"<<Max<<endl<<"STL快排的用时为：\t";
+    cout<<time/1000<<"s"<<endl;
     time=clock();
-    countSortComplex(num,Max,Max);
+    countSortComplex(randomNum2,Max,Max);
     time=clock()-time;
-    cout<<"排序随机数的数据规模是"<<Max<<endl<<"用时为：\t";
-    cout<<time<<endl;
-//    RadixSort(num,Max);
+    cout<<"计数排序（可用于基数排序，多占内存版本）的数据规模是"<<Max<<endl<<"用时为：\t";
+    cout<<time/1000<<"s"<<endl;
+    time=clock();
+    countSortEasy(randomNum3,Max,Max);
+    time=clock()-time;
+    cout<<"计数排序(省内存版本)的数据规模是"<<Max<<endl<<"用时为：\t";
+    cout<<time/1000<<"s"<<endl;
+    time=clock();
+    madixSort(randomNum4,Max,Max);
+    time=clock()-time;
+    cout<<"基数排序的数据规模是"<<Max<<endl<<"用时为：\t";
+    cout<<time/1000<<"s"<<endl;
     for(int i=0;i<Max;i++)
-        cout<<num[i]<<" ";
-    cout<<endl;
+    {
+        if(randomNum1[i]!=randomNum4[i])
+        {
+            cout<<i<<endl;
+            cout<<randomNum1[i]<<"  "<<randomNum2[i]<<endl;
+        }
+    }
     return 0;
 }

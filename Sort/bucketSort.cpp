@@ -60,22 +60,21 @@ void countSortEasy(int num[], int length, int maxNum) {
 }
 
 void countSortComplex(int num[], int length, int maxNum) {
-    int better1,better2,better3;
+    int better1, better2, better3;
     memset(temp1, 0, sizeof(int) * (maxNum + 1));
     for (int i = 0; i < length; i++)
         temp1[num[i]]++;
     int x;
-    for ( x = 0; x < length-4; x+=3) {
-        better1=temp1[x]+temp1[x+1];
-        better2=temp1[x]+(temp1[x+1]+temp1[x+2]);
-        temp1[x+1]=better1;
-        better3=better1+(temp1[x+2]+temp1[x+3]);
+    for (x = 0; x < length - 4; x += 3) {
+        better1 = temp1[x] + temp1[x + 1];
+        better2 = temp1[x] + (temp1[x + 1] + temp1[x + 2]);
+        temp1[x + 1] = better1;
+        better3 = better1 + (temp1[x + 2] + temp1[x + 3]);
         temp1[x + 2] = better2;
-        temp1[x+3]=better3;
+        temp1[x + 3] = better3;
     }
-    for(;x<maxNum-1;x++)
-    {
-        temp1[x+1]=temp1[x]+temp1[x+1];
+    for (; x < maxNum - 1; x++) {
+        temp1[x + 1] = temp1[x] + temp1[x + 1];
     }
 //    for(int i=0;i<maxNum-1;i++)
 //    {
@@ -107,7 +106,7 @@ void madixSort(int num[], int length, int max) {
             temp1[i + 1] = temp1[i] + temp1[i + 1];
         }
         for (int i = length - 1; i >= 0; i--) {
-            stash=(num[i] / temp) % madix;
+            stash = (num[i] / temp) % madix;
             temp2[temp1[stash] - 1] = num[i];
             temp1[stash]--;
         }

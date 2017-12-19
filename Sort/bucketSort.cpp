@@ -10,8 +10,8 @@
 
 using namespace std;
 #define Max 60000000   //需要排序数组的最大范围
-#define bucketNum 5000000    //桶的个数
-#define madix 10      //基数排序中基数的大小
+#define bucketNum 5    //桶的个数
+#define madix 1000      //基数排序中基数的大小
 #define MaxRandom 10000000     //生成随机数时最大随机范围的定义
 int randomNum1[Max], randomNum2[Max], randomNum3[Max], randomNum4[Max];    //分别用于四种排序
 int temp1[Max + 1];   //用于计数排序的辅助数组
@@ -80,7 +80,7 @@ void countSortComplex(int num[], int length, int maxNum) {
         temp1[x + 3] = better3;
     }
     //处理不能整除的剩余部分
-    for (; x < maxNum - 1; x++) {
+    for (; x <= maxNum - 1; x++) {
         temp1[x + 1] = temp1[x] + temp1[x + 1];
     }
 
@@ -141,7 +141,8 @@ void madixSort(int num[], int length, int max) {
 int main() {
     int temp;
     for (int i = 0; i < Max; i++) {
-        temp = rand() % MaxRandom;
+//        temp = rand() % MaxRandom;
+        temp=Max-i;
         randomNum1[i] = temp;
         randomNum2[i] = temp;
         randomNum3[i] = temp;

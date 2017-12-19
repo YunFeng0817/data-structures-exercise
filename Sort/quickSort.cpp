@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
-#define Num 100000000
+#define Num 500000
 #define Max 30000000
 #define Min 1
 int randomNum1[Num],randomNum2[Num],temp;
@@ -56,7 +56,7 @@ void quickSort(int *num,int left,int right)
     int i,j,t,temp,l,r,lLen=0,rLen=0;
     if(left>=right)
         return;
-    if(right-left<16)
+    if(right-left<16)    // 当新区键的大小小于16时，改用插入排序的效率更高  经过多次测试，发现参数是16时用时最少
     {
         insertSort(num,left,right);
         return ;
@@ -155,8 +155,8 @@ int main()
 {
     for(int i=0;i<Num;i++)
     {
-        temp=Min+rand()%Max;
-//        temp=i;
+//        temp=Min+rand()%Max;
+        temp=i;
         randomNum1[i]=temp;
         randomNum2[i]=temp;
     }

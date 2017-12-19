@@ -7,8 +7,8 @@
 #include <cstring>
 #include "linkList.h"
 using namespace std;
-#define Max 5000
-#define Size 100000
+#define Max 500000
+#define Size 50000000
 int num[Max];
 linkList<int> bucket[Size];
 //int count[10];
@@ -18,22 +18,22 @@ void bucketSort(int num[],int length)
     int flag;
     for(int i=0;i<length;i++)
     {
-        if(bucket[num[i]/Size].size==0)
-            bucket[num[i]/Size].insert(0,num[i]);
+        if(bucket[num[i]>>1].size==0)
+            bucket[num[i]>>1].insert(0,num[i]);
         else
         {
             flag=0;
-            for(int j=1;j<=bucket[num[i]/Size].size;j++)
+            for(int j=1;j<=bucket[num[i]>>1].size;j++)
             {
-                if(bucket[num[i]/Size].inquire(j)->data1>num[i])
+                if(bucket[num[i]>>1].inquire(j)->data1>num[i])
                 {
-                    bucket[num[i]/Size].insert(j-1,num[i]);
+                    bucket[num[i]>>1].insert(j-1,num[i]);
                     flag=1;
                     break;
                 }
             }
             if(flag==0)
-                bucket[num[i]/Size].insert(bucket[num[i]/Size].size,num[i]);
+                bucket[num[i]>>1].insert(bucket[num[i]>>1].size,num[i]);
         }
     }
     int count=0;
@@ -154,7 +154,7 @@ int main()
 {
     for(int i=0;i<Max;i++)
     {
-        num[i]=i;
+        num[i]=rand()%Max;
     }
     double time;
     time=clock();

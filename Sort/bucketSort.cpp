@@ -9,9 +9,9 @@
 #include "linkList.h"
 
 using namespace std;
-#define Max 60000000   //需要排序数组的最大范围
-#define bucketNum 5    //桶的个数
-#define madix 1000      //基数排序中基数的大小
+#define Max 60000   //需要排序数组的最大范围
+#define bucketNum 5000000    //桶的个数
+#define madix 10      //基数排序中基数的大小
 #define MaxRandom 10000000     //生成随机数时最大随机范围的定义
 int randomNum1[Max], randomNum2[Max], randomNum3[Max], randomNum4[Max];    //分别用于四种排序
 int temp1[Max + 1];   //用于计数排序的辅助数组
@@ -43,10 +43,15 @@ void bucketSort(int num[], int length) {
     for (int i = 0; i < bucketNum; i++) {
         for (int j = 1; j <= bucket[i].size; j++) {
             num[count] = bucket[i].inquire(j)->data1;
-            bucket[i].pop(j);    //释放内存，防止内存泄漏
             count++;
         }
     }
+
+    for (int i = 0; i < bucketNum; i++) {
+        while (!bucket[i].empty())
+            bucket[i].pop(1);
+    }
+
 }
 
 //一种计数排序的省内存，效率高，但是不能用于基数排序的版本
@@ -142,7 +147,7 @@ int main() {
     int temp;
     for (int i = 0; i < Max; i++) {
 //        temp = rand() % MaxRandom;
-        temp=Max-i;
+        temp = Max - i;
         randomNum1[i] = temp;
         randomNum2[i] = temp;
         randomNum3[i] = temp;
@@ -157,7 +162,7 @@ int main() {
     cout << "排序随机数的数据规模是" << Max << endl << "STL快排的用时为：\t";
     cout << time / 1000 << "s" << endl;
     time = clock();
-    countSortComplex(randomNum2, Max, Max);
+//    countSortComplex(randomNum2, Max, Max);
     time = clock() - time;
     cout << "计数排序（可用于基数排序，多占内存版本）的数据规模是" << Max << endl << "用时为：\t";
     cout << time / 1000 << "s" << endl;
@@ -165,6 +170,11 @@ int main() {
     countSortEasy(randomNum3, Max, Max);
     time = clock() - time;
     cout << "计数排序(省内存版本)的数据规模是" << Max << endl << "用时为：\t";
+    cout << time / 1000 << "s" << endl;
+    time = clock();
+    bucketSort(randomNum2, Max);
+    time = clock() - time;
+    cout << "桶排序的数据规模是" << Max << endl << "用时为：\t";
     cout << time / 1000 << "s" << endl;
     time = clock();
     madixSort(randomNum4, Max, Max);
@@ -176,14 +186,14 @@ int main() {
             cout << i << endl;
             cout << randomNum1[i] << "  " << randomNum2[i] << endl;
         }
-        if (randomNum1[i] != randomNum3[i]) {
-            cout << i << endl;
-            cout << randomNum1[i] << "  " << randomNum2[i] << endl;
-        }
-        if (randomNum1[i] != randomNum4[i]) {
-            cout << i << endl;
-            cout << randomNum1[i] << "  " << randomNum2[i] << endl;
-        }
+//        if (randomNum1[i] != randomNum3[i]) {
+//            cout << i << endl;
+//            cout << randomNum1[i] << "  " << randomNum2[i] << endl;
+//        }
+//        if (randomNum1[i] != randomNum4[i]) {
+//            cout << i << endl;
+//            cout << randomNum1[i] << "  " << randomNum2[i] << endl;
+//        }
     }
     return 0;
 }

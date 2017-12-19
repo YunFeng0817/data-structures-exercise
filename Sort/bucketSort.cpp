@@ -38,7 +38,7 @@ void bucketSort(int num[],int length)
         }
     }
     int count=0;
-    for(int i=0;i<Size;i++)
+    for(int i=0;i<bucketNum;i++)
     {
         for(int j=1;j<=bucket[i].size;j++)
         {
@@ -111,7 +111,7 @@ void madixSort(int num[],int length)
             max=num[i+1];
     }
     int temp=1;
-    memset(temp1,0, sizeof(int)*(maxNum+1));
+    memset(temp1,0, sizeof(int)*(max+1));
     while(max/temp)
     {
         for(int i=0;i<length;i++)

@@ -9,8 +9,8 @@
 #include "linkList.h"
 
 using namespace std;
-#define Max 60000   //需要排序数组的最大范围
-#define bucketNum 5000000    //桶的个数
+#define Max 10000000   //需要排序数组的最大范围
+#define bucketNum 50000000    //桶的个数
 #define madix 10      //基数排序中基数的大小
 #define MaxRandom 10000000     //生成随机数时最大随机范围的定义
 int randomNum1[Max], randomNum2[Max], randomNum3[Max], randomNum4[Max], randomNum5[Max];   //分别用于五种排序

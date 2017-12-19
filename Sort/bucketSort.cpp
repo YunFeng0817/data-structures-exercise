@@ -8,13 +8,12 @@
 #include "linkList.h"
 using namespace std;
 #define Max 10000
-#define Size 50
+#define bucketNum 50
+#define madix 10
 int num[Max];
 int temp1[Max+1];
 int temp2[Max+1];
-linkList<int> bucket[Size];
-//int count[10];
-//int tmp[10];
+linkList<int> bucket[bucketNum];
 void bucketSort(int num[],int length)
 {
     int flag;
@@ -103,74 +102,32 @@ void countSortComplex(int num[],int length,int maxNum)
     }
 }
 
-//int maxbit(int data[],int n)
-//{
-//    int d=1;
-//    for(int i=0;i<n;i++)
-//    {
-//        int c=1;
-//        int p=data[i];
-//        while(p/10)
-//        {
-//            p=p/10;
-//            c++;
-//        }
-//        if(c>d)
-//            d=c;
-//    }
-//    return d;
-//}
-//
-//void RadixSort(int data[],int n)
-//{
-//    int d=maxbit(data,n);
-//    int r=1;
-//    int rad[n];
-//    int c[10],count1;
-//    memset(c,0, sizeof(int)*10);
-//    for(int i=0;i<d;i++)
-//    {
-//
-//        for(int i=0;i<10;i++)//装桶之前要先清桶
-//            count[i]=0;
-//        for(i=0;i<n;i++) //记录每个桶的记录数
-//        {
-//            int k=data[i]/r;
-//            int q=k%10;
-//            count[q]++;
-//        }
-//        for(i=1;i<10;i++)//计算位置
-//        {
-//            count[i]+=count[i-1];
-//        }
-//        for(int j=n-1;j>=0;j--)
-//        {
-//            int p=data[j]/r;
-//            int s=p%10;
-//            tmp[count[s]-1]=data[j];
-//            count[s]--;
-//        }
-////        countSort(tmp,10,100);
-//        for(int k=0;k<n;k++)
-//        {
-//            num[i]=tmp[i];
-//            c[i]++;
-//        }
-//        r=r*10;
-//    }
-////    r=0;
-////    count1=0;
-////    for(int i=0;i<10;i++)
-////    {
-////        for(int j=i;j<c[i];j++)
-////        {
-////            num[r]=rad[count1+j];
-////            r++;
-////        }
-////        count1+=c[i];
-////    }
-//
-//}
+void madixSort(int num[],int length)
+{
+    int max=num[0];
+    for(int i=0;i<length-1;i++)
+    {
+        if(max<num[i+1])
+            max=num[i+1];
+    }
+    int temp=1;
+    memset(temp1,0, sizeof(int)*(maxNum+1));
+    while(max/temp)
+    {
+        for(int i=0;i<length;i++)
+            temp1[(num[i]/temp)%madix]++;
+        for(int i=0;i<madix;i++)
+        {
+            temp1[i+1]=temp1[i]+temp1[i+1];
+        }
+        for(int i=length-1;i>=0;i--)
+        {
+            temp2[temp1[(num[i]/temp)%madix]-1]=num[i];
+            temp1[(num[i]/temp)%madix]--;
+        }
+        temp*=madix;
+    }
+}
 
 int main()
 {

@@ -9,14 +9,14 @@
 #include "linkList.h"
 
 using namespace std;
-#define Max 60000000
-#define bucketNum 5000000
-#define madix 10
-#define MaxRandom 10000000
-int randomNum1[Max], randomNum2[Max], randomNum3[Max], randomNum4[Max];
-int temp1[Max + 1];
-int temp2[Max + 1];
-linkList<int> bucket[bucketNum];
+#define Max 60000000   //需要排序数组的最大范围
+#define bucketNum 5000000    //桶的个数
+#define madix 10      //基数排序中基数的大小
+#define MaxRandom 10000000     //生成随机数时最大随机范围的定义
+int randomNum1[Max], randomNum2[Max], randomNum3[Max], randomNum4[Max];    //分别用于四种排序
+int temp1[Max + 1];   //用于计数排序的辅助数组
+int temp2[Max + 1];   //用于计数排序的辅助数组
+linkList<int> bucket[bucketNum];   //桶内的链表结构
 
 void bucketSort(int num[], int length) {
     int flag;

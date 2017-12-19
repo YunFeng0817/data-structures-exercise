@@ -7,9 +7,11 @@
 #include <cstring>
 #include "linkList.h"
 using namespace std;
-#define Max 500000
-#define Size 50000000
+#define Max 10000
+#define Size 50
 int num[Max];
+int temp1[Max+1];
+int temp2[Max+1];
 linkList<int> bucket[Size];
 //int count[10];
 //int tmp[10];
@@ -42,6 +44,7 @@ void bucketSort(int num[],int length)
         for(int j=1;j<=bucket[i].size;j++)
         {
             num[count]=bucket[i].inquire(j)->data1;
+            bucket[i].pop(j);    //释放内存，防止内存泄漏
             count++;
         }
     }
@@ -64,20 +67,39 @@ void CountingSort(int *A,int *B,int *Order,int N,int K)
     }
 }
 
-void countSort(int num[],int length,int maxNum)
+void countSortEasy(int num[],int length,int maxNum)
 {
-    int temp[maxNum+1];
-    memset(temp,0, sizeof(int)*length);
+    memset(temp1,0, sizeof(int)*(maxNum+1));
     for(int i=0;i<length;i++)
-        temp[num[i]]++;
-    int count=0;
+        temp1[num[i]]++;
+    int c=0;
     for(int i=0;i<=maxNum;i++)
     {
-        for(int j=0;j<temp[i];j++)
+        for(int j=0;j<temp1[i];j++)
         {
-            num[count]=i;
-            count++;
+            num[c]=i;
+            c++;
         }
+    }
+}
+
+void countSortComplex(int num[],int length,int maxNum)
+{
+    memset(temp1,0, sizeof(int)*(maxNum+1));
+    for(int i=0;i<length;i++)
+        temp1[num[i]]++;
+    for(int i=0;i<maxNum;i++)
+    {
+        temp1[i+1]=temp1[i]+temp1[i+1];
+    }
+    for(int i=length-1;i>=0;i--)
+    {
+        temp2[temp1[num[i]]-1]=num[i];
+        temp1[num[i]]--;
+    }
+    for(int i=0;i<length;i++)
+    {
+        num[i]=temp2[i];
     }
 }
 
@@ -154,22 +176,22 @@ int main()
 {
     for(int i=0;i<Max;i++)
     {
-        num[i]=rand()%Max;
+        num[i]=Max-i;
     }
     double time;
     time=clock();
-    bucketSort(num,Max);
+//    bucketSort(num,Max);
     time=clock()-time;
     cout<<"排序随机数的数据规模是"<<Max<<endl<<"用时为：\t";
     cout<<time<<endl;
     time=clock();
-//    countSort(num,Max,Max);
+    countSortComplex(num,Max,Max);
     time=clock()-time;
     cout<<"排序随机数的数据规模是"<<Max<<endl<<"用时为：\t";
     cout<<time<<endl;
 //    RadixSort(num,Max);
-//    for(int i=0;i<Max;i++)
-//        cout<<num[i]<<" ";
-//    cout<<endl;
+    for(int i=0;i<Max;i++)
+        cout<<num[i]<<" ";
+    cout<<endl;
     return 0;
 }

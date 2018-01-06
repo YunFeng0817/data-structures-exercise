@@ -35,13 +35,14 @@ int kmp_match(string str, string pattern) {
             if (next[j] == -1) {
                 index++;
                 j = 0;
-            }
+            } else
+                j = next[j];
         }
         if (j == pattern.size())
             break;
     }
     free(next);
-    if (index == str.size())
+    if (index == str.size() && j != pattern.size())
         return -1;
     return index - j + 1;
 }
@@ -63,4 +64,5 @@ int main() {
 /*
 dcbabcdef
 abcd
+cbabcd
  */
